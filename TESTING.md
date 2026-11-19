@@ -1,0 +1,49 @@
+# TESTING.md — Strategi Pengujian
+
+## 1. Prinsip
+- Test-first. Tidak ada commit tanpa gate lulus (SDLC.md bagian 4).
+- Test tidak bergantung pada Silesia atau internet. Data uji dibuat di `tmp_path` oleh fixture.
+- Integration test memakai port bebas (bind port 0), proses nyata (`subprocess`), timeout jelas.
+- Test deterministik. Gunakan algoritma `sim` dan seed tetap untuk skenario waktu. Test yang gagal 1 dari 5 kali dianggap bug.
+- Test yang gagal diperbaiki lewat kode. Mengubah test hanya bila test salah, alasannya dicatat di phase log.
+
+## 2. Jenis dan marker
+| Jenis | Marker | Cakupan | Masuk gate |
+|---|---|---|---|
+| Unit | (tanpa marker) | fungsi dan class terisolasi, tanpa jaringan nyata | G3 |
+| Integration | `integration` | Master + Worker proses nyata di localhost | G4, G7 |
+| Slow | `slow` | skenario 9 Worker lokal | dijalankan di fase 8 dan 10 |
+| Perf | `perf` | perbandingan waktu, informatif saja | tidak |
+| E2E | `scripts/e2e_local.py` | alur lengkap sampai verifikasi | G6 |
+
+Coverage minimal 80% untuk `src/pcomp` (G3).
+
+## 3. Fixture di `tests/conftest.py`
+`synth_dataset` (folder kecil: teks, acak, berulang, ukuran bervariasi, total sekitar 5 MiB), `free_port`, `start_master`, `start_worker` (mengembalikan handle proses, dibersihkan otomatis), `events_of(run_dir)`.
+
+## 4. Matriks test per modul (ID dipakai di phase log)
+| ID | Modul | Skenario |
+|---|---|---|
+| UT-PRO-01..06 | protocol | round-trip, payload kosong, frame terpotong, header oversize, JSON rusak, tipe tak dikenal |
+| UT-NET-01..03 | net | baca tepat N byte, timeout, connect retry |
+| UT-CFG-01..02 | config | muat TOML, override CLI |
+| UT-EVT-01 | events | tulis dari banyak thread |
+| UT-CHK-01..05 | chunker | file kecil, kelipatan pas, sisa, urutan deterministik, repeat |
+| UT-CMP-01..03 | compressor | round-trip gzip, bz2, lzma |
+| UT-MAN-01..03 | manifest | skema, rekonstruksi, deteksi rusak |
+| UT-TBL-01..06 | TaskTable | semua transisi, attempts, duplikat |
+| UT-SCH-01..04 | scheduler | LPT, partisi static, credit |
+| UT-MON-01..03 | monitor | timeout (jam palsu), requeue, batas attempts |
+| UT-CAL-01..04 | calc | speedup, efficiency, imbalance, recovery |
+| IT-ECHO-01 | net | payload 10 MiB |
+| IT-DIST-01..05 | master-worker | 2 dan 3 Worker, procs 2, tanpa Worker, versi beda |
+| IT-LB-01..02 | load balancing | static vs dynamic dengan Worker lambat |
+| IT-FT-01..06 | fault tolerance | Worker mati, dua mati, semua mati, task beracun, rejoin, event recovery |
+| IT-BENCH-01 | bench | runner lokal menghasilkan summary dan grafik |
+| SL-9W-01 | slow | 9 Worker lokal selesai dan `VERIFY OK` |
+
+## 5. Kriteria lulus integration inti
+Setiap run: semua task `DONE` (atau `FAILED` pada skenario beracun), `VERIFY OK`, tidak ada proses yatim (Worker dan Master berhenti), `events.jsonl` konsisten (setiap `task_assigned` punya akhir `task_done` atau `task_requeued`).
+
+## 6. Bukti pengujian
+Hasil gate disalin ke phase log. Daftar ID test yang ditambah dicatat per fase.
