@@ -6,6 +6,20 @@ Format mengikuti Keep a Changelog. Versi `0.<NN>.0` = akhir fase NN. Aturan penc
 ### Added
 - (kosong)
 
+## [0.03.0] - 2026-11-20
+### Added
+- `src/pcomp/local_parallel.py`: baseline paralel satu mesin dengan `multiprocessing.Pool` start method `spawn`, `imap_unordered`, fungsi kerja top-level `run_task`, serta `manifest.json` dan `metrics.json` yang identik dengan baseline sequential.
+- `metrics.json` local memuat `time_s`, `throughput_mbs`, `busy_per_process`, `tasks_ok`, `tasks_failed`, dan `errors`.
+- `compressor.compress_task` dan `compressor.TaskResult`: kompresi satu task dengan penanganan error, dipakai bersama baseline local dan Worker Fase 4.
+- `manifest.make_entry`: helper pembentuk entri manifest untuk sequential, local, dan collector.
+- Unit test UT-LOC-01..05 dan integration test IT-LOC-01.
+
+### Changed
+- `src/pcomp/constants.py`: tambah `DEFAULT_PROCS`; `__version__` dan versi `pyproject.toml` menjadi `0.03.0`.
+- `src/pcomp/sequential.py`: memakai `manifest.make_entry` (perilaku tidak berubah).
+- `scripts/gate.py`: smoke Fase 3 (sequential, local `--procs 4`, verify) dengan penanda `SEQUENTIAL OK` dan `LOCAL OK`.
+- `TESTING.md` bagian 4: tambah baris UT-LOC-01..05 dan IT-LOC-01.
+
 ## [0.02.0] - 2026-11-20
 ### Added
 - `src/pcomp/tasks.py`: dataclass `Task` dan enum `TaskState` (PENDING, ASSIGNED, DONE, FAILED).
