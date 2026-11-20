@@ -1,0 +1,23 @@
+# Artefak Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Virtual environment
+.venv/
+venv/
+
+# Cache tools
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Data, output, dan laporan lokal (tidak masuk repo)
+data/
+output/
+reports/

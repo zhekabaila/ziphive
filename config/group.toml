@@ -1,0 +1,12 @@
+# Identitas kelompok. Placeholder diisi oleh user, bukan oleh agent (AGENTS.md bagian 3).
+project_name = "ZipHive"
+tema = "16 - Distributed Data Compression"
+mata_kuliah = "Komputasi Paralel dan Sistem Terdistribusi"
+institusi = "Informatika, Universitas Siliwangi"
+
+[kelompok]
+nama = "<ISI NAMA KELOMPOK>"
+
+[[anggota]]
+nama = "<ISI NAMA ANGGOTA 1>"
+npm = "<ISI NPM 1>"

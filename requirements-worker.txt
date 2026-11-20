@@ -1,0 +1,2 @@
+# Dependensi runtime Worker: hanya psutil (PLAN.md P0-T2).
+psutil>=5.9

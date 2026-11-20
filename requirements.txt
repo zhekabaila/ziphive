@@ -1,0 +1,2 @@
+# Dependensi runtime Master (lihat DECISIONS.md ADR-001).
+psutil>=5.9

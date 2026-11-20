@@ -1,0 +1,14 @@
+# Konfigurasi Master (ARCHITECTURE.md bagian 10). CLI menimpa nilai di sini.
+host = "0.0.0.0"
+port = 5050
+input = "data/silesia"
+out = "output"
+algo = "lzma"
+level = 6
+chunk_mb = 4
+repeat = 1
+scheduler = "dynamic"
+expect_workers = 9
+heartbeat_interval = 2.0
+heartbeat_timeout = 6.0
+max_attempts = 3
