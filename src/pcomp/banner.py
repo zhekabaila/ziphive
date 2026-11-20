@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import sys
 import tomllib
 from collections.abc import Mapping
 from dataclasses import dataclass
@@ -116,3 +117,14 @@ def render_banner(info: GroupInfo) -> str:
 def print_banner(info: GroupInfo) -> None:
     """Cetak banner ke stdout (satu-satunya print yang diizinkan)."""
     print(render_banner(info))
+
+
+def try_print_banner(path: Path) -> bool:
+    """Cetak banner bila group.toml dapat dibaca; selain itu beri peringatan dan lanjut."""
+    try:
+        info = load_group_info(path)
+    except (FileNotFoundError, ValueError) as exc:
+        print(f"peringatan: banner dilewati ({exc})", file=sys.stderr)
+        return False
+    print_banner(info)
+    return True
