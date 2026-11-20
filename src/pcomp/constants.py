@@ -6,7 +6,7 @@ from pathlib import Path
 
 PROJECT_NAME = "ZipHive"
 PACKAGE_NAME = "pcomp"
-__version__ = "0.03.0"
+__version__ = "0.04.0"
 
 # Versi format pesan; naikkan bila format berubah (PROTOCOL.md).
 PROTOCOL_VERSION = 1
@@ -34,6 +34,7 @@ DEFAULT_CONNECT_BACKOFF_MAX = 5.0
 DEFAULT_HEARTBEAT_INTERVAL = 2.0
 DEFAULT_HEARTBEAT_TIMEOUT = 6.0
 DEFAULT_MAX_ATTEMPTS = 3
+DEFAULT_BARRIER_TIMEOUT = 120.0
 
 # Default kompresi dan task decomposition (PLAN.md bagian Default dan asumsi).
 MIB = 1024 * 1024
