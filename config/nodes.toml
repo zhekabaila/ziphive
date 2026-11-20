@@ -1,0 +1,73 @@
+# Daftar node untuk scripts/launch_workers.py (Fase 8).
+# Nilai host, user, dan python diisi user sesuai inventaris di DEPLOYMENT.md bagian 1.
+# Agent tidak mengisi IP atau kredensial.
+
+[[node]]
+nama = "n1"
+host = "<IP_N1>"
+role = "master"
+user = "<USER_N1>"
+python = "python3"
+
+[[node]]
+nama = "n2"
+host = "<IP_N2>"
+role = "worker"
+user = "<USER_N2>"
+python = "python3"
+
+[[node]]
+nama = "n3"
+host = "<IP_N3>"
+role = "worker"
+user = "<USER_N3>"
+python = "python3"
+
+[[node]]
+nama = "n4"
+host = "<IP_N4>"
+role = "worker"
+user = "<USER_N4>"
+python = "python3"
+
+[[node]]
+nama = "n5"
+host = "<IP_N5>"
+role = "worker"
+user = "<USER_N5>"
+python = "python3"
+
+[[node]]
+nama = "n6"
+host = "<IP_N6>"
+role = "worker"
+user = "<USER_N6>"
+python = "python3"
+
+[[node]]
+nama = "n7"
+host = "<IP_N7>"
+role = "worker"
+user = "<USER_N7>"
+python = "python3"
+
+[[node]]
+nama = "n8"
+host = "<IP_N8>"
+role = "worker"
+user = "<USER_N8>"
+python = "python3"
+
+[[node]]
+nama = "n9"
+host = "<IP_N9>"
+role = "worker"
+user = "<USER_N9>"
+python = "python3"
+
+[[node]]
+nama = "n10"
+host = "<IP_N10>"
+role = "worker"
+user = "<USER_N10>"
+python = "python3"

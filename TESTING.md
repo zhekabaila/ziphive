@@ -24,6 +24,8 @@ Coverage minimal 80% untuk `src/pcomp` (G3).
 ## 4. Matriks test per modul (ID dipakai di phase log)
 | ID | Modul | Skenario |
 |---|---|---|
+| UT-BOOT-01..05 | bootstrap | import paket dan versi, banner group.toml valid, banner placeholder, CLI `--version`, parsing `scripts/gate.py` |
+| IT-BOOT-01 | bootstrap | entry point `python -m pcomp --version` dijalankan sebagai subprocess |
 | UT-PRO-01..06 | protocol | round-trip, payload kosong, frame terpotong, header oversize, JSON rusak, tipe tak dikenal |
 | UT-NET-01..03 | net | baca tepat N byte, timeout, connect retry |
 | UT-CFG-01..02 | config | muat TOML, override CLI |
