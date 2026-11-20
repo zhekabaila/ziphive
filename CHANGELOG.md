@@ -6,6 +6,27 @@ Format mengikuti Keep a Changelog. Versi `0.<NN>.0` = akhir fase NN. Aturan penc
 ### Added
 - (kosong)
 
+## [0.04.0] - 2026-11-20
+### Added
+- `src/pcomp/tasks.py`: `TaskTable` ber-lock dengan dispatch FIFO (`take_next`), klaim hasil idempoten (`claim_result`), `mark_done`, `mark_failed`, `counts`, `all_finished`, `snapshot`.
+- `src/pcomp/master/server.py`: `MasterServer` dengan accept loop dan satu thread handler per Worker, registry `WorkerSession` berbasis credit, barrier `--expect-workers`, dispatch FIFO, validasi hasil (sha256 masukan, ukuran asli, ukuran payload), serta `MasterState` yang bebas socket agar mudah diuji.
+- `src/pcomp/master/collector.py`: penulisan chunk hasil, `manifest.json`, `metrics.json`, dan entri `events.jsonl`.
+- `src/pcomp/master/cli.py`, `src/pcomp/master/__main__.py`: entry point `python -m pcomp.master` dengan penimpaan TOML oleh CLI dan `--barrier-timeout`.
+- `src/pcomp/worker/client.py`, `executor.py`, `heartbeat.py`, `cli.py`, `__main__.py`: Worker yang mendaftar, meminta credit, mengompresi di `multiprocessing.Pool`, mengirim `RESULT`, dan mengirim heartbeat berkala.
+- `scripts/e2e_local.py`: smoke end-to-end 1 Master + N Worker di localhost dengan port bebas dan pencetakan `E2E OK`.
+- Unit test UT-TBL-01..06, UT-COL-01..03, UT-MST-01..06, UT-WRK-01..10, UT-MCLI-01..04, UT-WCLI-01..03 dan integration test IT-DIST-01..05.
+
+### Changed
+- `src/pcomp/constants.py`: tambah `DEFAULT_BARRIER_TIMEOUT`; `__version__` dan versi `pyproject.toml` menjadi `0.04.0`.
+- `tests/conftest.py`: fixture `free_port`, `synth_dataset`, `module_runner`, `start_master`, `start_worker`, `events_of`.
+- `scripts/gate.py`: smoke Fase 4 memakai `scripts/e2e_local.py --workers 3` dengan penanda `E2E OK`.
+- `TESTING.md` bagian 3 dan 4: tambah `module_runner`, UT-COL, UT-MST, UT-WRK.
+
+### Fixed
+- Master menunggu `BYE` setelah `SHUTDOWN` sehingga koneksi tidak direset dan Worker tidak keluar dengan kode galat.
+- `build_register_header` mengisi `v` dan `version` dengan nilai sama agar penolakan versi protokol benar-benar terjadi.
+- CLI Master mengubah `FileNotFoundError` folder input menjadi pesan `MASTER GAGAL`, bukan traceback.
+
 ## [0.03.0] - 2026-11-20
 ### Added
 - `src/pcomp/local_parallel.py`: baseline paralel satu mesin dengan `multiprocessing.Pool` start method `spawn`, `imap_unordered`, fungsi kerja top-level `run_task`, serta `manifest.json` dan `metrics.json` yang identik dengan baseline sequential.

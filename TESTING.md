@@ -19,7 +19,7 @@
 Coverage minimal 80% untuk `src/pcomp` (G3).
 
 ## 3. Fixture di `tests/conftest.py`
-`synth_dataset` (folder kecil: teks, acak, berulang, ukuran bervariasi, total sekitar 5 MiB), `free_port`, `start_master`, `start_worker` (mengembalikan handle proses, dibersihkan otomatis), `events_of(run_dir)`.
+`synth_dataset` (folder kecil: teks, acak, berulang, ukuran bervariasi, total sekitar 5 MiB), `free_port`, `start_master`, `start_worker` (mengembalikan handle proses, dibersihkan otomatis), `module_runner`, `events_of(run_dir)`.
 
 ## 4. Matriks test per modul (ID dipakai di phase log)
 | ID | Modul | Skenario |
@@ -39,6 +39,12 @@ Coverage minimal 80% untuk `src/pcomp` (G3).
 | UT-LOC-01..05 | local_parallel | manifest sama dengan sequential, procs 1/2/4, konteks spawn, error task, busy per proses |
 | UT-TOOL-01..02 | tools | dataset sintetis deterministik, rencana unduhan tanpa jaringan |
 | UT-TBL-01..06 | TaskTable | semua transisi, attempts, duplikat |
+| UT-COL-01..03 | collector | tulis chunk, manifest dan verifikasi, metrics, folder repeat |
+| UT-MST-01..06 | master/server | REGISTER wajib, versi beda, duplikat, siklus task, hasil tidak valid, tanpa Worker |
+| UT-WRK-01..04 | worker | alamat Master, header REGISTER/RESULT, executor pool, heartbeat |
+| UT-WRK-05..10 | worker client | kirim tanpa koneksi, Master tidak terjangkau, penolakan REGISTER, loop terima, loop kirim |
+| UT-MCLI-01..04 | master/cli | default parser, scheduler static ditolak, konfigurasi tidak ada, input tidak ada |
+| UT-WCLI-01..03 | worker/cli | default parser, konfigurasi tidak ada, exit code mengikuti `WorkerClient.run` |
 | UT-SCH-01..04 | scheduler | LPT, partisi static, credit |
 | UT-MON-01..03 | monitor | timeout (jam palsu), requeue, batas attempts |
 | UT-CAL-01..04 | calc | speedup, efficiency, imbalance, recovery |

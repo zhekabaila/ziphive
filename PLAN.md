@@ -1,6 +1,6 @@
 # PLAN.md — Rencana Pengerjaan per Fase
 
-CURRENT PHASE: 4
+CURRENT PHASE: 5
 
 ## Ringkasan proyek
 Aplikasi kompresi data terdistribusi. Dataset dipecah menjadi chunk (task), Master membagikan task ke 9 Worker lewat TCP, tiap Worker memproses task secara paralel dengan multiprocessing, hasil kompresi dikumpulkan Master dan diverifikasi (SHA-256). Mencakup dynamic load balancing, fault tolerance, dan evaluasi performa sesuai soal UAS.
@@ -24,7 +24,7 @@ Aplikasi kompresi data terdistribusi. Dataset dipecah menjadi chunk (task), Mast
 | 1 | Protokol dan infrastruktur inti | M | Agent | DONE |
 | 2 | Mesin kompresi, task decomposition, baseline sequential | M | Agent | DONE |
 | 3 | Local parallel (multiprocessing satu mesin) | S | Agent | DONE |
-| 4 | Master–Worker inti | L | Agent | TODO |
+| 4 | Master–Worker inti | L | Agent | DONE |
 | 5 | Dynamic load balancing | M | Agent | TODO |
 | 6 | Fault tolerance | L | Agent | TODO |
 | 7 | Metrik dan harness benchmark | M | Agent | TODO |
