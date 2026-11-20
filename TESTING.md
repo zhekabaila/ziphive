@@ -30,6 +30,7 @@ Coverage minimal 80% untuk `src/pcomp` (G3).
 | UT-NET-01..03 | net | baca tepat N byte, timeout, connect retry |
 | UT-CFG-01..02 | config | muat TOML, override CLI |
 | UT-EVT-01 | events | tulis dari banyak thread |
+| UT-LOG-01 | logging | setup idempoten, tulis ke file, level berupa string |
 | UT-CHK-01..05 | chunker | file kecil, kelipatan pas, sisa, urutan deterministik, repeat |
 | UT-CMP-01..03 | compressor | round-trip gzip, bz2, lzma |
 | UT-MAN-01..03 | manifest | skema, rekonstruksi, deteksi rusak |
