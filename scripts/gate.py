@@ -50,10 +50,35 @@ SMOKE_COMMANDS: dict[int, list[list[str]]] = {
             "output/seq/manifest.json",
         ],
     ],
+    3: [
+        [
+            sys.executable,
+            "-m",
+            "pcomp.tools.make_dataset",
+            "--out",
+            "data/synth",
+            "--size-mb",
+            "20",
+        ],
+        [sys.executable, "-m", "pcomp.sequential", "--input", "data/synth", "--out", "output/seq"],
+        [sys.executable, "-m", "pcomp.tools.verify", "--manifest", "output/seq/manifest.json"],
+        [
+            sys.executable,
+            "-m",
+            "pcomp.local_parallel",
+            "--input",
+            "data/synth",
+            "--out",
+            "output/local",
+            "--procs",
+            "4",
+        ],
+        [sys.executable, "-m", "pcomp.tools.verify", "--manifest", "output/local/manifest.json"],
+    ],
 }
 
 # Keluaran yang wajib muncul pada smoke fase tertentu.
-SMOKE_EXPECTED: dict[int, list[str]] = {2: ["VERIFY OK"]}
+SMOKE_EXPECTED: dict[int, list[str]] = {2: ["VERIFY OK"], 3: ["SEQUENTIAL OK", "LOCAL OK"]}
 
 PHASE_LOG_REQUIRED_HEADINGS = (
     "## 1. Tujuan",

@@ -4,10 +4,13 @@ from __future__ import annotations
 
 import bz2
 import gzip
+import hashlib
 import lzma
 import time
+from dataclasses import dataclass
 
 from pcomp import constants
+from pcomp.tasks import Task
 
 ALGORITHMS = ("gzip", "bz2", "lzma", "sim")
 
@@ -51,6 +54,50 @@ def decompress(algo: str, level: int, data: bytes) -> bytes:
     if algo == "lzma":
         return lzma.decompress(data)
     return data
+
+
+@dataclass(frozen=True)
+class TaskResult:
+    """Hasil kompresi satu task; dipakai ulang oleh Worker pada Fase 4."""
+
+    task_id: int
+    ok: bool
+    sha256: str
+    comp_size: int
+    data: bytes | None
+    error: str | None
+    compute_sec: float
+
+
+def compress_task(task: Task, data: bytes, algo: str, level: int) -> TaskResult:
+    """Kompres satu task dan tangkap semua error agar pool Worker tetap hidup.
+
+    Fungsi ini sengaja diletakkan di modul netral (bukan di `worker/`) supaya
+    Worker Fase 4 dan baseline local parallel memakai logika yang sama.
+    """
+    started = time.perf_counter()
+    digest = hashlib.sha256(data).hexdigest()
+    try:
+        packed = compress(algo, level, data)
+    except Exception as exc:  # noqa: BLE001 - error task dicatat, bukan mematikan pool
+        return TaskResult(
+            task_id=task.task_id,
+            ok=False,
+            sha256=digest,
+            comp_size=0,
+            data=None,
+            error=f"{type(exc).__name__}: {exc}",
+            compute_sec=time.perf_counter() - started,
+        )
+    return TaskResult(
+        task_id=task.task_id,
+        ok=True,
+        sha256=digest,
+        comp_size=len(packed),
+        data=packed,
+        error=None,
+        compute_sec=time.perf_counter() - started,
+    )
 
 
 def sim_delay_seconds(size_bytes: int) -> float:

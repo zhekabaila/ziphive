@@ -21,6 +21,7 @@ from pcomp.manifest import (
     ManifestEntry,
     build_manifest,
     chunk_output_name,
+    make_entry,
     write_manifest,
 )
 
@@ -60,15 +61,12 @@ def run_sequential(
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(packed)
         entries.append(
-            ManifestEntry(
-                task_id=task.task_id,
-                file=task.file,
-                index=task.index,
-                offset=task.offset,
-                length=len(raw),
+            make_entry(
+                task,
                 sha256=hashlib.sha256(raw).hexdigest(),
-                output=relative,
+                length=len(raw),
                 comp_size=len(packed),
+                output=relative,
                 copy=copy,
             )
         )

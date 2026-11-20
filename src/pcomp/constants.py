@@ -6,7 +6,7 @@ from pathlib import Path
 
 PROJECT_NAME = "ZipHive"
 PACKAGE_NAME = "pcomp"
-__version__ = "0.02.0"
+__version__ = "0.03.0"
 
 # Versi format pesan; naikkan bila format berubah (PROTOCOL.md).
 PROTOCOL_VERSION = 1
@@ -42,6 +42,9 @@ DEFAULT_REPEAT = 1
 DEFAULT_ALGO = "lzma"
 DEFAULT_LEVEL = 6
 SIM_SECONDS_PER_MB = 0.02
+
+# Default jumlah proses untuk baseline local parallel; sama dengan config/worker.toml.
+DEFAULT_PROCS = 4
 
 EXIT_OK = 0
 EXIT_ERROR = 1

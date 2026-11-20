@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from pcomp.compressor import decompress, file_extension
+from pcomp.tasks import Task
 
 MANIFEST_VERSION = 1
 
@@ -69,6 +70,23 @@ def chunk_output_name(file: str, index: int, algo: str, *, copy: int, repeat: in
     if repeat > 1:
         return f"chunks/r{copy}/{name}"
     return f"chunks/{name}"
+
+
+def make_entry(
+    task: Task, *, sha256: str, length: int, comp_size: int, output: str, copy: int
+) -> ManifestEntry:
+    """Susun entri manifest untuk satu task yang selesai dikompres."""
+    return ManifestEntry(
+        task_id=task.task_id,
+        file=task.file,
+        index=task.index,
+        offset=task.offset,
+        length=length,
+        sha256=sha256,
+        output=output,
+        comp_size=comp_size,
+        copy=copy,
+    )
 
 
 def build_manifest(
