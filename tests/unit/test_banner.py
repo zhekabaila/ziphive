@@ -6,7 +6,13 @@ from pathlib import Path
 
 import pytest
 
-from pcomp.banner import GroupInfo, is_placeholder, load_group_info, render_banner
+from pcomp.banner import (
+    GroupInfo,
+    is_placeholder,
+    load_group_info,
+    render_banner,
+    try_print_banner,
+)
 
 
 def test_load_valid_group(valid_group_file: Path) -> None:
@@ -59,3 +65,13 @@ def test_missing_section_raises(tmp_path: Path) -> None:
     bad.write_text('project_name = "ZipHive"\n', encoding="utf-8")
     with pytest.raises(ValueError):
         load_group_info(bad)
+
+
+def test_try_print_banner_valid(capsys: pytest.CaptureFixture[str], valid_group_file: Path) -> None:
+    assert try_print_banner(valid_group_file) is True
+    assert "Kelompok Uji" in capsys.readouterr().out
+
+
+def test_try_print_banner_missing(capsys: pytest.CaptureFixture[str], tmp_path: Path) -> None:
+    assert try_print_banner(tmp_path / "tidak-ada.toml") is False
+    assert "banner dilewati" in capsys.readouterr().err

@@ -6,6 +6,25 @@ Format mengikuti Keep a Changelog. Versi `0.<NN>.0` = akhir fase NN. Aturan penc
 ### Added
 - (kosong)
 
+## [0.02.0] - 2026-11-20
+### Added
+- `src/pcomp/tasks.py`: dataclass `Task` dan enum `TaskState` (PENDING, ASSIGNED, DONE, FAILED).
+- `src/pcomp/chunker.py`: pemindaian folder deterministik, pemecahan file per chunk, `--repeat`, file kosong dilewati.
+- `src/pcomp/compressor.py`: registri `gzip`, `bz2`, `lzma`, `sim` (khusus test) dengan `compress`, `decompress`, `file_extension`, `is_simulated`.
+- `src/pcomp/manifest.py`: `manifest.json` versi 1, validasi skema, rekonstruksi file, verifikasi per chunk (ukuran dan SHA-256).
+- `src/pcomp/sequential.py`: baseline satu proses beserta `metrics.json` (waktu, throughput, rasio, jumlah task, penanda `simulated`).
+- `src/pcomp/tools/make_dataset.py`: dataset sintetis deterministik (teks, acak, berulang, campuran) dengan `dataset.json`.
+- `src/pcomp/tools/download_corpus.py`: unduhan korpus dengan URL wajib eksplisit, `--expected-sha256`, dan `--dry-run`; tidak dijalankan otomatis.
+- `src/pcomp/tools/verify.py`: verifikasi manifest, mencetak `VERIFY OK` atau daftar chunk rusak.
+- Unit test UT-TSK-01..02, UT-CHK-01..05, UT-CMP-01..03, UT-MAN-01..03, UT-SEQ-01, UT-TOOL-01..02 dan integration test IT-SEQ-01.
+
+### Changed
+- `src/pcomp/constants.py`: tambah `MIB`, `DEFAULT_CHUNK_MB`, `DEFAULT_REPEAT`, `DEFAULT_ALGO`, `DEFAULT_LEVEL`, `SIM_SECONDS_PER_MB`; `__version__` dan versi `pyproject.toml` menjadi `0.02.0`.
+- `src/pcomp/banner.py`: tambah `try_print_banner` agar CLI tetap berjalan bila `group.toml` belum lengkap.
+- `scripts/gate.py`: smoke Fase 2 (`make_dataset`, `sequential`, `verify`) dan pengecekan keluaran `VERIFY OK`.
+- `TESTING.md` bagian 4: tambah baris UT-TSK, UT-SEQ, UT-TOOL, IT-SEQ.
+- `ASSETS.md`: kolom tanggal akses dan SHA-256 dataset diisi "diisi user" karena belum ada unduhan nyata.
+
 ## [0.01.0] - 2026-11-20
 ### Added
 - `src/pcomp/protocol.py`: frame `!I` (4 byte) + `!Q` (8 byte) + header JSON + payload, batas 64 KiB dan 64 MiB, enum `MessageType` dan `ErrorCode`, validasi field per PROTOCOL.md bagian 2.

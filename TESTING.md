@@ -31,14 +31,18 @@ Coverage minimal 80% untuk `src/pcomp` (G3).
 | UT-CFG-01..02 | config | muat TOML, override CLI |
 | UT-EVT-01 | events | tulis dari banyak thread |
 | UT-LOG-01 | logging | setup idempoten, tulis ke file, level berupa string |
+| UT-TSK-01..02 | tasks | nilai default task dan himpunan state |
 | UT-CHK-01..05 | chunker | file kecil, kelipatan pas, sisa, urutan deterministik, repeat |
 | UT-CMP-01..03 | compressor | round-trip gzip, bz2, lzma |
 | UT-MAN-01..03 | manifest | skema, rekonstruksi, deteksi rusak |
+| UT-SEQ-01 | sequential | manifest dan metrics, penanda `sim`, repeat, input kosong |
+| UT-TOOL-01..02 | tools | dataset sintetis deterministik, rencana unduhan tanpa jaringan |
 | UT-TBL-01..06 | TaskTable | semua transisi, attempts, duplikat |
 | UT-SCH-01..04 | scheduler | LPT, partisi static, credit |
 | UT-MON-01..03 | monitor | timeout (jam palsu), requeue, batas attempts |
 | UT-CAL-01..04 | calc | speedup, efficiency, imbalance, recovery |
 | IT-ECHO-01 | net | payload 10 MiB |
+| IT-SEQ-01 | sequential | make_dataset, sequential, verify = `VERIFY OK` |
 | IT-DIST-01..05 | master-worker | 2 dan 3 Worker, procs 2, tanpa Worker, versi beda |
 | IT-LB-01..02 | load balancing | static vs dynamic dengan Worker lambat |
 | IT-FT-01..06 | fault tolerance | Worker mati, dua mati, semua mati, task beracun, rejoin, event recovery |

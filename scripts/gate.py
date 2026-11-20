@@ -31,7 +31,29 @@ COMMAND_TIMEOUT_SEC = 1800
 SMOKE_COMMANDS: dict[int, list[list[str]]] = {
     0: [[sys.executable, "-m", "pcomp", "--version"]],
     1: [[sys.executable, "-m", "pytest", "-m", "integration", "-k", "echo", "-q"]],
+    2: [
+        [
+            sys.executable,
+            "-m",
+            "pcomp.tools.make_dataset",
+            "--out",
+            "data/synth",
+            "--size-mb",
+            "20",
+        ],
+        [sys.executable, "-m", "pcomp.sequential", "--input", "data/synth", "--out", "output/seq"],
+        [
+            sys.executable,
+            "-m",
+            "pcomp.tools.verify",
+            "--manifest",
+            "output/seq/manifest.json",
+        ],
+    ],
 }
+
+# Keluaran yang wajib muncul pada smoke fase tertentu.
+SMOKE_EXPECTED: dict[int, list[str]] = {2: ["VERIFY OK"]}
 
 PHASE_LOG_REQUIRED_HEADINGS = (
     "## 1. Tujuan",
@@ -210,11 +232,20 @@ def check_g6_smoke(phase: int) -> GateResult:
 
     details: list[str] = []
     passed = True
+    outputs: list[str] = []
     for cmd in commands:
         code, output = run_command(cmd)
+        outputs.append(output)
         label = " ".join(Path(part).name if i == 0 else part for i, part in enumerate(cmd))
         details.append(f"{label} -> rc={code}: {_tail(output, 1)}")
         passed = passed and code == 0
+
+    combined = "\n".join(outputs)
+    for expected in SMOKE_EXPECTED.get(phase, []):
+        if expected not in combined:
+            details.append(f"keluaran '{expected}' tidak ditemukan")
+            passed = False
+
     return _result("G6", "Smoke test fase", passed, "; ".join(details))
 
 

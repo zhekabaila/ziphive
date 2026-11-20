@@ -5,9 +5,9 @@ Soal mewajibkan sumber resmi setiap aset (dataset, formula, file sample). Agent 
 ## Dataset
 | Aset | Sumber resmi | Keterangan | Tanggal akses | SHA-256 |
 |---|---|---|---|---|
-| Silesia Corpus | https://sun.aei.polsl.pl/~sdeor/index.php?page=silesia | 12 file, sekitar 211 MB, benchmark kompresi (S. Deorowicz) | | |
-| Canterbury Corpus (Large) | https://corpus.canterbury.ac.nz/ | file besar benchmark kompresi | | |
-| Dataset sintetis | dibuat oleh `tools/make_dataset.py` | seed dicatat, tidak ada hak cipta pihak lain | | |
+| Silesia Corpus | https://sun.aei.polsl.pl/~sdeor/index.php?page=silesia | 12 file, sekitar 211 MB, benchmark kompresi (S. Deorowicz) | diisi user | diisi user |
+| Canterbury Corpus (Large) | https://corpus.canterbury.ac.nz/ | file besar benchmark kompresi | diisi user | diisi user |
+| Dataset sintetis | dibuat oleh `tools/make_dataset.py` | seed dicatat, tidak ada hak cipta pihak lain | diisi user | diisi user |
 
 ## Pustaka dan dokumentasi
 | Aset | Sumber |

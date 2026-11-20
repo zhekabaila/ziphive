@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pcomp"
-version = "0.01.0"
+version = "0.02.0"
 description = "ZipHive - distributed data compression with Master-Worker architecture"
 readme = "README.md"
 requires-python = ">=3.11"
