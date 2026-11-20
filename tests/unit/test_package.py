@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import re
+import tomllib
+from pathlib import Path
 
 import pcomp
 import pcomp.bench
@@ -28,3 +30,10 @@ def test_project_constants() -> None:
 
 def test_protocol_version_matches_protocol_doc() -> None:
     assert constants.PROTOCOL_VERSION == 1
+
+
+def test_pyproject_version_matches_constants(repo_root: Path) -> None:
+    """Versi di pyproject.toml harus sama dengan constants.__version__."""
+    with (repo_root / "pyproject.toml").open("rb") as handle:
+        metadata = tomllib.load(handle)
+    assert metadata["project"]["version"] == constants.__version__

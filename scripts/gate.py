@@ -30,6 +30,7 @@ COMMAND_TIMEOUT_SEC = 1800
 # Smoke test per fase, disalin dari bagian "Smoke" PLAN.md fase terkait.
 SMOKE_COMMANDS: dict[int, list[list[str]]] = {
     0: [[sys.executable, "-m", "pcomp", "--version"]],
+    1: [[sys.executable, "-m", "pytest", "-m", "integration", "-k", "echo", "-q"]],
 }
 
 PHASE_LOG_REQUIRED_HEADINGS = (
@@ -47,7 +48,7 @@ PHASE_LOG_REQUIRED_HEADINGS = (
     "## 12. Commit",
 )
 
-PHASE_LOG_UNFINISHED_MARKERS = ("(selesai di akhir fase)", "<x>%")
+PHASE_LOG_UNFINISHED_MARKERS = ("(selesai di akhir fase)", "(diisi pada akhir fase)", "<x>%")
 
 
 @dataclass(frozen=True)
