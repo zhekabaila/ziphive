@@ -28,7 +28,7 @@ Aplikasi kompresi data terdistribusi. Dataset dipecah menjadi chunk (task), Mast
 | 5 | Dynamic load balancing | M | Agent | DONE |
 | 6 | Fault tolerance | L | Agent | DONE |
 | 7 | Metrik dan harness benchmark | M | Agent | DONE |
-| 8 | Kesiapan multi-node | M | Agent + User | TODO |
+| 8 | Kesiapan multi-node | M | Agent + User | IN PROGRESS (menunggu user) |
 | 9 | Eksperimen resmi 10 node | L | User + Agent | TODO |
 | 10 | Dokumentasi, laporan, paket pengumpulan | M | Agent + User | TODO |
 

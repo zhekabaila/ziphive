@@ -54,3 +54,13 @@ Format: Konteks, Keputusan, Konsekuensi. Tambah entri baru di bawah, jangan hapu
 - Konteks: PLAN.md P7-T4 mewajibkan grafik PNG dan PLAN.md bagian "Default dan asumsi" menyebut matplotlib sebagai pustaka analisis. Worker hanya diizinkan memakai psutil (PLAN.md P0-T2), sedangkan `bench/report.py` dijalankan pada mesin pengembang atau node Master saat eksperimen.
 - Keputusan: matplotlib dicatat sebagai dependensi opsional `analysis` pada `pyproject.toml` dan baris tersendiri pada `requirements-dev.txt`, bukan pada `dependencies` inti maupun `requirements-worker.txt`. Seluruh modul grafik memakai backend `Agg` agar berjalan tanpa layar.
 - Konsekuensi: Master, Worker, dan seluruh unit test inti tetap hanya membutuhkan psutil. Menjalankan `python -m pcomp.bench.runner` tanpa matplotlib terpasang akan gagal saat mengimpor `pcomp.bench.report`, sehingga instalasi memakai `pip install -e .[analysis]`. Backend `Agg` diset sebelum `pyplot` diimpor agar hasil deterministik pada mesin tanpa display.
+
+## ADR-013 `check_node.py` hanya menguji keterjangkauan port Master
+- Konteks: PLAN.md P8-T1 meminta pemeriksaan "koneksi ke Master, versi protokol". Protokol (PROTOCOL.md) tidak memiliki pesan khusus untuk bertanya versi sebelum REGISTER: satu-satunya pesan pertama dari Worker adalah `REGISTER`, yang langsung mengubah state Master dan mengalokasikan sesi Worker.
+- Keputusan: `scripts/check_node.py` membuka koneksi TCP ke `host:port` Master lalu menutupnya, dan melaporkan `PROTOCOL_VERSION` serta versi paket yang dipakai node itu. Skrip tidak mengirim pesan protokol apa pun, sehingga tidak ada perubahan pada PROTOCOL.md atau state Master.
+- Konsekuensi: kesamaan versi antar node diverifikasi dengan membandingkan baris `paket` dan `protokol` pada keluaran `check_node.py` di semua node, sedangkan penolakan versi yang tidak cocok tetap dilakukan Master saat REGISTER (`VERSION_MISMATCH`, risiko R2).
+
+## ADR-014 P8-T5 `--data-mode local` ditunda sampai ada bukti R1
+- Konteks: PLAN.md Fase 8 menandai P8-T5 "Opsional bila R1 terjadi", sedangkan R1 (bandwidth keluar Master menjadi bottleneck) hanya dapat dinilai dari dry-run pada 10 node fisik. Bagian agent Fase 8 belum memiliki data tersebut, dan implementasinya menuntut perubahan format `TASK` pada PROTOCOL.md.
+- Keputusan: P8-T5 tidak diimplementasikan pada bagian agent. Opsi dievaluasi pada bagian user (Prompt 9B) setelah log dry-run tersedia; bila R1 terbukti, opsi ditambahkan sebagai fitur opt-in dengan ADR baru dan kenaikan `PROTOCOL_VERSION`.
+- Konsekuensi: tidak ada perubahan protokol atau perilaku default pada Fase 8 bagian agent. DEPLOYMENT.md bagian 5 dan ARCHITECTURE.md bagian 11 mencatat bahwa opsi belum tersedia agar tidak dipakai pada eksperimen resmi.
