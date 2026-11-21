@@ -35,6 +35,19 @@ class ManifestEntry:
 
 
 @dataclass(frozen=True)
+class FailedEntry:
+    """Satu task dead-letter pada manifest (P6-T2)."""
+
+    task_id: int
+    file: str
+    index: int
+    offset: int
+    length: int
+    attempts: int
+    reason: str
+
+
+@dataclass(frozen=True)
 class Manifest:
     """Seluruh isi manifest.json."""
 
@@ -46,6 +59,7 @@ class Manifest:
     total_orig_bytes: int
     total_comp_bytes: int
     entries: tuple[ManifestEntry, ...]
+    failed: tuple[FailedEntry, ...] = ()
 
     @property
     def ratio(self) -> float:
@@ -96,6 +110,7 @@ def build_manifest(
     chunk_mb: int,
     repeat: int,
     entries: Sequence[ManifestEntry],
+    failed: Sequence[FailedEntry] = (),
 ) -> Manifest:
     """Susun manifest dan hitung total ukuran."""
     return Manifest(
@@ -107,6 +122,7 @@ def build_manifest(
         total_orig_bytes=sum(entry.length for entry in entries),
         total_comp_bytes=sum(entry.comp_size for entry in entries),
         entries=tuple(entries),
+        failed=tuple(failed),
     )
 
 
@@ -133,6 +149,18 @@ def to_dict(manifest: Manifest) -> dict[str, Any]:
                 "copy": entry.copy,
             }
             for entry in manifest.entries
+        ],
+        "failed": [
+            {
+                "task_id": entry.task_id,
+                "file": entry.file,
+                "index": entry.index,
+                "offset": entry.offset,
+                "length": entry.length,
+                "attempts": entry.attempts,
+                "reason": entry.reason,
+            }
+            for entry in manifest.failed
         ],
     }
 
@@ -171,6 +199,24 @@ def from_dict(data: dict[str, Any]) -> Manifest:
                 copy=_require(raw, "copy", int),
             )
         )
+    raw_failed = data.get("failed", [])
+    if not isinstance(raw_failed, list):
+        raise ManifestError("field 'failed' wajib berupa list")
+    failed: list[FailedEntry] = []
+    for raw in raw_failed:
+        if not isinstance(raw, dict):
+            raise ManifestError("setiap entri 'failed' wajib berupa objek")
+        failed.append(
+            FailedEntry(
+                task_id=_require(raw, "task_id", int),
+                file=_require(raw, "file", str),
+                index=_require(raw, "index", int),
+                offset=_require(raw, "offset", int),
+                length=_require(raw, "length", int),
+                attempts=_require(raw, "attempts", int),
+                reason=_require(raw, "reason", str),
+            )
+        )
     return Manifest(
         version=_require(data, "version", int),
         algo=_require(data, "algo", str),
@@ -180,6 +226,7 @@ def from_dict(data: dict[str, Any]) -> Manifest:
         total_orig_bytes=_require(data, "total_orig_bytes", int),
         total_comp_bytes=_require(data, "total_comp_bytes", int),
         entries=tuple(entries),
+        failed=tuple(failed),
     )
 
 

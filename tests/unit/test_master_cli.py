@@ -82,3 +82,42 @@ def test_missing_input_dir_reports_error(valid_group_file: Path, tmp_path: Path)
     )
 
     assert code == constants.EXIT_ERROR
+
+
+def test_heartbeat_options_forwarded(
+    monkeypatch: pytest.MonkeyPatch, valid_group_file: Path, tmp_path: Path
+) -> None:
+    """UT-MCLI-05: opsi heartbeat dan max attempts diteruskan ke MasterConfig."""
+    captured: dict[str, object] = {}
+
+    class CaptureServer:
+        def __init__(self, config: MasterConfig, *, barrier_timeout: float) -> None:
+            captured["config"] = config
+            self.last_error = None
+            self.metrics: dict = {}
+
+        def run(self) -> int:
+            return constants.EXIT_OK
+
+    monkeypatch.setattr(cli, "MasterServer", CaptureServer)
+
+    code = main(
+        [
+            "--group-config",
+            str(valid_group_file),
+            "--out",
+            str(tmp_path / "out"),
+            "--heartbeat-interval",
+            "0.2",
+            "--heartbeat-timeout",
+            "1.0",
+            "--max-attempts",
+            "2",
+        ]
+    )
+
+    assert code == constants.EXIT_OK
+    config = captured["config"]
+    assert config.heartbeat_interval == 0.2
+    assert config.heartbeat_timeout == 1.0
+    assert config.max_attempts == 2

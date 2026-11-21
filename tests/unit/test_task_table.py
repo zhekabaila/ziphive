@@ -115,3 +115,44 @@ def test_mark_done_requires_assignment(worker_id: str) -> None:
     table.take_next("w1", now=0.0)
     if worker_id == "w9":
         assert table.claim_result(0, worker_id) is None
+
+
+def test_requeue_task_returns_to_pending() -> None:
+    """UT-TBL-07: requeue mengembalikan task ASSIGNED ke PENDING tanpa menambah attempts."""
+    table = TaskTable(make_tasks()[:1])
+    task = table.take_next("w1", now=0.0)
+    assert task is not None
+
+    requeued = table.requeue_task(0, now=1.0, max_attempts=3, reason="gagal")
+
+    assert requeued is not None
+    assert requeued.state is TaskState.PENDING
+    assert requeued.assigned_to is None
+    assert requeued.attempts == 1
+    assert table.counts()["PENDING"] == 1
+
+
+def test_requeue_beyond_attempts_marks_failed() -> None:
+    """UT-TBL-08: requeue saat attempts sudah mencapai batas menjadi FAILED."""
+    table = TaskTable(make_tasks()[:1])
+    table.take_next("w1", now=0.0)
+
+    failed = table.requeue_task(0, now=1.0, max_attempts=1, reason="batas")
+
+    assert failed is not None
+    assert failed.state is TaskState.FAILED
+    assert failed.fail_reason == "batas"
+    assert table.all_finished() is True
+
+
+def test_requeue_from_worker_returns_outcomes() -> None:
+    """UT-TBL-09: requeue_from mengembalikan seluruh task milik Worker beserta hasilnya."""
+    table = TaskTable(make_tasks())
+    table.take_next("w1", now=0.0)
+    table.take_next("w1", now=0.0)
+
+    outcomes = table.requeue_from("w1", now=1.0, max_attempts=3)
+
+    assert [task.task_id for task, requeued in outcomes if requeued] == [0, 1]
+    assert table.counts()["PENDING"] == 3
+    assert table.failed_tasks() == []

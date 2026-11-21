@@ -23,6 +23,9 @@ OVERRIDE_KEYS = (
     "repeat",
     "expect_workers",
     "scheduler",
+    "heartbeat_interval",
+    "heartbeat_timeout",
+    "max_attempts",
 )
 
 
@@ -40,6 +43,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--repeat", type=int)
     parser.add_argument("--expect-workers", type=int)
     parser.add_argument("--scheduler", choices=["dynamic", "static"])
+    parser.add_argument("--heartbeat-interval", type=float, help="detik antar heartbeat")
+    parser.add_argument("--heartbeat-timeout", type=float, help="detik batas Worker dianggap mati")
+    parser.add_argument("--max-attempts", type=int, help="batas percobaan sebelum dead-letter")
     parser.add_argument(
         "--barrier-timeout",
         type=float,

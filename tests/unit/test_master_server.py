@@ -14,7 +14,8 @@ from pcomp import constants
 from pcomp.compressor import compress
 from pcomp.config import MasterConfig
 from pcomp.manifest import read_manifest
-from pcomp.master.server import MasterServer, is_valid_result
+from pcomp.master.server import MasterServer, WorkerSession, is_valid_result
+from pcomp.metrics.events import read_events
 from pcomp.net import recv_msg, send_msg
 from pcomp.protocol import make_header
 from pcomp.tasks import Task
@@ -188,9 +189,9 @@ def test_full_task_cycle(tmp_path: Path) -> None:
 
 
 def test_invalid_result_marks_failed(tmp_path: Path) -> None:
-    """UT-MST-05: hasil dengan sha256 salah dihitung gagal."""
+    """UT-MST-05: hasil dengan sha256 salah menjadi FAILED bila attempts habis."""
     make_dataset(tmp_path, count=1)
-    server = MasterServer(make_config(tmp_path), barrier_timeout=1.0)
+    server = MasterServer(make_config(tmp_path, max_attempts=1), barrier_timeout=1.0)
     server.begin()
     local, remote = socket.socketpair()
     runner = ServerThread(server, local)
@@ -224,6 +225,8 @@ def test_invalid_result_marks_failed(tmp_path: Path) -> None:
     assert metrics["tasks_ok"] == 0
     manifest = read_manifest(server.out_dir / "manifest.json")
     assert manifest.entries == ()
+    assert len(manifest.failed) == 1
+    assert manifest.failed[0].attempts == 1
     remote.close()
 
 
@@ -268,3 +271,104 @@ def test_invalid_credit_rejected(tmp_path: Path, credits: int) -> None:
     assert frame.header["type"] == "ERROR"
     runner.join()
     remote.close()
+
+
+def make_session(worker_id: str = "w1") -> WorkerSession:
+    return WorkerSession(worker_id=worker_id, hostname="uji", procs=1, sock=socket.socket())
+
+
+def test_rejoin_same_worker_id(tmp_path: Path) -> None:
+    """UT-MST-07: worker_id yang pernah terdaftar boleh bergabung ulang (P6-T4)."""
+    make_dataset(tmp_path, count=1)
+    server = MasterServer(make_config(tmp_path), barrier_timeout=1.0)
+
+    first = make_session()
+    server.state.register(first)
+    server.state.drop_worker(first.worker_id, "uji putus", 1.0)
+
+    second = make_session()
+    server.state.register(second)
+
+    events = read_events(server.out_dir / "events.jsonl")
+    names = [item["event"] for item in events]
+    assert "worker_rejoined" in names
+    assert server.state.sessions() == [second]
+    second.sock.close()
+
+
+def test_drop_worker_requeues_and_abort_marks_unfinished(tmp_path: Path) -> None:
+    """UT-MST-08: drop_worker mengembalikan task, abort menandai sisa task FAILED."""
+    make_dataset(tmp_path, count=2)
+    server = MasterServer(make_config(tmp_path, max_attempts=2), barrier_timeout=1.0)
+    server.begin()
+    session = make_session()
+    server.state.register(session)
+    server.state.add_credits(session.worker_id, 1)
+    task = server.state.take(session.worker_id)
+    assert task is not None
+
+    dropped = server.state.drop_worker(session.worker_id, "timeout", 1.0)
+
+    assert [item.task_id for item in dropped] == [task.task_id]
+    assert server.state.table.counts()["PENDING"] == 2
+    aborted = server.state.abort("semua Worker mati", 2.0)
+    assert len(aborted) == 2
+    assert server.state.table.counts()["FAILED"] == 2
+    assert server.state.all_finished() is True
+
+
+def test_invalid_result_retries_until_attempt_limit(tmp_path: Path) -> None:
+    """UT-MST-09: hasil tidak valid diulang sampai max_attempts lalu FAILED."""
+    make_dataset(tmp_path, count=1)
+    server = MasterServer(make_config(tmp_path, max_attempts=2), barrier_timeout=1.0)
+    server.begin()
+    session = make_session()
+    server.state.register(session)
+    header = make_header(
+        "RESULT",
+        task_id=0,
+        ok=True,
+        orig_size=0,
+        comp_size=0,
+        sha256_in="0" * 64,
+        compute_sec=0.0,
+        error="rusak",
+    )
+
+    server.state.add_credits(session.worker_id, 1)
+    assert server.state.take(session.worker_id) is not None
+    assert server.state.handle_result(session, header, b"") == "failed"
+    assert server.state.table.counts()["PENDING"] == 1
+
+    server.state.add_credits(session.worker_id, 1)
+    assert server.state.take(session.worker_id) is not None
+    assert server.state.handle_result(session, header, b"") == "failed"
+    assert server.state.table.counts()["FAILED"] == 1
+
+    names = [item["event"] for item in read_events(server.out_dir / "events.jsonl")]
+    assert names.count("task_requeued") == 1
+    assert names.count("task_failed") == 1
+    session.sock.close()
+
+
+def test_finalize_records_failed_tasks_in_manifest(tmp_path: Path) -> None:
+    """UT-MST-10: dead-letter tercatat pada manifest dan metrics."""
+    make_dataset(tmp_path, count=1)
+    server = MasterServer(make_config(tmp_path, max_attempts=1), barrier_timeout=1.0)
+    server.begin()
+    session = make_session()
+    server.state.register(session)
+    server.state.add_credits(session.worker_id, 1)
+    task = server.state.take(session.worker_id)
+    assert task is not None
+    server.state.table.requeue_task(task.task_id, now=1.0, max_attempts=1, reason="task_fail_rate")
+
+    server.finalize()
+
+    manifest = read_manifest(server.out_dir / "manifest.json")
+    assert len(manifest.failed) == 1
+    assert manifest.failed[0].reason == "task_fail_rate"
+    metrics = json.loads((server.out_dir / "metrics.json").read_text(encoding="utf-8"))
+    assert metrics["tasks_failed"] == 1
+    assert metrics["failed_tasks"][0]["task_id"] == task.task_id
+    session.sock.close()

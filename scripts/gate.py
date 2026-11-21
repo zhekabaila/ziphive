@@ -97,6 +97,30 @@ SMOKE_COMMANDS: dict[int, list[list[str]]] = {
             "0.4",
         ]
     ],
+    6: [
+        [
+            sys.executable,
+            "scripts/e2e_local.py",
+            "--workers",
+            "2",
+            "--algo",
+            "gzip",
+            "--size-mb",
+            "4",
+            "--chunk-mb",
+            "1",
+            "--repeat",
+            "2",
+            "--worker-procs",
+            "1",
+            "--fail-after-tasks",
+            "3",
+            "--heartbeat-interval",
+            "0.2",
+            "--heartbeat-timeout",
+            "1.0",
+        ]
+    ],
 }
 
 # Keluaran yang wajib muncul pada smoke fase tertentu.
@@ -105,6 +129,7 @@ SMOKE_EXPECTED: dict[int, list[str]] = {
     3: ["SEQUENTIAL OK", "LOCAL OK"],
     4: ["E2E OK"],
     5: ["LB COMPARE OK"],
+    6: ["E2E OK", "worker_dead"],
 }
 
 PHASE_LOG_REQUIRED_HEADINGS = (

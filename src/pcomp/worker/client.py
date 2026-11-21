@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import contextlib
 import logging
+import os
 import queue
 import socket
 import sys
@@ -93,6 +94,7 @@ class WorkerClient:
         self._inflight: dict[int, Task] = {}
         self._inflight_lock = threading.Lock()
         self._stop = threading.Event()
+        self._completed = 0
 
     # -- bantu -----------------------------------------------------------
     def send_frame(self, header: dict[str, Any], payload: bytes = b"") -> None:
@@ -143,7 +145,14 @@ class WorkerClient:
                 return self._report_rejection(sock, str(ack.header["reason"]))
 
             interval = float(ack.header["heartbeat_interval"])
-            executor = Executor(self.config.procs, results.put, throttle=self.config.throttle)
+            sock.settimeout(constants.DEFAULT_HEARTBEAT_TIMEOUT)
+            executor = Executor(
+                self.config.procs,
+                results.put,
+                throttle=self.config.throttle,
+                task_fail_rate=self.config.task_fail_rate,
+                seed=self.config.seed,
+            )
             heartbeat = HeartbeatSender(
                 self.send_frame,
                 interval=interval,
@@ -151,6 +160,10 @@ class WorkerClient:
                 clock=self.clock,
             )
             heartbeat.start()
+            if self.config.fail_after_sec > 0:
+                threading.Thread(
+                    target=self._fail_after_seconds, name="fail-timer", daemon=True
+                ).start()
             sender = threading.Thread(
                 target=self._sender_loop, args=(results,), name="sender", daemon=True
             )
@@ -160,7 +173,16 @@ class WorkerClient:
         except ProtocolError as exc:
             print(f"WORKER: protokol tidak valid: {exc}", file=sys.stderr)
             code = constants.EXIT_ERROR
-        except (ConnectionError, OSError) as exc:
+        except TimeoutError:
+            print(
+                "WORKER: MASTER HILANG (tidak ada pesan dari Master)",
+                file=sys.stderr,
+            )
+            code = constants.EXIT_ERROR
+        except ConnectionError as exc:
+            print(f"WORKER: MASTER HILANG (koneksi terputus: {exc})", file=sys.stderr)
+            code = constants.EXIT_ERROR
+        except OSError as exc:
             print(f"WORKER: koneksi terputus: {exc}", file=sys.stderr)
             code = constants.EXIT_ERROR
         finally:
@@ -229,6 +251,18 @@ class WorkerClient:
                 print(f"WORKER: pesan tidak diharapkan {msg_type.value}", file=sys.stderr)
                 return constants.EXIT_ERROR
 
+    def _after_result_sent(self) -> None:
+        """Hitung hasil terkirim dan keluar paksa bila `fail_after_tasks` tercapai."""
+        self._completed += 1
+        limit = self.config.fail_after_tasks
+        if limit > 0 and self._completed >= limit:
+            os._exit(constants.EXIT_ERROR)
+
+    def _fail_after_seconds(self) -> None:
+        """Keluar paksa setelah `fail_after_sec` detik bila run belum selesai."""
+        if not self._stop.wait(self.config.fail_after_sec):
+            os._exit(constants.EXIT_ERROR)
+
     def _sender_loop(self, results: queue.Queue[TaskResult]) -> None:
         """Kirim RESULT dan minta satu credit baru untuk setiap task selesai."""
         while not self._stop.is_set() or not results.empty():
@@ -246,3 +280,4 @@ class WorkerClient:
             except (ConnectionError, OSError):
                 self._stop.set()
                 return
+            self._after_result_sent()
