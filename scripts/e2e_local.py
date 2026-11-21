@@ -1,7 +1,8 @@
-"""End-to-end localhost: 1 Master + N Worker (PLAN.md P4-T6).
+"""End-to-end localhost: 1 Master + N Worker (PLAN.md P4-T6, P5-T5).
 
 Menjalankan proses nyata lewat subprocess, memilih port bebas, lalu memverifikasi
-manifest. Keluaran akhir `E2E OK` bila seluruh rangkaian lulus.
+manifest. Keluaran akhir `E2E OK` untuk satu scheduler, atau `LB COMPARE OK` bila
+`--compare` membandingkan static dan dynamic dengan satu Worker lambat.
 """
 
 from __future__ import annotations
@@ -51,11 +52,29 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--out", default="output/e2e", help="folder keluaran Master")
     parser.add_argument("--size-mb", type=int, default=8, help="ukuran dataset sintetis (MiB)")
     parser.add_argument("--chunk-mb", type=int, default=2, help="ukuran chunk (MiB)")
+    parser.add_argument("--repeat", type=int, default=1, help="ulangi seluruh daftar task")
     parser.add_argument(
         "--algo", default="lzma", choices=["gzip", "bz2", "lzma", "sim"], help="algoritma"
     )
     parser.add_argument("--level", type=int, default=6, help="level kompresi")
     parser.add_argument("--worker-procs", type=int, default=2, help="proses kompresi per Worker")
+    parser.add_argument(
+        "--scheduler", default="dynamic", choices=["static", "dynamic"], help="jenis scheduler"
+    )
+    parser.add_argument(
+        "--throttle", type=float, default=None, help="detik jeda per task pada Worker terakhir"
+    )
+    parser.add_argument(
+        "--compare",
+        action="store_true",
+        help="jalankan static lalu dynamic dengan satu Worker lambat dan cetak perbandingan",
+    )
+    parser.add_argument(
+        "--slow-throttle",
+        type=float,
+        default=0.5,
+        help="jeda per task untuk Worker lambat pada mode --compare",
+    )
     parser.add_argument("--timeout", type=float, default=300.0, help="batas waktu total (detik)")
     return parser
 
@@ -73,24 +92,15 @@ def _module(args: list[str], env: dict[str, str]) -> subprocess.Popen[str]:
     )
 
 
-def main(argv: list[str] | None = None) -> int:
-    """Jalankan Master dan N Worker, lalu verifikasi hasil."""
-    args = build_parser().parse_args(argv)
-    env = dict(os.environ)
-    env["PYTHONPATH"] = str(SRC_DIR) + (
-        os.pathsep + env["PYTHONPATH"] if env.get("PYTHONPATH") else ""
-    )
-
-    if args.input is None:
-        from pcomp.tools.make_dataset import build_dataset
-
-        dataset = REPO_ROOT / "data" / "e2e-synth"
-        build_dataset(dataset, size_mb=args.size_mb, seed=1)
-        input_dir = dataset
-    else:
-        input_dir = Path(args.input)
-    out_dir = Path(args.out)
-
+def run_once(
+    args: argparse.Namespace,
+    env: dict[str, str],
+    input_dir: Path,
+    out_dir: Path,
+    scheduler: str,
+    slow_throttle: float,
+) -> dict:
+    """Jalankan satu konfigurasi Master + N Worker dan kembalikan isi metrics.json."""
     port = free_port()
     master: subprocess.Popen[str] | None = None
     workers: list[subprocess.Popen[str]] = []
@@ -114,6 +124,10 @@ def main(argv: list[str] | None = None) -> int:
                 str(args.level),
                 "--chunk-mb",
                 str(args.chunk_mb),
+                "--repeat",
+                str(args.repeat),
+                "--scheduler",
+                scheduler,
                 "--barrier-timeout",
                 "60",
             ],
@@ -121,6 +135,9 @@ def main(argv: list[str] | None = None) -> int:
         )
         wait_for_port(port, master)
         for index in range(1, args.workers + 1):
+            extra: list[str] = []
+            if slow_throttle > 0 and index == args.workers:
+                extra = ["--throttle", str(slow_throttle)]
             workers.append(
                 _module(
                     [
@@ -131,6 +148,7 @@ def main(argv: list[str] | None = None) -> int:
                         f"w{index}",
                         "--procs",
                         str(args.worker_procs),
+                        *extra,
                     ],
                     env,
                 )
@@ -139,19 +157,17 @@ def main(argv: list[str] | None = None) -> int:
         master_code = master.wait(timeout=args.timeout)
         master_out, master_err = master.communicate(timeout=10)
         if master_code != 0:
-            print(master_out, end="")
-            print(master_err, end="", file=sys.stderr)
-            print("E2E GAGAL: Master keluar dengan kode bukan nol")
-            return 1
+            raise RuntimeError(
+                f"Master keluar dengan kode {master_code}:\n{master_out}\n{master_err}"
+            )
 
         for worker in workers:
             worker_code = worker.wait(timeout=60)
             worker_out, worker_err = worker.communicate(timeout=10)
             if worker_code != 0:
-                print(worker_out, end="")
-                print(worker_err, end="", file=sys.stderr)
-                print("E2E GAGAL: ada Worker keluar dengan kode bukan nol")
-                return 1
+                raise RuntimeError(
+                    f"Worker keluar dengan kode {worker_code}:\n{worker_out}\n{worker_err}"
+                )
 
         verify = subprocess.run(
             [
@@ -169,25 +185,8 @@ def main(argv: list[str] | None = None) -> int:
             check=False,
         )
         if verify.returncode != 0 or "VERIFY OK" not in verify.stdout:
-            print(verify.stdout, end="")
-            print(verify.stderr, end="", file=sys.stderr)
-            print("E2E GAGAL: verifikasi manifest gagal")
-            return 1
-
-        metrics = json.loads((out_dir / "metrics.json").read_text(encoding="utf-8"))
-        print(f"workers      : {metrics['workers']}")
-        print(f"tasks        : {metrics['tasks']}")
-        print(f"tasks_ok     : {metrics['tasks_ok']}")
-        print(f"tasks_failed : {metrics['tasks_failed']}")
-        print(f"total_mb     : {metrics['total_mb']}")
-        print(f"ratio        : {metrics['ratio']}")
-        print(f"time_s       : {metrics['time_s']}")
-        print(verify.stdout.strip().splitlines()[-1])
-        print("E2E OK")
-        return 0
-    except (RuntimeError, subprocess.TimeoutExpired, OSError) as exc:
-        print(f"E2E GAGAL: {exc}")
-        return 1
+            raise RuntimeError(f"verifikasi manifest gagal:\n{verify.stdout}\n{verify.stderr}")
+        return json.loads((out_dir / "metrics.json").read_text(encoding="utf-8"))
     finally:
         for proc in [*workers, master]:
             if proc is not None and proc.poll() is None:
@@ -197,6 +196,75 @@ def main(argv: list[str] | None = None) -> int:
                 except subprocess.TimeoutExpired:
                     proc.kill()
                     proc.wait(timeout=10)
+
+
+def _counts_text(metrics: dict) -> str:
+    items = [f"{item['worker_id']}={item['tasks_done']}" for item in metrics["worker_stats"]]
+    return ",".join(items)
+
+
+def _print_metrics(metrics: dict) -> None:
+    print(f"workers      : {metrics['workers']}")
+    print(f"tasks        : {metrics['tasks']}")
+    print(f"tasks_ok     : {metrics['tasks_ok']}")
+    print(f"tasks_failed : {metrics['tasks_failed']}")
+    print(f"total_mb     : {metrics['total_mb']}")
+    print(f"ratio        : {metrics['ratio']}")
+    print(f"time_s       : {metrics['time_s']}")
+
+
+def main(argv: list[str] | None = None) -> int:
+    """Jalankan Master dan N Worker, lalu verifikasi hasil."""
+    args = build_parser().parse_args(argv)
+    env = dict(os.environ)
+    env["PYTHONPATH"] = str(SRC_DIR) + (
+        os.pathsep + env["PYTHONPATH"] if env.get("PYTHONPATH") else ""
+    )
+
+    if args.input is None:
+        from pcomp.tools.make_dataset import build_dataset
+
+        dataset = REPO_ROOT / "data" / "e2e-synth"
+        build_dataset(dataset, size_mb=args.size_mb, seed=1)
+        input_dir = dataset
+    else:
+        input_dir = Path(args.input)
+    out_dir = Path(args.out)
+
+    try:
+        if args.compare:
+            static = run_once(
+                args, env, input_dir, out_dir / "static", "static", args.slow_throttle
+            )
+            dynamic = run_once(
+                args, env, input_dir, out_dir / "dynamic", "dynamic", args.slow_throttle
+            )
+            print("scheduler  time_s   imbalance  tasks_per_worker")
+            print(
+                f"static     {static['time_s']:<8} {static['imbalance']:<10} {_counts_text(static)}"
+            )
+            print(
+                f"dynamic    {dynamic['time_s']:<8} {dynamic['imbalance']:<10} "
+                f"{_counts_text(dynamic)}"
+            )
+            if dynamic["time_s"] > static["time_s"] - 0.1:
+                print("LB COMPARE GAGAL: dynamic tidak lebih cepat dari static")
+                return 1
+            if dynamic["imbalance"] > static["imbalance"]:
+                print("LB COMPARE GAGAL: dynamic tidak lebih seimbang dari static")
+                return 1
+            print("LB COMPARE OK")
+            return 0
+
+        throttle = args.throttle if args.throttle is not None else 0.0
+        metrics = run_once(args, env, input_dir, out_dir, args.scheduler, throttle)
+        _print_metrics(metrics)
+        print("VERIFY OK")
+        print("E2E OK")
+        return 0
+    except (RuntimeError, subprocess.TimeoutExpired, OSError) as exc:
+        print(f"E2E GAGAL: {exc}")
+        return 1
 
 
 if __name__ == "__main__":

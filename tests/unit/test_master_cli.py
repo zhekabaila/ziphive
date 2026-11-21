@@ -4,8 +4,28 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
 from pcomp import constants
+from pcomp.config import MasterConfig
+from pcomp.master import cli
 from pcomp.master.cli import build_parser, main
+
+
+class FakeServer:
+    """Pengganti MasterServer agar CLI diuji tanpa jaringan."""
+
+    last_scheduler: str | None = None
+
+    def __init__(self, config: MasterConfig, *, barrier_timeout: float) -> None:
+        self.config = config
+        self.barrier_timeout = barrier_timeout
+        self.last_error = None
+        self.metrics: dict = {}
+        FakeServer.last_scheduler = config.scheduler
+
+    def run(self) -> int:
+        return constants.EXIT_OK
 
 
 def test_parser_defaults() -> None:
@@ -18,8 +38,12 @@ def test_parser_defaults() -> None:
     assert Path(args.config) == constants.DEFAULT_MASTER_CONFIG
 
 
-def test_static_scheduler_rejected(valid_group_file: Path, tmp_path: Path) -> None:
-    """UT-MCLI-02: scheduler static ditolak karena baru tersedia pada Fase 5."""
+def test_static_scheduler_accepted(
+    monkeypatch: pytest.MonkeyPatch, valid_group_file: Path, tmp_path: Path
+) -> None:
+    """UT-MCLI-02: opsi --scheduler static diteruskan ke MasterServer (PLAN.md P5-T4)."""
+    monkeypatch.setattr(cli, "MasterServer", FakeServer)
+
     code = main(
         [
             "--group-config",
@@ -31,7 +55,8 @@ def test_static_scheduler_rejected(valid_group_file: Path, tmp_path: Path) -> No
         ]
     )
 
-    assert code == constants.EXIT_ERROR
+    assert code == constants.EXIT_OK
+    assert FakeServer.last_scheduler == "static"
 
 
 def test_missing_config_reports_error(valid_group_file: Path, tmp_path: Path) -> None:

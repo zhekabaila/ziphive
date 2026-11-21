@@ -6,6 +6,23 @@ Format mengikuti Keep a Changelog. Versi `0.<NN>.0` = akhir fase NN. Aturan penc
 ### Added
 - (kosong)
 
+## [0.05.0] - 2026-11-21
+### Added
+- `src/pcomp/master/scheduler.py`: antarmuka `Scheduler`, `StaticScheduler` (partisi round-robin saat barrier), `DynamicScheduler` (LPT berbasis credit), `build_scheduler`, dan `imbalance_factor`.
+- `src/pcomp/tasks.py`: `TaskTable.take_largest` (LPT, seri diputus task_id terkecil) dan `take_task` untuk jatah static; `take_next` tetap FIFO.
+- Worker `--throttle`: jeda per task di dalam proses pool untuk meniru Worker lambat, ikut terhitung pada `compute_sec`.
+- `metrics.json` distributed memuat `scheduler` (`static` atau `dynamic`) dan `imbalance` = max(busy) / mean(busy).
+- `scripts/e2e_local.py`: opsi `--scheduler`, `--throttle`, `--repeat`, dan mode `--compare` yang menjalankan static lalu dynamic serta mencetak ringkasan perbandingan.
+- Unit test UT-SCH-01..06, UT-WRK-11 dan integration test IT-LB-01..02.
+
+### Changed
+- `src/pcomp/master/server.py`: dispatch memakai scheduler yang dipilih; `MasterState` menerima objek `Scheduler`.
+- `src/pcomp/master/cli.py`: `--scheduler static` kini diterima (sebelumnya ditolak pada Fase 4).
+- `src/pcomp/config.py`: validasi `throttle` menjadi tidak negatif; `config/worker.toml` default `throttle = 0.0`.
+- `src/pcomp/worker/client.py`: `Executor` menerima `throttle` dari konfigurasi Worker.
+- `scripts/gate.py`: smoke Fase 5 memakai `scripts/e2e_local.py --compare` dengan penanda `LB COMPARE OK`.
+- `TESTING.md` bagian 4: perbarui UT-SCH-01..06, UT-WRK-11, UT-MCLI-02, dan IT-LB-01..02.
+
 ## [0.04.0] - 2026-11-20
 ### Added
 - `src/pcomp/tasks.py`: `TaskTable` ber-lock dengan dispatch FIFO (`take_next`), klaim hasil idempoten (`claim_result`), `mark_done`, `mark_failed`, `counts`, `all_finished`, `snapshot`.

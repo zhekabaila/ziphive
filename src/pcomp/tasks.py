@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import threading
-from collections import deque
 from collections.abc import Iterable
 from dataclasses import dataclass
 from enum import StrEnum
@@ -42,22 +41,45 @@ class TaskTable:
     def __init__(self, tasks: Iterable[Task]) -> None:
         self._lock = threading.Lock()
         self._tasks: dict[int, Task] = {task.task_id: task for task in tasks}
-        self._pending: deque[int] = deque(sorted(self._tasks))
+        self._pending: set[int] = set(self._tasks)
 
     def __len__(self) -> int:
         return len(self._tasks)
 
+    def _assign(self, task: Task, worker_id: str, now: float) -> Task:
+        """Tandai task ASSIGNED; pemanggil wajib memegang lock."""
+        task.state = TaskState.ASSIGNED
+        task.assigned_to = worker_id
+        task.assigned_at = now
+        task.attempts += 1
+        return task
+
     def take_next(self, worker_id: str, now: float) -> Task | None:
-        """Ambil task PENDING berikutnya (FIFO) dan tandai ASSIGNED untuk `worker_id`."""
+        """Ambil task PENDING dengan task_id terkecil (FIFO) dan tandai ASSIGNED."""
         with self._lock:
             if not self._pending:
                 return None
-            task = self._tasks[self._pending.popleft()]
-            task.state = TaskState.ASSIGNED
-            task.assigned_to = worker_id
-            task.assigned_at = now
-            task.attempts += 1
-            return task
+            task_id = min(self._pending)
+            self._pending.discard(task_id)
+            return self._assign(self._tasks[task_id], worker_id, now)
+
+    def take_largest(self, worker_id: str, now: float) -> Task | None:
+        """Ambil task PENDING terbesar (LPT); seri diputus task_id terkecil."""
+        with self._lock:
+            if not self._pending:
+                return None
+            task_id = max(self._pending, key=lambda item: (self._tasks[item].length, -item))
+            self._pending.discard(task_id)
+            return self._assign(self._tasks[task_id], worker_id, now)
+
+    def take_task(self, task_id: int, worker_id: str, now: float) -> Task | None:
+        """Ambil task tertentu bila masih PENDING (dipakai static scheduler)."""
+        with self._lock:
+            task = self._tasks.get(task_id)
+            if task is None or task.state is not TaskState.PENDING:
+                return None
+            self._pending.discard(task_id)
+            return self._assign(task, worker_id, now)
 
     def claim_result(self, task_id: int, worker_id: str) -> Task | None:
         """Kembalikan task hanya bila ASSIGNED ke Worker pengirim (idempotensi)."""

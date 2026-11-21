@@ -2,7 +2,7 @@
 master = "127.0.0.1:5050"
 worker_id = "w1"
 procs = 4
-throttle = 1.0
+throttle = 0.0
 fail_after_tasks = 0
 fail_after_sec = 0
 task_fail_rate = 0.0

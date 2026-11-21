@@ -43,16 +43,17 @@ Coverage minimal 80% untuk `src/pcomp` (G3).
 | UT-MST-01..06 | master/server | REGISTER wajib, versi beda, duplikat, siklus task, hasil tidak valid, tanpa Worker |
 | UT-WRK-01..04 | worker | alamat Master, header REGISTER/RESULT, executor pool, heartbeat |
 | UT-WRK-05..10 | worker client | kirim tanpa koneksi, Master tidak terjangkau, penolakan REGISTER, loop terima, loop kirim |
-| UT-MCLI-01..04 | master/cli | default parser, scheduler static ditolak, konfigurasi tidak ada, input tidak ada |
+| UT-WRK-11 | worker executor | throttle menambah waktu task dan `compute_sec` |
+| UT-MCLI-01..04 | master/cli | default parser, `--scheduler static` diteruskan, konfigurasi tidak ada, input tidak ada |
 | UT-WCLI-01..03 | worker/cli | default parser, konfigurasi tidak ada, exit code mengikuti `WorkerClient.run` |
-| UT-SCH-01..04 | scheduler | LPT, partisi static, credit |
+| UT-SCH-01..06 | scheduler | LPT, partisi static, credit, kepemilikan static, imbalance, nama scheduler |
 | UT-MON-01..03 | monitor | timeout (jam palsu), requeue, batas attempts |
 | UT-CAL-01..04 | calc | speedup, efficiency, imbalance, recovery |
 | IT-ECHO-01 | net | payload 10 MiB |
 | IT-SEQ-01 | sequential | make_dataset, sequential, verify = `VERIFY OK` |
 | IT-LOC-01 | local_parallel | sequential vs local `--procs 2`, manifest ekuivalen, keduanya `VERIFY OK` |
 | IT-DIST-01..05 | master-worker | 2 dan 3 Worker, procs 2, tanpa Worker, versi beda |
-| IT-LB-01..02 | load balancing | static vs dynamic dengan Worker lambat |
+| IT-LB-01..02 | load balancing | static vs dynamic dengan Worker lambat (`sim`, margin toleransi) |
 | IT-FT-01..06 | fault tolerance | Worker mati, dua mati, semua mati, task beracun, rejoin, event recovery |
 | IT-BENCH-01 | bench | runner lokal menghasilkan summary dan grafik |
 | SL-9W-01 | slow | 9 Worker lokal selesai dan `VERIFY OK` |

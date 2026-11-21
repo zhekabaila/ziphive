@@ -247,3 +247,22 @@ def test_sender_loop_sends_result_and_new_credit() -> None:
     assert request_frame.header["credits"] == 1
     assert worker.inflight_count() == 0
     assert thread.is_alive() is False
+
+
+def test_executor_throttle_delays_task_and_counts_busy() -> None:
+    """UT-WRK-11: throttle memperlambat task dan ikut terhitung pada compute_sec."""
+    results: queue.Queue[TaskResult] = queue.Queue()
+    executor = Executor(1, results.put_nowait, throttle=0.2)
+    task = Task(task_id=0, file="a.bin", index=0, offset=0, length=1000)
+
+    try:
+        started = time.perf_counter()
+        executor.submit(task, b"x" * 1000, "sim", 1)
+        result = results.get(timeout=30)
+        elapsed = time.perf_counter() - started
+    finally:
+        executor.close()
+
+    assert result.ok is True
+    assert elapsed >= 0.2
+    assert result.compute_sec >= 0.2

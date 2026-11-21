@@ -29,3 +29,13 @@ Format: Konteks, Keputusan, Konsekuensi. Tambah entri baru di bawah, jangan hapu
 
 ## ADR-007 Alur git
 - Keputusan: branch per fase, commit oleh agent setelah gate lulus, merge `--no-ff`, tag `phase-NN-done`, tanpa push otomatis.
+
+## ADR-008 Scheduler static dan dynamic di lapisan Master
+- Konteks: Fase 5 membutuhkan pembanding sebelum dan sesudah mekanisme dynamic load balancing, tanpa mengubah protokol.
+- Keputusan: `Scheduler` menjadi antarmuka di `master/scheduler.py`. `DynamicScheduler` memilih task terbesar (LPT) setiap kali ada credit, sehingga kapasitas Worker tercermin dari credit. `StaticScheduler` mempartisi task round-robin menurut urutan `task_id` saat barrier terpenuhi dan tidak memindahkan task setelahnya; Worker yang mendaftar setelah barrier tidak mendapat jatah.
+- Konsekuensi: protokol dan Worker tidak berubah. Perbandingan static vs dynamic memakai dataset dan algoritma yang sama. Static tetap memakai credit, sehingga Worker yang lebih cepat menganggur saat jatahnya habis. Metrik pembeda `imbalance` dihitung dari `compute_sec` yang dilaporkan Worker.
+
+## ADR-009 Throttle Worker untuk simulasi beban tidak seimbang
+- Konteks: perbandingan static vs dynamic perlu Worker lambat yang deterministik tanpa injeksi kegagalan (Fase 6).
+- Keputusan: `--throttle` menambah jeda tidur di dalam proses pool sebelum kompresi dan menghitungnya sebagai `compute_sec`.
+- Konsekuensi: Worker lambat menghabiskan slot proses lebih lama dan menerima lebih sedikit task pada dynamic. Nilai `throttle` harus 0 pada eksperimen resmi agar tidak mencemari hasil.

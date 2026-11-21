@@ -63,13 +63,9 @@ def main(argv: list[str] | None = None) -> int:
         print(f"MASTER GAGAL: {exc}", file=sys.stderr)
         return constants.EXIT_ERROR
 
-    if config.scheduler != "dynamic":
-        print("MASTER GAGAL: scheduler 'static' belum tersedia (Fase 5)", file=sys.stderr)
-        return constants.EXIT_ERROR
-
     try:
         server = MasterServer(config, barrier_timeout=args.barrier_timeout)
-    except (FileNotFoundError, OSError) as exc:
+    except (FileNotFoundError, OSError, ValueError) as exc:
         print(f"MASTER GAGAL: {exc}", file=sys.stderr)
         return constants.EXIT_ERROR
 

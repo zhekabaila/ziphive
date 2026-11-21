@@ -128,8 +128,8 @@ def _validate_worker(config: WorkerConfig) -> None:
         raise ConfigError("field 'worker_id' tidak boleh kosong")
     if config.procs < 1:
         raise ConfigError("procs minimal 1")
-    if config.throttle <= 0:
-        raise ConfigError("throttle harus lebih besar dari 0")
+    if config.throttle < 0:
+        raise ConfigError("throttle tidak boleh negatif")
     if config.fail_after_tasks < 0:
         raise ConfigError("fail_after_tasks tidak boleh negatif")
     if config.fail_after_sec < 0:
