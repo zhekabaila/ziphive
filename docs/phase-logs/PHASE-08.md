@@ -167,9 +167,18 @@ Tidak ada. Skrip fase ini tidak menyentuh `src/pcomp`, protokol, maupun perilaku
    dilakukan bersama `phase-08-done`.
 
 ## 12. Commit
-Commit bagian agent: `feat(phase-08): add node checks, launch scripts, packaging, deployment guide`.
-Hash dan tag bagian agent (`phase-08a-done`): lihat `git log --oneline` dan `git tag --list`.
-Tag `phase-08-done` baru dibuat pada bagian user setelah seluruh node lulus.
+Commit bagian agent: `feat(phase-08): add node checks, launch scripts, packaging, deployment guide`
+(hash `2789b9a`), digabung ke `main` dengan merge `00fcc68`.
+
+Tag bagian agent `phase-08a-done` sudah ada dan menunjuk ke commit `00fcc68`, terverifikasi dengan
+`git rev-parse phase-08a-done^{commit}` serta `git tag --points-at 00fcc68`. Tag fase 00 sampai 07
+(`phase-00-done` sampai `phase-07-done`) juga tersedia. Tag `phase-08-done` baru dibuat pada
+bagian user setelah seluruh node lulus.
+
+Catatan: pada awal sesi 2026-11-21 pukul 11:26 tag belum ada di clone ini (`git tag -l` kosong
+dan `git ls-remote --tags origin` kosong), lalu tag muncul pukul 12:17 setelah diambil dari
+repo bersama. Pencatatan bagian agent tidak berubah karenanya; commit yang ditandai identik.
+
 
 ## 13. Human checklist (diisi dari hasil user)
 Data yang tidak dikirim user ditulis "TIDAK ADA DATA". Pengisian pertama dilakukan 2026-11-21
