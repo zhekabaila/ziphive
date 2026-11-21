@@ -8,19 +8,41 @@ ada placeholder.
 
 | Node | Peran | Hostname | IP | OS | CPU/core | RAM | Python | Check OK |
 |---|---|---|---|---|---|---|---|---|
-| n1 | Master | | | | | | | |
-| n2 | Worker | | | | | | | |
-| n3 | Worker | | | | | | | |
-| n4 | Worker | | | | | | | |
-| n5 | Worker | | | | | | | |
-| n6 | Worker | | | | | | | |
-| n7 | Worker | | | | | | | |
-| n8 | Worker | | | | | | | |
-| n9 | Worker | | | | | | | |
-| n10 | Worker | | | | | | | |
+| n1 | Master | Zhekas-MacBook-Air.local | 192.168.0.105 | macOS 26.6.2 | Apple M1 / 8 core logis | 8.0 GiB | 3.14.4 | OK (lokal) |
+| n2 | Worker | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA |
+| n3 | Worker | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA |
+| n4 | Worker | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA |
+| n5 | Worker | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA |
+| n6 | Worker | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA |
+| n7 | Worker | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA |
+| n8 | Worker | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA |
+| n9 | Worker | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA |
+| n10 | Worker | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA | TIDAK ADA DATA |
+
+Catatan pengisian (per 2026-11-21):
+
+1. Baris n1 diisi dari keluaran nyata `python scripts/check_node.py` di mesin Master, yaitu
+   laptop pengembangan (macOS), bukan node lab. Rinciannya: `python 3.14.4`, `psutil 7.2.2`,
+   `pcomp 0.07.0`, `PROTOCOL_VERSION=1`, `8 core logis`, `8.0 GiB`, `CHECK NODE OK` (exit 0).
+   Nilai `core` dan `RAM` juga cocok dengan `sysctl -n hw.logicalcpu` (8) dan
+   `sysctl -n hw.memsize` (8589934592 byte).
+2. Kolom `Check OK` n1 hanya mencakup pemeriksaan lokal. Pemeriksaan `--ping-master` belum
+   dijalankan karena Master belum dijalankan, dan itu tidak mungkin diuji dari node Master sendiri.
+3. IP `192.168.0.105` adalah alamat DHCP yang terbaca dari antarmuka `en0` pada jaringan rumah
+   (gateway `192.168.0.1`) saat pencatatan. Alamat ini dapat berubah dan bukan alamat subnet lab;
+   perbarui sebelum eksperimen dan salin ke `config/nodes.toml`.
+4. Baris n2 sampai n10 belum memiliki data. Isi hanya setelah `check_node.py` dijalankan di
+   masing-masing node; jangan menyalin nilai n1 ke baris lain.
 
 ## 2. Persiapan tiap node
 1. Python 3.11 atau lebih baru (versi sama di semua node bila memungkinkan).
+   Catatan Debian 11 (bullseye): paket `python3` bawaan adalah 3.9.2 sehingga `check_node.py`
+   gagal pada baris `python`. Repositori `bullseye-backports` tidak lagi menyediakan
+   `python3.11`, jadi bangun CPython dari sumber
+   (`./configure --prefix=/opt/python3.11 --enable-shared`), daftarkan
+   `/opt/python3.11/lib` pada `/etc/ld.so.conf.d/` lalu `ldconfig`, dan pakai
+   `/opt/python3.11/bin/python3.11 -m venv .venv`. Debian 12 atau lebih baru sudah membawa
+   Python 3.11 sehingga langkah ini tidak perlu.
 2. Salin kode: `git clone <repo>` atau ekstrak ZIP dari `python scripts/pack_source.py` (bagian 8).
 3. Dari folder proyek: `python -m venv .venv`, aktifkan, lalu `python -m pip install -e .` agar
    modul `pcomp` dapat diimpor oleh perintah `python -m pcomp`. Setelah itu pasang dependensi:
@@ -109,6 +131,8 @@ yang lebih berat (`lzma`) atau dataset yang lebih kecil.
 | Throughput rendah, CPU Worker rendah | Bandwidth Master bottleneck (R1) | Ukur transfer, pakai algoritma lebih berat, catat temuan untuk evaluasi `--data-mode local` |
 | `ModuleNotFoundError: pcomp` | Paket belum dipasang | `python -m pip install -e .` di node tersebut |
 | `LAUNCH GAGAL: lengkapi config/nodes.toml` | Masih ada placeholder `<...>` | Isi inventaris dari bagian 1 |
+| `FAIL python: 3.9.x (butuh >= 3.11)` di Debian 11 | Debian 11 hanya menyediakan Python 3.9.2 dan `bullseye-backports` tidak lagi tersedia | Bangun Python 3.11 dari sumber seperti catatan bagian 2 butir 1, atau pakai Debian 12 |
+| Master mencatat `koneksi Worker berakhir: koneksi tertutup saat menunggu 12 byte` | `check_node.py --master` membuka TCP lalu langsung menutupnya sebagai uji keterjangkauan | Bukan kegagalan; tidak ada state Worker yang berubah. Uji `--ping-master` sebelum Master mulai agar log run bersih |
 
 ## 8. Paket sumber untuk node lain
 Bila node tidak memakai `git clone`, paketkan repo menjadi ZIP:
