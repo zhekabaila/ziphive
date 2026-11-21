@@ -4,7 +4,17 @@ Format mengikuti Keep a Changelog. Versi `0.<NN>.0` = akhir fase NN. Aturan penc
 
 ## [Unreleased]
 ### Added
-- (kosong)
+- `scripts/check_node.py`: pemeriksaan kesiapan node (versi Python minimal 3.11, psutil, versi paket dan `PROTOCOL_VERSION`, jumlah core, RAM) serta opsi `--master host:port` dan `--ping-master` untuk menguji keterjangkauan port Master tanpa mengirim pesan protokol.
+- `scripts/launch_workers.py`: membaca `config/nodes.toml`, memisahkan peran Master dan Worker, menolak placeholder yang belum diisi, lalu membangkitkan perintah Worker `python -m pcomp.worker --master <host:port> --id w<N> --procs <P>`; mode `--print`, `--ssh`, dan `--ssh --dry-run`.
+- `scripts/pack_source.py`: arsip ZIP sumber berisi `src/`, `tests/`, `scripts/`, `config/`, `docs/`, dokumen `.md`, `pyproject.toml`, `requirements*.txt`, `Makefile`, dan `results/`, tanpa `data/`, `output/`, `.venv`, `.git`, cache, dan `results/dev/`.
+- Unit test UT-NODE-01..04, UT-LAUNCH-01..04, UT-PACK-01..03 dan integration test SL-9W-01 (9 Worker lokal, marker `slow`).
+- Fixture `load_script` pada `tests/conftest.py` untuk memuat berkas `scripts/` sebagai modul di unit test.
+
+### Changed
+- `DEPLOYMENT.md`: template inventaris 10 node, langkah `pip install -e .`, contoh keluaran `check_node.py`, pemakaian `launch_workers.py` dan `pack_source.py`, checklist pra-eksperimen, serta catatan bahwa `--data-mode local` belum tersedia.
+- `scripts/gate.py`: smoke Fase 8 menjalankan `pytest -m slow` dengan penanda `1 passed`.
+- `ARCHITECTURE.md` bagian 11 mencatat bahwa `--data-mode local` belum tersedia (ADR-014).
+- `PLAN.md`: status Fase 8 menjadi `IN PROGRESS (menunggu user)`.
 
 ## [0.07.0] - 2026-11-21
 ### Added

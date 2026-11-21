@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+import importlib.util
 import os
 import socket
 import subprocess
 import sys
 from collections.abc import Callable, Iterator
 from pathlib import Path
+from types import ModuleType
 
 import pytest
 
@@ -44,6 +46,22 @@ npm = "<ISI NPM 1>"
 def repo_root() -> Path:
     """Folder akar repo (berisi pyproject.toml)."""
     return Path(__file__).resolve().parents[1]
+
+
+@pytest.fixture
+def load_script(repo_root: Path) -> Callable[[str], ModuleType]:
+    """Muat berkas di `scripts/` sebagai modul agar dapat diuji unit."""
+
+    def _load(name: str) -> ModuleType:
+        path = repo_root / "scripts" / name
+        spec = importlib.util.spec_from_file_location(f"script_{path.stem}", path)
+        assert spec is not None and spec.loader is not None
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[spec.name] = module
+        spec.loader.exec_module(module)
+        return module
+
+    return _load
 
 
 @pytest.fixture

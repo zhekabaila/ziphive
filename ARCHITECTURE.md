@@ -92,3 +92,4 @@ CLI menimpa TOML.
 - Master tunggal, tanpa checkpoint: bila Master mati, run diulang dari awal.
 - Chunk independen mengurangi rasio kompresi dibanding file utuh.
 - Satu Master melayani 9 Worker dengan thread, cukup untuk skala tugas ini.
+- Mode `--data-mode local` (Worker membaca dataset lokal berdasarkan file, offset, dan panjang) belum tersedia; keputusan menunggu bukti risiko R1 dari dry-run node fisik (ADR-014).
