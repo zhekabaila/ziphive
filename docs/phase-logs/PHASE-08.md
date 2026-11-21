@@ -179,6 +179,14 @@ Catatan: pada awal sesi 2026-11-21 pukul 11:26 tag belum ada di clone ini (`git 
 dan `git ls-remote --tags origin` kosong), lalu tag muncul pukul 12:17 setelah diambil dari
 repo bersama. Pencatatan bagian agent tidak berubah karenanya; commit yang ditandai identik.
 
+Deviasi alur Git pada pencatatan bagian user: commit `d8d7a13` dibuat di branch
+`phase/08-multinode-ready` lalu digabung lewat `a75c6bc`, tetapi commit `58d336e` (catatan tag
+ini) dan commit catatan deviasi ini dibuat langsung pada `main` karena branch tersebut masih
+ada sehingga `git checkout -b` gagal dengan pesan `a branch named 'phase/08-multinode-ready'
+already exists`. Keduanya hanya menyentuh dokumen, gate penuh lulus sebelum masing-masing
+commit, dan sejarah tidak ditulis ulang karena `git reset --hard` dilarang `AGENTS.md` 2.3.
+Mulai commit berikutnya, branch fase dipakai kembali.
+
 
 ## 13. Human checklist (diisi dari hasil user)
 Data yang tidak dikirim user ditulis "TIDAK ADA DATA". Pengisian pertama dilakukan 2026-11-21
