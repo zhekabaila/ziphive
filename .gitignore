@@ -21,3 +21,6 @@ htmlcov/
 data/
 output/
 reports/
+
+# Hasil eksperimen algoritma sim (bukan data resmi, PLAN.md Fase 7)
+results/dev/

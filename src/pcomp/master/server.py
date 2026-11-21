@@ -27,6 +27,7 @@ from pcomp.master.collector import Collector
 from pcomp.master.monitor import Monitor
 from pcomp.master.scheduler import Scheduler, build_scheduler, imbalance_factor
 from pcomp.metrics.events import EventLog
+from pcomp.metrics.system import Sample, SystemLog, SystemSampler
 from pcomp.net import close_quietly, recv_msg, send_msg
 from pcomp.protocol import (
     ErrorCode,
@@ -341,6 +342,14 @@ class MasterServer:
             interval=max(0.05, min(0.5, config.heartbeat_timeout / 2)),
             clock=clock,
         )
+        self.system = SystemLog(self.out_dir / constants.SYSTEM_CSV_NAME)
+        self.system_sampler = SystemSampler(
+            self.system.write,
+            role="master",
+            node=socket.gethostname(),
+            interval=constants.SYSTEM_SAMPLE_INTERVAL,
+            clock=clock,
+        )
         self._listener: socket.socket | None = None
         self._stop = threading.Event()
         self._start_lock = threading.Lock()
@@ -378,6 +387,8 @@ class MasterServer:
         self._open_listener()
         logger.info("Master mendengarkan di %s:%s", self.config.host, self.port)
         self.monitor.start()
+        self.system_sampler.sample_once()
+        self.system_sampler.start()
         deadline = time.monotonic() + self.barrier_timeout
         empty_since: float | None = None
         try:
@@ -412,6 +423,8 @@ class MasterServer:
             return constants.EXIT_OK if self._exit_ok() else constants.EXIT_ERROR
         finally:
             self.monitor.stop()
+            self.system_sampler.stop()
+            self.system.close()
             self._stop.set()
             if self._listener is not None:
                 close_quietly(self._listener)
@@ -500,6 +513,7 @@ class MasterServer:
                     self.state.handle_result(session, frame.header, frame.payload)
                     self._maybe_finish()
                 elif msg_type is MessageType.HEARTBEAT:
+                    self._record_usage(session, frame.header)
                     with session.send_lock:
                         send_msg(sock, make_header(MessageType.HEARTBEAT_ACK, ts=self.clock()))
                 elif msg_type is MessageType.BYE:
@@ -527,6 +541,20 @@ class MasterServer:
                     self.state.remove(session.worker_id)
                 self.events.emit("worker_disconnected", worker_id=session.worker_id)
             close_quietly(sock)
+
+    def _record_usage(self, session: WorkerSession, header: Mapping[str, Any]) -> None:
+        """Catat CPU dan memori yang dilaporkan Worker ke `system.csv` (P7-T1)."""
+        self.system.write(
+            Sample(
+                ts=float(header.get("ts", self.clock())),
+                role="worker",
+                node=session.hostname,
+                worker_id=session.worker_id,
+                cpu_percent=float(header.get("cpu_percent", 0.0)),
+                mem_percent=float(header.get("mem_percent", 0.0)),
+                rss_mb=float(header.get("rss_mb", 0.0)),
+            )
+        )
 
     def _register(self, sock: socket.socket, header: Mapping[str, Any]) -> WorkerSession:
         session = WorkerSession(

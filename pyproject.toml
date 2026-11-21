@@ -4,13 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pcomp"
-version = "0.06.0"
+version = "0.07.0"
 description = "ZipHive - distributed data compression with Master-Worker architecture"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = ["psutil>=5.9"]
 
 [project.optional-dependencies]
+analysis = ["matplotlib>=3.7"]
 dev = [
     "pytest>=7",
     "pytest-cov>=4",

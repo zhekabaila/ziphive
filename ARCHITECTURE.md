@@ -77,6 +77,10 @@ Master: baca chunk, hitung sha256, kirim TASK+payload. Worker: hitung sha256 dat
 ## 9. Pengukuran
 Waktu mulai: saat task pertama dikirim (setelah barrier). Waktu selesai: saat hasil terakhir tertulis. Dipisahkan: waktu kompresi di Worker (`compute_sec`), perkiraan waktu transfer (waktu round-trip dikurangi compute). CPU dan memori dari psutil 1 Hz. Rumus lengkap di EXPERIMENTS.md.
 
+Sampler psutil menulis `system.csv` pada folder run: Master mencatat dirinya (`role=master`) dan setiap HEARTBEAT Worker (`role=worker`, `worker_id`, `hostname`), sedangkan mode local mencatat `role=local`. Kolomnya `ts, role, node, worker_id, cpu_percent, mem_percent, rss_mb`. Rata-rata per peran menjadi kolom `cpu_avg_*` dan `mem_avg_*` pada `summary.csv`.
+
+Setiap run juga memuat `env.json` (hostname, platform, OS, versi Python, CPU, core fisik dan logis, RAM, tanggal) serta `spec.json` (konfigurasi run termasuk `algo`). Harness menulis hasil algoritma nyata ke `results/raw/<exp>/<run_id>/`, `results/summary.csv`, dan `results/figures/`; hasil algoritma `sim` ke `results/dev/` dengan struktur yang sama agar tidak pernah bercampur dengan data resmi.
+
 ## 10. Konfigurasi (TOML + CLI)
 `master.toml`: host, port, input, out, algo, level, chunk_mb, repeat, scheduler, expect_workers, heartbeat_interval, heartbeat_timeout, max_attempts.
 `worker.toml`: master, worker_id, procs, throttle, fail_after_tasks, fail_after_sec, task_fail_rate, seed.

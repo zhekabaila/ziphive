@@ -48,6 +48,9 @@ Coverage minimal 80% untuk `src/pcomp` (G3).
 | UT-SCH-01..08 | scheduler | LPT, partisi static, credit, kepemilikan static, imbalance, nama scheduler, orfan static, requeue |
 | UT-MON-01..03 | monitor | timeout (jam palsu), requeue, batas attempts |
 | UT-CAL-01..04 | calc | speedup, efficiency, imbalance, recovery |
+| UT-SYS-01..03 | metrics/system | `system.csv` round-trip, sampler dengan sumber dan jam suntikan, thread sampler berhenti bersih |
+| UT-BEN-01..07 | bench/runner | matriks E1/E2/E4/E6, lokasi hasil `sim` vs nyata, kolom summary, derivasi metrik, metadata lingkungan, argumen Master/Worker, helper metrics/events/dataset, `main` sequential |
+| UT-RPT-01..02 | bench/report | agregasi rata-rata dan simpangan baku, grafik PNG dengan backend `Agg` |
 | IT-ECHO-01 | net | payload 10 MiB |
 | IT-SEQ-01 | sequential | make_dataset, sequential, verify = `VERIFY OK` |
 | IT-LOC-01 | local_parallel | sequential vs local `--procs 2`, manifest ekuivalen, keduanya `VERIFY OK` |

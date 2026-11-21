@@ -6,7 +6,7 @@ from pathlib import Path
 
 PROJECT_NAME = "ZipHive"
 PACKAGE_NAME = "pcomp"
-__version__ = "0.06.0"
+__version__ = "0.07.0"
 
 # Versi format pesan; naikkan bila format berubah (PROTOCOL.md).
 PROTOCOL_VERSION = 1
@@ -43,6 +43,11 @@ DEFAULT_REPEAT = 1
 DEFAULT_ALGO = "lzma"
 DEFAULT_LEVEL = 6
 SIM_SECONDS_PER_MB = 0.02
+
+# Sampling psutil dan nama berkas metrik (PLAN.md P7-T1, EXPERIMENTS.md bagian 3).
+SYSTEM_SAMPLE_INTERVAL = 1.0
+SYSTEM_CSV_NAME = "system.csv"
+BENCH_ENV_NAME = "env.json"
 
 # Default jumlah proses untuk baseline local parallel; sama dengan config/worker.toml.
 DEFAULT_PROCS = 4

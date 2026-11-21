@@ -6,6 +6,25 @@ Format mengikuti Keep a Changelog. Versi `0.<NN>.0` = akhir fase NN. Aturan penc
 ### Added
 - (kosong)
 
+## [0.07.0] - 2026-11-21
+### Added
+- `src/pcomp/metrics/system.py`: `Sample`, `ProcessSampler`, `SystemSampler` (psutil 1 Hz dengan sumber dan jam yang dapat disuntikkan), `SystemLog` penulis `system.csv` thread-safe, `read_system_csv`, dan `summarise_usage` untuk rata-rata pemakaian per peran.
+- `src/pcomp/metrics/calc.py`: speedup, efficiency, throughput, imbalance factor, detection latency, Recovery Time, dan `recovery_stats` dari events, seluruhnya mengikuti EXPERIMENTS.md bagian 3.
+- `src/pcomp/bench/runner.py`: harness E1-E6 (`plan_runs`, `RunSpec`), eksekusi sequential/local/distributed/lan, metadata lingkungan `env.json` (CPU, OS, versi Python, core, RAM, tanggal), `system.csv` per run, kolom `summary.csv` persis EXPERIMENTS.md bagian 4, dan verifikasi manifest tiap run.
+- `src/pcomp/bench/report.py`: agregasi rata-rata serta simpangan baku per konfigurasi dan tujuh grafik PNG (`time_vs_workers`, `speedup`, `efficiency`, `throughput`, `cpu_mem`, `worker_load`, `recovery_timeline`) dengan backend `Agg`.
+- Hasil algoritma `sim` ditulis ke `results/dev/` (`results/dev/raw`-nya sendiri, `results/dev/summary.csv`, `results/dev/figures`), sedangkan algoritma nyata ke `results/raw/`, `results/summary.csv`, dan `results/figures`; metadata `algo` selalu tercatat pada `spec.json` dan `metrics.json` agar validator Fase 9 dapat menolak data simulasi.
+- Unit test UT-CAL-01..04, UT-SYS-01..03, UT-BEN-01..07, UT-RPT-01..02 dan integration test IT-BENCH-01.
+- Dependensi opsional `analysis` (`matplotlib>=3.7`) pada `pyproject.toml`, `requirements-dev.txt`, dan ADR-012.
+
+### Changed
+- `src/pcomp/master/server.py`: `SystemLog` dan `SystemSampler` peran `master` berjalan di `run()`, dan setiap HEARTBEAT Worker dicatat ke `system.csv` lewat `_record_usage`.
+- `src/pcomp/worker/heartbeat.py`: `HeartbeatSender` menerima `sampler`; nilai `cpu_percent` dan `mem_percent` kini berasal dari psutil, bukan 0.0.
+- `src/pcomp/worker/client.py`: heartbeat memakai `ProcessSampler().usage`.
+- `src/pcomp/constants.py`: `SYSTEM_SAMPLE_INTERVAL`, `SYSTEM_CSV_NAME`, `BENCH_ENV_NAME`, dan versi `0.07.0`.
+- `scripts/gate.py`: smoke Fase 7 menjalankan `python -m pcomp.bench.runner --exp E6 --local --workers 1,2 --reps 2 --algo sim` dengan penanda `BENCH OK`.
+- `.gitignore`: `results/dev/` tidak dilacak karena hanya memuat hasil algoritma `sim`.
+- `TESTING.md` bagian 4 memuat baris UT-SYS, UT-BEN, dan UT-RPT.
+
 ## [0.06.0] - 2026-11-21
 ### Added
 - `src/pcomp/master/monitor.py`: `Monitor` dengan timeout heartbeat, jam yang dapat diganti jam palsu pada unit test, thread latar yang dapat dihentikan, dan pemanggilan `MasterState.drop_worker` untuk setiap Worker DEAD.
