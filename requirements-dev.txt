@@ -5,3 +5,5 @@ pytest-timeout>=2
 ruff>=0.4
 mypy>=1.8
 types-psutil>=5.9
+# Grafik laporan benchmark (PLAN.md P7-T4, DECISIONS.md ADR-012): pip install -e .[analysis]
+matplotlib>=3.7

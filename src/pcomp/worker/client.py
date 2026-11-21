@@ -16,6 +16,7 @@ from typing import Any
 from pcomp import constants
 from pcomp.compressor import TaskResult
 from pcomp.config import WorkerConfig
+from pcomp.metrics.system import ProcessSampler
 from pcomp.net import close_quietly, connect_with_retry, recv_msg, send_msg
 from pcomp.protocol import MessageType, ProtocolError, make_header, validate_message
 from pcomp.tasks import Task
@@ -157,6 +158,7 @@ class WorkerClient:
                 self.send_frame,
                 interval=interval,
                 inflight=self.inflight_count,
+                sampler=ProcessSampler().usage,
                 clock=self.clock,
             )
             heartbeat.start()

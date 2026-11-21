@@ -1,7 +1,7 @@
-"""Heartbeat Worker: kirim HEARTBEAT berkala (PLAN.md P4-T4).
+"""Heartbeat Worker: kirim HEARTBEAT berkala (PLAN.md P4-T4, P7-T1).
 
-Pengukuran CPU dan memori belum aktif pada fase ini (sampler psutil dijadwalkan Fase 7),
-sehingga nilai `cpu_percent` dan `mem_percent` dikirim 0.0.
+Nilai `cpu_percent` dan `mem_percent` berasal dari sampler psutil yang disuntikkan;
+bila tidak ada sampler, nilai 0.0 dikirim agar test lama tetap deterministik.
 """
 
 from __future__ import annotations
@@ -14,6 +14,7 @@ from typing import Any
 from pcomp.protocol import MessageType, make_header
 
 SendFn = Callable[[dict[str, Any]], None]
+UsageFn = Callable[[], tuple[float, float]]
 
 
 class HeartbeatSender:
@@ -25,6 +26,7 @@ class HeartbeatSender:
         *,
         interval: float,
         inflight: Callable[[], int] = lambda: 0,
+        sampler: UsageFn | None = None,
         clock: Callable[[], float] = time.time,
     ) -> None:
         if interval <= 0:
@@ -32,6 +34,7 @@ class HeartbeatSender:
         self._send = send
         self._interval = interval
         self._inflight = inflight
+        self._sampler = sampler
         self._clock = clock
         self._stop = threading.Event()
         self._thread = threading.Thread(target=self._loop, name="heartbeat", daemon=True)
@@ -54,11 +57,12 @@ class HeartbeatSender:
 
     def build_header(self) -> dict[str, Any]:
         """Header HEARTBEAT sesuai PROTOCOL.md bagian 2."""
+        cpu, mem = self._sampler() if self._sampler is not None else (0.0, 0.0)
         return make_header(
             MessageType.HEARTBEAT,
             ts=self._clock(),
-            cpu_percent=0.0,
-            mem_percent=0.0,
+            cpu_percent=float(cpu),
+            mem_percent=float(mem),
             inflight=self._inflight(),
         )
 
