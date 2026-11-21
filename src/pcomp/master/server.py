@@ -1,7 +1,7 @@
-"""Master: accept loop, registry Worker, dispatch FIFO berbasis credit (PLAN.md P4-T1..T5).
+"""Master: accept loop, registry Worker, dispatch berbasis credit (PLAN.md P4-T1..T5, P5-T1..T5).
 
-Fase 4 sengaja belum memuat monitor heartbeat, requeue, retry, dan scheduler static;
-semuanya dijadwalkan pada Fase 5 dan 6.
+Fase 5 menambahkan pilihan scheduler static/dynamic. Monitor heartbeat, requeue, dan retry
+tetap dijadwalkan pada Fase 6.
 """
 
 from __future__ import annotations
@@ -23,6 +23,7 @@ from pcomp.chunker import plan_tasks, read_chunk
 from pcomp.compressor import is_simulated
 from pcomp.config import MasterConfig
 from pcomp.master.collector import Collector
+from pcomp.master.scheduler import Scheduler, build_scheduler, imbalance_factor
 from pcomp.metrics.events import EventLog
 from pcomp.net import close_quietly, recv_msg, send_msg
 from pcomp.protocol import (
@@ -76,19 +77,21 @@ def is_valid_result(task: Task, header: Mapping[str, Any], payload: bytes) -> bo
 
 
 class MasterState:
-    """Logika Master tanpa socket: registry, credit, dispatch FIFO, dan koleksi hasil."""
+    """Logika Master tanpa socket: registry, credit, dispatch scheduler, dan koleksi hasil."""
 
     def __init__(
         self,
         tasks: list[Task],
         collector: Collector,
         events: EventLog,
+        scheduler: Scheduler,
         *,
         clock: Callable[[], float] = time.time,
     ) -> None:
         self.table = TaskTable(tasks)
         self.collector = collector
         self.events = events
+        self.scheduler = scheduler
         self.started = False
         self.start_time: float | None = None
         self.started_at = datetime.now(UTC).isoformat(timespec="seconds")
@@ -131,12 +134,12 @@ class MasterState:
                 session.credits += credits
 
     def take(self, worker_id: str) -> Task | None:
-        """Ambil satu task untuk Worker bila credit tersedia."""
+        """Ambil satu task untuk Worker bila credit tersedia, sesuai scheduler."""
         with self._lock:
             session = self._sessions.get(worker_id)
             if session is None or session.credits <= 0:
                 return None
-            task = self.table.take_next(worker_id, self._clock())
+            task = self.scheduler.take(self.table, worker_id, self._clock())
             if task is None:
                 return None
             session.credits -= 1
@@ -193,9 +196,10 @@ class MasterState:
         return self.table.all_finished()
 
     def begin(self) -> None:
-        """Mulai pengukuran waktu setelah barrier terpenuhi."""
+        """Mulai pengukuran waktu dan rencana scheduler setelah barrier terpenuhi."""
         self.started = True
         self.start_time = self._clock()
+        self.scheduler.start(self.table, [session.worker_id for session in self.sessions()])
 
     def elapsed(self) -> float:
         """Waktu berjalan sejak barrier (0 bila belum mulai)."""
@@ -222,6 +226,7 @@ class MasterServer:
         self.out_dir.mkdir(parents=True, exist_ok=True)
         self.tasks = plan_tasks(self.input_dir, chunk_mb=config.chunk_mb, repeat=config.repeat)
         self.events = EventLog(self.out_dir / "events.jsonl", clock=clock)
+        self.scheduler = build_scheduler(config.scheduler)
         self.collector = Collector(
             self.out_dir,
             algo=config.algo,
@@ -230,7 +235,9 @@ class MasterServer:
             repeat=config.repeat,
             total_tasks=len(self.tasks),
         )
-        self.state = MasterState(self.tasks, self.collector, self.events, clock=clock)
+        self.state = MasterState(
+            self.tasks, self.collector, self.events, self.scheduler, clock=clock
+        )
         self.port = config.port
         self.last_error: str | None = None
         self.metrics: dict[str, Any] = {}
@@ -520,7 +527,7 @@ class MasterServer:
             "level": self.config.level,
             "chunk_mb": self.config.chunk_mb,
             "repeat": self.config.repeat,
-            "scheduler": "fifo",
+            "scheduler": self.scheduler.name,
             "workers": len(sessions),
             "worker_stats": [
                 {
@@ -540,6 +547,7 @@ class MasterServer:
             "total_comp_bytes": manifest.total_comp_bytes,
             "total_mb": round(total_mb, 6),
             "ratio": round(manifest.ratio, 6),
+            "imbalance": round(imbalance_factor([session.busy_sec for session in sessions]), 6),
             "time_s": round(elapsed, 6),
             "throughput_mbs": round(total_mb / elapsed, 6) if elapsed > 0 else 0.0,
             "simulated": is_simulated(self.config.algo),

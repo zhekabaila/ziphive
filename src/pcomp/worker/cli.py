@@ -12,7 +12,7 @@ from pcomp.config import ConfigError, load_worker_config
 from pcomp.logging_setup import setup_logging
 from pcomp.worker.client import WorkerClient
 
-OVERRIDE_KEYS = ("master", "worker_id", "procs")
+OVERRIDE_KEYS = ("master", "worker_id", "procs", "throttle")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -22,6 +22,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--master", help="alamat Master host:port")
     parser.add_argument("--id", dest="worker_id", help="identitas Worker")
     parser.add_argument("--procs", type=int, help="jumlah proses kompresi")
+    parser.add_argument(
+        "--throttle",
+        type=float,
+        help="detik jeda per task untuk meniru Worker lambat (0 = tanpa jeda)",
+    )
     parser.add_argument(
         "--protocol-version",
         type=int,

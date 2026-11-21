@@ -46,7 +46,7 @@ def test_worker_defaults_from_repo(repo_root: Path) -> None:
     config = load_worker_config(repo_root / "config" / "worker.toml")
     assert config.worker_id == "w1"
     assert config.procs == 4
-    assert config.throttle == 1.0
+    assert config.throttle == 0.0
     assert config.seed == 0
 
 

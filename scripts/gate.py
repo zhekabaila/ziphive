@@ -76,6 +76,27 @@ SMOKE_COMMANDS: dict[int, list[list[str]]] = {
         [sys.executable, "-m", "pcomp.tools.verify", "--manifest", "output/local/manifest.json"],
     ],
     4: [[sys.executable, "scripts/e2e_local.py", "--workers", "3"]],
+    5: [
+        [
+            sys.executable,
+            "scripts/e2e_local.py",
+            "--workers",
+            "2",
+            "--compare",
+            "--algo",
+            "gzip",
+            "--size-mb",
+            "4",
+            "--chunk-mb",
+            "1",
+            "--repeat",
+            "2",
+            "--worker-procs",
+            "1",
+            "--slow-throttle",
+            "0.4",
+        ]
+    ],
 }
 
 # Keluaran yang wajib muncul pada smoke fase tertentu.
@@ -83,6 +104,7 @@ SMOKE_EXPECTED: dict[int, list[str]] = {
     2: ["VERIFY OK"],
     3: ["SEQUENTIAL OK", "LOCAL OK"],
     4: ["E2E OK"],
+    5: ["LB COMPARE OK"],
 }
 
 PHASE_LOG_REQUIRED_HEADINGS = (

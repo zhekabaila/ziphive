@@ -143,7 +143,7 @@ class WorkerClient:
                 return self._report_rejection(sock, str(ack.header["reason"]))
 
             interval = float(ack.header["heartbeat_interval"])
-            executor = Executor(self.config.procs, results.put)
+            executor = Executor(self.config.procs, results.put, throttle=self.config.throttle)
             heartbeat = HeartbeatSender(
                 self.send_frame,
                 interval=interval,
