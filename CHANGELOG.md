@@ -12,6 +12,12 @@ Format mengikuti Keep a Changelog. Versi `0.<NN>.0` = akhir fase NN. Aturan penc
 
 ### Changed
 - `DEPLOYMENT.md`: template inventaris 10 node, langkah `pip install -e .`, contoh keluaran `check_node.py`, pemakaian `launch_workers.py` dan `pack_source.py`, checklist pra-eksperimen, serta catatan bahwa `--data-mode local` belum tersedia.
+
+### Docs
+- `DEPLOYMENT.md` bagian 1 diisi dari data nyata n1 (Master, macOS 26.6.2, Apple M1, 8 core, 8.0 GiB, Python 3.14.4); baris n2 sampai n10 ditandai `TIDAK ADA DATA`.
+- `DEPLOYMENT.md` bagian 2 menambahkan catatan Debian 11 (Python 3.9.2, tanpa `bullseye-backports`) beserta cara menyiapkan Python 3.11 dari sumber, dan tabel troubleshooting memuat gejala tersebut serta peringatan `koneksi Worker berakhir` akibat `check_node.py --master`.
+- `docs/phase-logs/PHASE-08.md` bagian 13 diisi checklist sebagian dan bagian 13.1 sampai 13.2 memuat bukti `check_node.py` n1 serta validasi 2 mesin (Master macOS + VM Debian arm64) dengan `VERIFY OK`, ditandai bukan node fisik.
+
 - `scripts/gate.py`: smoke Fase 8 menjalankan `pytest -m slow` dengan penanda `1 passed`.
 - `ARCHITECTURE.md` bagian 11 mencatat bahwa `--data-mode local` belum tersedia (ADR-014).
 - `PLAN.md`: status Fase 8 menjadi `IN PROGRESS (menunggu user)`.

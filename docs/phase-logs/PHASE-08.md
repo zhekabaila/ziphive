@@ -172,13 +172,131 @@ Hash dan tag bagian agent (`phase-08a-done`): lihat `git log --oneline` dan `git
 Tag `phase-08-done` baru dibuat pada bagian user setelah seluruh node lulus.
 
 ## 13. Human checklist (diisi dari hasil user)
-Menunggu hasil checklist user sesuai PLAN.md Fase 8 bagian User. Data yang tidak dikirim user
-ditulis "TIDAK ADA DATA".
+Data yang tidak dikirim user ditulis "TIDAK ADA DATA". Pengisian pertama dilakukan 2026-11-21
+memakai keluaran nyata dari mesin Master saja; sembilan Worker belum ada datanya.
 
 | Item | Status | Catatan |
 |---|---|---|
-| Python dan dependensi terpasang di 9 Worker | TIDAK ADA DATA | menunggu laporan user |
-| `check_node.py` dijalankan di 10 node | TIDAK ADA DATA | menunggu keluaran per node |
-| Inventaris node (host, IP, CPU, core, RAM, OS) | TIDAK ADA DATA | menunggu isian user |
-| Dry-run dataset kecil di 10 node | TIDAK ADA DATA | menunggu log dan hasil `VERIFY` |
-| Evaluasi risiko R1 | TIDAK ADA DATA | dinilai dari log dry-run |
+| Python dan dependensi terpasang di 9 Worker | TIDAK ADA DATA | belum ada laporan dari node Worker |
+| `check_node.py` dijalankan di 10 node | SEBAGIAN (1 dari 10) | n1 `CHECK NODE OK` (exit 0); n2 sampai n10 belum dijalankan |
+| Inventaris node (host, IP, CPU, core, RAM, OS) | SEBAGIAN (n1 saja) | lihat `DEPLOYMENT.md` bagian 1 dan bagian 13.1 |
+| Dry-run dataset kecil di 10 node | TIDAK ADA DATA | belum ada log Master maupun Worker di 10 node fisik |
+| Evaluasi risiko R1 | TIDAK DIKETAHUI | belum ada pengukuran pada jaringan lab; lihat batasan pada bagian 13.2 |
+
+### 13.1 Bukti pemeriksaan node n1 (Master)
+Keluaran apa adanya dari `python scripts/check_node.py` di mesin Master:
+
+```
+OK python: 3.14.4 (>= 3.11)
+OK psutil: 7.2.2
+OK paket: pcomp 0.07.0
+OK protokol: PROTOCOL_VERSION=1
+OK core: 8 core logis
+OK ram: 8.0 GiB
+CHECK NODE OK
+```
+
+Inventaris pendukung dari perintah sistem: `hostname` menghasilkan
+`Zhekas-MacBook-Air.local`, `sysctl -n machdep.cpu.brand_string` menghasilkan `Apple M1`,
+`sw_vers -productVersion` menghasilkan `26.6.2`, `sysctl -n hw.logicalcpu` menghasilkan `8`,
+`sysctl -n hw.memsize` menghasilkan `8589934592`, dan `ipconfig getifaddr en0` menghasilkan
+`192.168.0.105`.
+
+Dua keterbatasan yang perlu dicatat:
+
+1. Mesin n1 adalah laptop pengembangan berbasis macOS dengan 8 core logis dan RAM 8.0 GiB.
+   Angka ini berbeda dari mesin pengembangan yang dipakai pada bagian agent fase ini
+   (Windows, 4 core logis, RAM 7.7 GiB), sehingga hasil performa tidak dapat dibandingkan
+   langsung dengan catatan bagian agent.
+2. Pemeriksaan `--ping-master` belum dijalankan dan tidak dapat diuji dari node Master sendiri,
+   sehingga baris `master` pada `check_node.py` masih menunggu pengujian dari sisi Worker.
+
+### 13.2 Validasi teknis 2 mesin (VM pengembangan, bukan node fisik)
+User belum memiliki 9 node fisik. Sebagai pengganti sementara, dijalankan uji 2 mesin nyata:
+Master di laptop macOS (n1) dan Worker di VM UTM Debian pada alamat terpisah. Uji ini membuktikan
+jalur jaringan, bukan jumlah node, dan hasilnya **tidak boleh dipakai** untuk eksperimen resmi
+Fase 9 maupun untuk menilai R1.
+
+Spesifikasi VM Worker:
+
+```
+OS    : Debian GNU/Linux 11 (bullseye), kernel 5.10.0-38-arm64
+CPU   : 4 core (arm64)
+RAM   : 3.8 GiB
+Disk  : 28G, 18G bebas
+IP    : 192.168.64.9/24, gateway 192.168.64.1 (host macOS, jaringan UTM shared)
+Python: 3.9.2 bawaan; dijadikan 3.11.9 dari sumber karena syarat proyek
+```
+
+Pemeriksaan awal pada VM dengan Python bawaan gagal, dan ini perilaku yang benar:
+
+```
+FAIL python: 3.9.2 (butuh >= 3.11)
+FAIL psutil: tidak terpasang (pip install -r requirements.txt)
+OK paket: pcomp 0.07.0
+OK protokol: PROTOCOL_VERSION=1
+FAIL core: jumlah core tidak terbaca
+FAIL ram: kapasitas RAM tidak terbaca
+CHECK NODE GAGAL
+```
+
+Setelah CPython 3.11.9 dibangun di `/opt/python3.11`, paket sumber dari `pack_source.py`
+diekstrak, lalu `pip install -e .` dan `requirements-worker.txt` dijalankan; hasilnya:
+
+```
+OK python: 3.11.9 (>= 3.11)
+OK psutil: 7.2.2
+OK paket: pcomp 0.07.0
+OK protokol: PROTOCOL_VERSION=1
+OK core: 4 core logis
+OK ram: 3.8 GiB
+CHECK NODE OK
+```
+
+Uji keterjangkauan Master dari VM (yang tidak mungkin diuji dari n1 sendiri):
+
+```
+OK master: 192.168.64.1:5050 menerima koneksi TCP
+CHECK NODE OK
+```
+
+Dry-run 2 mesin memakai dataset sintetis 64 MiB, `lzma` level 6, chunk 4 MiB, 1 Worker dengan
+4 proses, scheduler `dynamic`:
+
+```
+tasks        : 17
+tasks_ok     : 17
+tasks_failed : 0
+workers      : 1
+total_mb     : 64.000752
+ratio        : 2.631605
+time_s       : 4.04493
+throughput   : 15.822462 MB/s
+MASTER OK
+```
+
+`metrics.json` mencatat `"simulated": false`, `tasks_retried: 0`, `imbalance: 1.0`, dan
+`busy_sec` Worker 13.46 detik. Verifikasi manifest menghasilkan:
+
+```
+chunks       : 17
+VERIFY OK
+```
+
+Catatan pengamatan dari run ini:
+
+1. Worker menerima `SHUTDOWN`, keluar dengan `WORKER OK (w1)` dan kode keluar 0.
+2. Master mencatat satu peringatan `koneksi Worker berakhir: koneksi tertutup saat menunggu
+   12 byte` yang berasal dari `check_node.py --master` (membuka TCP lalu menutup). Tidak ada
+   event `worker_dead`, `task_requeued`, atau `task_failed`; `events.jsonl` hanya memuat
+   `worker_registered` untuk `w1`. Perilaku ini sudah ditambahkan ke tabel troubleshooting
+   `DEPLOYMENT.md`.
+3. `hostname` VM kebetulan bernama `zhekabaila`, sama dengan nama host laptop. Ini hanya
+   kebetulan penamaan image, bukan tanda Worker berjalan di mesin yang sama: Worker dieksekusi
+   lewat ssh di `192.168.64.9` dan membawa Python 3.11.9 arm64 Linux.
+4. Angka `time_s` 4.04 detik didominasi komputasi (`busy_sec` 13.46 detik dibagi 4 proses
+   menghasilkan sekitar 3.37 detik), bukan transfer. Karena jaringan UTM shared bersifat
+   host-internal, angka ini tidak menggambarkan bandwidth LAN lab dan tidak dapat dipakai
+   menyimpulkan R1.
+
+
