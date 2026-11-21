@@ -6,6 +6,28 @@ Format mengikuti Keep a Changelog. Versi `0.<NN>.0` = akhir fase NN. Aturan penc
 ### Added
 - (kosong)
 
+## [0.06.0] - 2026-11-21
+### Added
+- `src/pcomp/master/monitor.py`: `Monitor` dengan timeout heartbeat, jam yang dapat diganti jam palsu pada unit test, thread latar yang dapat dihentikan, dan pemanggilan `MasterState.drop_worker` untuk setiap Worker DEAD.
+- `src/pcomp/tasks.py`: `Task.fail_reason`, `TaskTable.requeue_task`, `requeue_from`, `fail_unfinished`, dan `failed_tasks` untuk pemulihan task serta dead-letter.
+- `src/pcomp/manifest.py`: `FailedEntry` dan larik `failed` pada manifest (aditif, `MANIFEST_VERSION` tetap 1); `Collector.write_manifest(failed=...)`.
+- `src/pcomp/worker/executor.py`: `task_fail_rate` dengan `seed` tetap untuk mensimulasikan kegagalan task deterministik.
+- `src/pcomp/tools/inject_failure.py`: pencatatan `worker_exit_injected` lalu penghentian proses Worker (`SIGTERM`).
+- Event `worker_dead`, `task_requeued`, `task_failed`, `worker_rejoined`, `late_or_duplicate`, dan `worker_exit_injected`, seluruhnya bertimestamp.
+- `metrics.json` distributed memuat `tasks_retried`, `failed_tasks`, dan `worker_stats` agregat per `worker_id` (termasuk sesi Worker yang mati atau bergabung ulang).
+- Worker: `--fail-after-tasks`, `--fail-after-sec`, `--task-fail-rate`, `--seed`. Master: `--heartbeat-interval`, `--heartbeat-timeout`, `--max-attempts`.
+- Unit test UT-MON-01..03, UT-TBL-07..09, UT-SCH-07..08, UT-WRK-12..13, UT-MAN-04, UT-TOOL-03, UT-WCLI-04, UT-MCLI-05, UT-MST-07..10 dan integration test IT-FT-01..07.
+
+### Changed
+- `src/pcomp/master/server.py`: `MasterState.register` membedakan `worker_registered` dan `worker_rejoined`; `handle_result` melakukan retry sampai `max_attempts` lalu dead-letter; hasil ganda atau terlambat dicatat `late_or_duplicate`; `drop_worker` menutup sesi dan me-requeue task; `abort` menandai task belum selesai sebagai FAILED bila semua Worker mati; dispatch yang gagal mengirim task me-requeue task dan menjatuhkan Worker.
+- `src/pcomp/master/scheduler.py`: hook `on_worker_dead` dan `on_requeue`; `StaticScheduler` memindahkan jatah Worker mati ke antrean bersama.
+- `src/pcomp/master/server.py`: exit code Master bukan nol bila ada task FAILED atau masih PENDING/ASSIGNED.
+- `src/pcomp/worker/client.py`: socket memakai timeout heartbeat, deteksi Master hilang (`MASTER HILANG`) untuk timeout maupun koneksi terputus, serta timer `fail_after_sec`.
+- `src/pcomp/master/cli.py`, `src/pcomp/worker/cli.py`: opsi baru masuk `OVERRIDE_KEYS` sehingga dapat menimpa TOML.
+- `scripts/e2e_local.py`: opsi injeksi kegagalan dan heartbeat, toleransi Worker pertama yang sengaja dimatikan, pemeriksaan event `worker_dead`; `events.jsonl` lama dihapus setiap run agar hitungan event hanya berasal dari run tersebut.
+- `scripts/gate.py`: smoke Fase 6 memakai `--fail-after-tasks 3` dengan penanda `E2E OK` dan `worker_dead`.
+- `ARCHITECTURE.md` bagian 4, 7, 8 dan `TESTING.md` bagian 4 disinkronkan dengan perilaku Fase 6.
+
 ## [0.05.0] - 2026-11-21
 ### Added
 - `src/pcomp/master/scheduler.py`: antarmuka `Scheduler`, `StaticScheduler` (partisi round-robin saat barrier), `DynamicScheduler` (LPT berbasis credit), `build_scheduler`, dan `imbalance_factor`.

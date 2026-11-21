@@ -33,6 +33,7 @@ class Task:
     sha256: str | None = None
     comp_size: int | None = None
     done_at: float | None = None
+    fail_reason: str | None = None
 
 
 class TaskTable:
@@ -103,15 +104,77 @@ class TaskTable:
             task.done_at = now
             return task
 
-    def mark_failed(self, task_id: int, now: float) -> Task | None:
-        """Tandai task gagal (dead-letter pada fase ini); None bila tidak ASSIGNED."""
+    def mark_failed(self, task_id: int, now: float, reason: str | None = None) -> Task | None:
+        """Tandai task gagal (dead-letter); None bila tidak ASSIGNED."""
         with self._lock:
             task = self._tasks.get(task_id)
             if task is None or task.state is not TaskState.ASSIGNED:
                 return None
             task.state = TaskState.FAILED
             task.done_at = now
+            task.fail_reason = reason
             return task
+
+    def _requeue_locked(self, task: Task, now: float, max_attempts: int, reason: str) -> bool:
+        """Kembalikan task ke PENDING atau FAILED; pemanggil wajib memegang lock."""
+        if task.attempts >= max_attempts:
+            task.state = TaskState.FAILED
+            task.done_at = now
+            task.fail_reason = reason
+            return False
+        task.state = TaskState.PENDING
+        task.assigned_to = None
+        task.assigned_at = None
+        self._pending.add(task.task_id)
+        return True
+
+    def requeue_task(
+        self, task_id: int, *, now: float, max_attempts: int, reason: str = ""
+    ) -> Task | None:
+        """Kembalikan task ASSIGNED ke PENDING; FAILED bila attempts sudah habis."""
+        with self._lock:
+            task = self._tasks.get(task_id)
+            if task is None or task.state is not TaskState.ASSIGNED:
+                return None
+            self._requeue_locked(task, now, max_attempts, reason)
+            return task
+
+    def requeue_from(
+        self, worker_id: str, *, now: float, max_attempts: int, reason: str = ""
+    ) -> list[tuple[Task, bool]]:
+        """Requeue seluruh task milik Worker; kembalikan (task, kembali_ke_PENDING)."""
+        with self._lock:
+            outcomes: list[tuple[Task, bool]] = []
+            for task in self._tasks.values():
+                if task.state is not TaskState.ASSIGNED or task.assigned_to != worker_id:
+                    continue
+                requeued = self._requeue_locked(task, now, max_attempts, reason)
+                outcomes.append((task, requeued))
+            outcomes.sort(key=lambda item: item[0].task_id)
+            return outcomes
+
+    def fail_unfinished(self, reason: str, now: float) -> list[Task]:
+        """Tandai seluruh task PENDING/ASSIGNED sebagai FAILED (abort run)."""
+        with self._lock:
+            failed: list[Task] = []
+            for task in self._tasks.values():
+                if task.state not in (TaskState.PENDING, TaskState.ASSIGNED):
+                    continue
+                task.state = TaskState.FAILED
+                task.done_at = now
+                task.fail_reason = reason
+                failed.append(task)
+            self._pending.clear()
+            return sorted(failed, key=lambda item: item.task_id)
+
+    def failed_tasks(self) -> list[Task]:
+        """Daftar task FAILED, urut task_id (dead-letter pada manifest)."""
+        with self._lock:
+            return [
+                self._tasks[task_id]
+                for task_id in sorted(self._tasks)
+                if self._tasks[task_id].state is TaskState.FAILED
+            ]
 
     def counts(self) -> dict[str, int]:
         """Jumlah task per state."""

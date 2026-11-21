@@ -75,6 +75,28 @@ def build_parser() -> argparse.ArgumentParser:
         default=0.5,
         help="jeda per task untuk Worker lambat pada mode --compare",
     )
+    parser.add_argument(
+        "--fail-after-tasks",
+        type=int,
+        default=0,
+        help="Worker pertama keluar paksa setelah K task (0 = nonaktif)",
+    )
+    parser.add_argument(
+        "--fail-after-sec",
+        type=float,
+        default=0.0,
+        help="Worker pertama keluar paksa setelah S detik (0 = nonaktif)",
+    )
+    parser.add_argument(
+        "--task-fail-rate",
+        type=float,
+        default=0.0,
+        help="peluang task gagal pada semua Worker (0.0 sampai 1.0)",
+    )
+    parser.add_argument("--seed", type=int, default=1, help="seed kegagalan task")
+    parser.add_argument("--heartbeat-interval", type=float, default=None)
+    parser.add_argument("--heartbeat-timeout", type=float, default=None)
+    parser.add_argument("--max-attempts", type=int, default=None)
     parser.add_argument("--timeout", type=float, default=300.0, help="batas waktu total (detik)")
     return parser
 
@@ -102,8 +124,18 @@ def run_once(
 ) -> dict:
     """Jalankan satu konfigurasi Master + N Worker dan kembalikan isi metrics.json."""
     port = free_port()
+    # EventLog menambah baris ke file yang sudah ada; hapus agar hitungan event
+    # hanya berasal dari run ini.
+    (out_dir / "events.jsonl").unlink(missing_ok=True)
     master: subprocess.Popen[str] | None = None
     workers: list[subprocess.Popen[str]] = []
+    master_extra: list[str] = []
+    if args.heartbeat_interval is not None:
+        master_extra += ["--heartbeat-interval", str(args.heartbeat_interval)]
+    if args.heartbeat_timeout is not None:
+        master_extra += ["--heartbeat-timeout", str(args.heartbeat_timeout)]
+    if args.max_attempts is not None:
+        master_extra += ["--max-attempts", str(args.max_attempts)]
     try:
         master = _module(
             [
@@ -130,6 +162,7 @@ def run_once(
                 scheduler,
                 "--barrier-timeout",
                 "60",
+                *master_extra,
             ],
             env,
         )
@@ -138,6 +171,17 @@ def run_once(
             extra: list[str] = []
             if slow_throttle > 0 and index == args.workers:
                 extra = ["--throttle", str(slow_throttle)]
+            if index == 1 and args.fail_after_tasks > 0:
+                extra += ["--fail-after-tasks", str(args.fail_after_tasks)]
+            if index == 1 and args.fail_after_sec > 0:
+                extra += ["--fail-after-sec", str(args.fail_after_sec)]
+            if args.task_fail_rate > 0:
+                extra += [
+                    "--task-fail-rate",
+                    str(args.task_fail_rate),
+                    "--seed",
+                    str(args.seed),
+                ]
             workers.append(
                 _module(
                     [
@@ -161,10 +205,11 @@ def run_once(
                 f"Master keluar dengan kode {master_code}:\n{master_out}\n{master_err}"
             )
 
-        for worker in workers:
+        injected = args.fail_after_tasks > 0 or args.fail_after_sec > 0
+        for index, worker in enumerate(workers, start=1):
             worker_code = worker.wait(timeout=60)
             worker_out, worker_err = worker.communicate(timeout=10)
-            if worker_code != 0:
+            if worker_code != 0 and not (injected and index == 1):
                 raise RuntimeError(
                     f"Worker keluar dengan kode {worker_code}:\n{worker_out}\n{worker_err}"
                 )
@@ -186,7 +231,14 @@ def run_once(
         )
         if verify.returncode != 0 or "VERIFY OK" not in verify.stdout:
             raise RuntimeError(f"verifikasi manifest gagal:\n{verify.stdout}\n{verify.stderr}")
-        return json.loads((out_dir / "metrics.json").read_text(encoding="utf-8"))
+        metrics = json.loads((out_dir / "metrics.json").read_text(encoding="utf-8"))
+        if injected:
+            events = _read_events(out_dir / "events.jsonl")
+            dead = [item for item in events if item.get("event") == "worker_dead"]
+            if not dead:
+                raise RuntimeError("event worker_dead tidak ditemukan pada events.jsonl")
+            metrics["_worker_dead"] = len(dead)
+        return metrics
     finally:
         for proc in [*workers, master]:
             if proc is not None and proc.poll() is None:
@@ -201,6 +253,17 @@ def run_once(
 def _counts_text(metrics: dict) -> str:
     items = [f"{item['worker_id']}={item['tasks_done']}" for item in metrics["worker_stats"]]
     return ",".join(items)
+
+
+def _read_events(path: Path) -> list[dict]:
+    """Baca events.jsonl tanpa ketergantungan paket (skrip dapat dijalankan langsung)."""
+    rows: list[dict] = []
+    if not path.is_file():
+        return rows
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if line.strip():
+            rows.append(json.loads(line))
+    return rows
 
 
 def _print_metrics(metrics: dict) -> None:
@@ -259,6 +322,8 @@ def main(argv: list[str] | None = None) -> int:
         throttle = args.throttle if args.throttle is not None else 0.0
         metrics = run_once(args, env, input_dir, out_dir, args.scheduler, throttle)
         _print_metrics(metrics)
+        if "_worker_dead" in metrics:
+            print(f"worker_dead  : {metrics['_worker_dead']}")
         print("VERIFY OK")
         print("E2E OK")
         return 0

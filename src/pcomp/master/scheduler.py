@@ -22,6 +22,14 @@ class Scheduler(ABC):
     def take(self, table: TaskTable, worker_id: str, now: float) -> Task | None:
         """Ambil satu task untuk Worker, atau None bila tidak ada jatah."""
 
+    def on_worker_dead(self, worker_id: str) -> None:
+        """Beri kesempatan scheduler memindahkan jatah Worker yang mati."""
+        return None
+
+    def on_requeue(self, task: Task) -> None:
+        """Beri kesempatan scheduler mengantrekan ulang task yang dikembalikan."""
+        return None
+
 
 class DynamicScheduler(Scheduler):
     """Dispatch saat Worker meminta credit, task terbesar lebih dulu (LPT)."""
@@ -42,21 +50,45 @@ class StaticScheduler(Scheduler):
 
     def __init__(self) -> None:
         self._queues: dict[str, deque[int]] = {}
+        self._orphans: deque[int] = deque()
 
     def start(self, table: TaskTable, worker_ids: Sequence[str]) -> None:
         """Bagi task round-robin menurut urutan task_id ke Worker yang hadir saat barrier."""
         workers = list(worker_ids)
         self._queues = {worker_id: deque() for worker_id in workers}
+        self._orphans = deque()
         if not workers:
             return
         for position, task in enumerate(table.snapshot()):
             self._queues[workers[position % len(workers)]].append(task.task_id)
 
-    def take(self, table: TaskTable, worker_id: str, now: float) -> Task | None:
+    def _next_id(self, worker_id: str) -> int | None:
+        """Ambil id berikutnya dari jatah sendiri, lalu dari antrean bersama."""
         queue = self._queues.get(worker_id)
-        if not queue:
-            return None
-        return table.take_task(queue.popleft(), worker_id, now)
+        if queue:
+            return queue.popleft()
+        if self._orphans:
+            return self._orphans.popleft()
+        return None
+
+    def take(self, table: TaskTable, worker_id: str, now: float) -> Task | None:
+        while True:
+            task_id = self._next_id(worker_id)
+            if task_id is None:
+                return None
+            task = table.take_task(task_id, worker_id, now)
+            if task is not None:
+                return task
+
+    def on_worker_dead(self, worker_id: str) -> None:
+        """Pindahkan jatah Worker mati ke antrean bersama."""
+        queue = self._queues.pop(worker_id, None)
+        if queue:
+            self._orphans.extend(queue)
+
+    def on_requeue(self, task: Task) -> None:
+        """Task yang kembali PENDING dapat diambil Worker hidup mana pun."""
+        self._orphans.append(task.task_id)
 
 
 def build_scheduler(name: str) -> Scheduler:

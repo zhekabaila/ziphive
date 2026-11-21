@@ -40,14 +40,14 @@ Thread di Worker: thread utama (baca socket), thread kirim (satu lock kirim, has
 
 ## 4. Model task dan state machine
 ```
-PENDING --assign--> ASSIGNED --result ok--> DONE
-   ^                    |
-   |                    +--worker dead / error (attempts < 3)--> PENDING (attempts + 1)
-   |                    +--worker dead / error (attempts = 3)--> FAILED
-   +---------------------------------------------------------------+
+PENDING --assign (attempts + 1)--> ASSIGNED --result ok--> DONE
+   ^                                   |
+   |                                   +--worker dead / error (attempts < 3)--> PENDING
+   |                                   +--worker dead / error (attempts >= 3)--> FAILED
+   +-------------------------------------------------------------------------------+
 ```
-Field `Task`: `task_id`, `file`, `index`, `offset`, `length`, `state`, `attempts`, `assigned_to`, `assigned_at`, `sha256`, `comp_size`, `done_at`.
-Aturan: hasil hanya diterima jika task `ASSIGNED` ke Worker pengirim. Hasil dari Worker DEAD atau hasil ganda diabaikan (idempotensi) dan dicatat sebagai event.
+Field `Task`: `task_id`, `file`, `index`, `offset`, `length`, `state`, `attempts`, `assigned_to`, `assigned_at`, `sha256`, `comp_size`, `done_at`, `fail_reason`.
+Aturan: `attempts` ditambah saat task dikirim ke Worker, bukan saat dikembalikan, sehingga satu task tidak pernah dicoba lebih dari `max_attempts` kali. Hasil hanya diterima jika task `ASSIGNED` ke Worker pengirim. Hasil dari Worker DEAD atau hasil ganda diabaikan (idempotensi) dan dicatat sebagai event `late_or_duplicate`.
 
 ## 5. Task decomposition
 1. Pindai folder dataset, urut deterministik (path).
@@ -72,7 +72,7 @@ Aturan: hasil hanya diterima jika task `ASSIGNED` ke Worker pengirim. Hasil dari
 Master tidak direplikasi (single point of failure), dicatat sebagai keterbatasan di laporan.
 
 ## 8. Alur data dan integritas
-Master: baca chunk, hitung sha256, kirim TASK+payload. Worker: hitung sha256 data diterima (dikirim balik), kompresi, kirim RESULT+payload terkompresi. Master: bandingkan sha256, tulis `chunks/<file>.<index>.<ext>`, catat di manifest. Verifikasi akhir (`tools/verify.py`): dekompresi semua chunk, gabung, bandingkan sha256 file asli.
+Master: baca chunk, hitung sha256, kirim TASK+payload. Worker: hitung sha256 data diterima (dikirim balik), kompresi, kirim RESULT+payload terkompresi. Master: bandingkan sha256, tulis `chunks/<file>.<index>.<ext>`, catat di manifest. Verifikasi akhir (`tools/verify.py`): dekompresi semua chunk, gabung, bandingkan sha256 file asli. Task yang habis percobaan dicatat pada larik `failed` manifest (`FailedEntry`: `task_id`, `file`, `index`, `offset`, `length`, `attempts`, `reason`) dan pada `metrics.json` (`failed_tasks`); larik ini kosong pada run normal.
 
 ## 9. Pengukuran
 Waktu mulai: saat task pertama dikirim (setelah barrier). Waktu selesai: saat hasil terakhir tertulis. Dipisahkan: waktu kompresi di Worker (`compute_sec`), perkiraan waktu transfer (waktu round-trip dikurangi compute). CPU dan memori dari psutil 1 Hz. Rumus lengkap di EXPERIMENTS.md.

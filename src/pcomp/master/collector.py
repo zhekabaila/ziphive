@@ -4,12 +4,13 @@ from __future__ import annotations
 
 import json
 import threading
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any
 
 from pcomp.chunker import copy_index
 from pcomp.manifest import (
+    FailedEntry,
     Manifest,
     ManifestEntry,
     build_manifest,
@@ -71,7 +72,7 @@ class Collector:
             self._entries.append(entry)
         return entry
 
-    def manifest(self) -> Manifest:
+    def manifest(self, failed: Sequence[FailedEntry] = ()) -> Manifest:
         """Manifest dari seluruh entri yang sudah ditulis, urut task_id."""
         with self._lock:
             entries = sorted(self._entries, key=lambda item: item.task_id)
@@ -81,11 +82,12 @@ class Collector:
             chunk_mb=self.chunk_mb,
             repeat=self.repeat,
             entries=entries,
+            failed=failed,
         )
 
-    def write_manifest(self) -> Manifest:
+    def write_manifest(self, failed: Sequence[FailedEntry] = ()) -> Manifest:
         """Tulis `manifest.json` dan kembalikan isinya."""
-        manifest = self.manifest()
+        manifest = self.manifest(failed)
         write_manifest(self.out_dir / "manifest.json", manifest)
         return manifest
 

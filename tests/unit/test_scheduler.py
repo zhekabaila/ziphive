@@ -117,3 +117,34 @@ def test_build_scheduler_by_name() -> None:
     assert build_scheduler("dynamic").name == "dynamic"
     with pytest.raises(ValueError):
         build_scheduler("lain")
+
+
+def test_static_moves_dead_queue_to_orphans() -> None:
+    """UT-SCH-07: jatah Worker mati dipindahkan ke antrean bersama Worker yang hidup."""
+    table = TaskTable(make_tasks([1] * 4))
+    scheduler = StaticScheduler()
+    scheduler.start(table, ["w1", "w2"])
+
+    scheduler.on_worker_dead("w1")
+    taken: list[int] = []
+    while True:
+        task = scheduler.take(table, "w2", 0.0)
+        if task is None:
+            break
+        taken.append(task.task_id)
+
+    assert sorted(taken) == [0, 1, 2, 3]
+
+
+def test_static_requeue_is_served_again() -> None:
+    """UT-SCH-08: task yang di-requeue dapat diambil lagi oleh Worker hidup."""
+    table = TaskTable(make_tasks([1] * 2))
+    scheduler = StaticScheduler()
+    scheduler.start(table, ["w1", "w2"])
+    assigned = scheduler.take(table, "w1", 0.0)
+    assert assigned is not None
+    table.requeue_task(assigned.task_id, now=1.0, max_attempts=3, reason="uji")
+    scheduler.on_requeue(assigned)
+
+    taken = [scheduler.take(table, "w2", 0.0) for _ in range(2)]
+    assert sorted(task.task_id for task in taken if task is not None) == [0, 1]

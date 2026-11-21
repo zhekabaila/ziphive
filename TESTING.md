@@ -34,19 +34,18 @@ Coverage minimal 80% untuk `src/pcomp` (G3).
 | UT-TSK-01..02 | tasks | nilai default task dan himpunan state |
 | UT-CHK-01..05 | chunker | file kecil, kelipatan pas, sisa, urutan deterministik, repeat |
 | UT-CMP-01..03 | compressor | round-trip gzip, bz2, lzma |
-| UT-MAN-01..03 | manifest | skema, rekonstruksi, deteksi rusak |
+| UT-MAN-01..04 | manifest | skema, rekonstruksi, deteksi rusak, larik `failed` dead-letter |
 | UT-SEQ-01 | sequential | manifest dan metrics, penanda `sim`, repeat, input kosong |
 | UT-LOC-01..05 | local_parallel | manifest sama dengan sequential, procs 1/2/4, konteks spawn, error task, busy per proses |
-| UT-TOOL-01..02 | tools | dataset sintetis deterministik, rencana unduhan tanpa jaringan |
-| UT-TBL-01..06 | TaskTable | semua transisi, attempts, duplikat |
+| UT-TOOL-01..03 | tools | dataset sintetis deterministik, rencana unduhan tanpa jaringan, injeksi kegagalan (`inject_failure`) |
+| UT-TBL-01..09 | TaskTable | semua transisi, attempts, duplikat, requeue, batas attempts, `fail_unfinished` |
 | UT-COL-01..03 | collector | tulis chunk, manifest dan verifikasi, metrics, folder repeat |
-| UT-MST-01..06 | master/server | REGISTER wajib, versi beda, duplikat, siklus task, hasil tidak valid, tanpa Worker |
+| UT-MST-01..10 | master/server | REGISTER wajib, versi beda, duplikat, siklus task, hasil tidak valid, tanpa Worker, retry, dead-letter, requeue saat Worker mati, hasil terlambat, abort |
 | UT-WRK-01..04 | worker | alamat Master, header REGISTER/RESULT, executor pool, heartbeat |
-| UT-WRK-05..10 | worker client | kirim tanpa koneksi, Master tidak terjangkau, penolakan REGISTER, loop terima, loop kirim |
-| UT-WRK-11 | worker executor | throttle menambah waktu task dan `compute_sec` |
-| UT-MCLI-01..04 | master/cli | default parser, `--scheduler static` diteruskan, konfigurasi tidak ada, input tidak ada |
-| UT-WCLI-01..03 | worker/cli | default parser, konfigurasi tidak ada, exit code mengikuti `WorkerClient.run` |
-| UT-SCH-01..06 | scheduler | LPT, partisi static, credit, kepemilikan static, imbalance, nama scheduler |
+| UT-WRK-05..13 | worker client | kirim tanpa koneksi, Master tidak terjangkau, penolakan REGISTER, loop terima, loop kirim, `fail_after_tasks`, Master hilang |
+| UT-MCLI-01..05 | master/cli | default parser, `--scheduler static` diteruskan, konfigurasi tidak ada, input tidak ada, `--heartbeat-*` dan `--max-attempts` |
+| UT-WCLI-01..04 | worker/cli | default parser, konfigurasi tidak ada, exit code mengikuti `WorkerClient.run`, opsi injeksi kegagalan |
+| UT-SCH-01..08 | scheduler | LPT, partisi static, credit, kepemilikan static, imbalance, nama scheduler, orfan static, requeue |
 | UT-MON-01..03 | monitor | timeout (jam palsu), requeue, batas attempts |
 | UT-CAL-01..04 | calc | speedup, efficiency, imbalance, recovery |
 | IT-ECHO-01 | net | payload 10 MiB |
@@ -54,7 +53,7 @@ Coverage minimal 80% untuk `src/pcomp` (G3).
 | IT-LOC-01 | local_parallel | sequential vs local `--procs 2`, manifest ekuivalen, keduanya `VERIFY OK` |
 | IT-DIST-01..05 | master-worker | 2 dan 3 Worker, procs 2, tanpa Worker, versi beda |
 | IT-LB-01..02 | load balancing | static vs dynamic dengan Worker lambat (`sim`, margin toleransi) |
-| IT-FT-01..06 | fault tolerance | Worker mati, dua mati, semua mati, task beracun, rejoin, event recovery |
+| IT-FT-01..07 | fault tolerance | Worker mati, dua mati, semua mati, task beracun, rejoin, event recovery, Master hilang |
 | IT-BENCH-01 | bench | runner lokal menghasilkan summary dan grafik |
 | SL-9W-01 | slow | 9 Worker lokal selesai dan `VERIFY OK` |
 

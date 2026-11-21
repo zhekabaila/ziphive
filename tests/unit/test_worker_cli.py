@@ -69,3 +69,45 @@ def test_main_reports_client_code(
     )
 
     assert result == expected
+
+
+def test_failure_options_forwarded(
+    monkeypatch: pytest.MonkeyPatch, valid_group_file: Path, tmp_path: Path
+) -> None:
+    """UT-WCLI-04: opsi injeksi kegagalan diteruskan ke WorkerConfig (PLAN.md P6-T5)."""
+    captured: dict[str, object] = {}
+
+    class CaptureClient:
+        def __init__(self, config: object, **kwargs: object) -> None:
+            captured["config"] = config
+
+        def run(self) -> int:
+            return constants.EXIT_OK
+
+    monkeypatch.setattr(cli, "WorkerClient", CaptureClient)
+
+    code = main(
+        [
+            "--group-config",
+            str(valid_group_file),
+            "--master",
+            "127.0.0.1:5050",
+            "--id",
+            "uji",
+            "--fail-after-tasks",
+            "2",
+            "--fail-after-sec",
+            "1.5",
+            "--task-fail-rate",
+            "0.25",
+            "--seed",
+            "7",
+        ]
+    )
+
+    assert code == constants.EXIT_OK
+    config = captured["config"]
+    assert config.fail_after_tasks == 2
+    assert config.fail_after_sec == 1.5
+    assert config.task_fail_rate == 0.25
+    assert config.seed == 7

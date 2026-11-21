@@ -12,7 +12,16 @@ from pcomp.config import ConfigError, load_worker_config
 from pcomp.logging_setup import setup_logging
 from pcomp.worker.client import WorkerClient
 
-OVERRIDE_KEYS = ("master", "worker_id", "procs", "throttle")
+OVERRIDE_KEYS = (
+    "master",
+    "worker_id",
+    "procs",
+    "throttle",
+    "fail_after_tasks",
+    "fail_after_sec",
+    "task_fail_rate",
+    "seed",
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -27,6 +36,22 @@ def build_parser() -> argparse.ArgumentParser:
         type=float,
         help="detik jeda per task untuk meniru Worker lambat (0 = tanpa jeda)",
     )
+    parser.add_argument(
+        "--fail-after-tasks",
+        type=int,
+        help="keluar paksa setelah K task selesai (0 = nonaktif)",
+    )
+    parser.add_argument(
+        "--fail-after-sec",
+        type=float,
+        help="keluar paksa setelah S detik (0 = nonaktif)",
+    )
+    parser.add_argument(
+        "--task-fail-rate",
+        type=float,
+        help="peluang task gagal (0.0 sampai 1.0) untuk menguji retry",
+    )
+    parser.add_argument("--seed", type=int, help="seed kegagalan task deterministik")
     parser.add_argument(
         "--protocol-version",
         type=int,

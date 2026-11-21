@@ -22,7 +22,9 @@ from pcomp import constants
 from pcomp.chunker import plan_tasks, read_chunk
 from pcomp.compressor import is_simulated
 from pcomp.config import MasterConfig
+from pcomp.manifest import FailedEntry
 from pcomp.master.collector import Collector
+from pcomp.master.monitor import Monitor
 from pcomp.master.scheduler import Scheduler, build_scheduler, imbalance_factor
 from pcomp.metrics.events import EventLog
 from pcomp.net import close_quietly, recv_msg, send_msg
@@ -34,7 +36,7 @@ from pcomp.protocol import (
     make_header,
     validate_message,
 )
-from pcomp.tasks import Task, TaskTable
+from pcomp.tasks import Task, TaskState, TaskTable
 
 logger = logging.getLogger(__name__)
 
@@ -63,6 +65,8 @@ class WorkerSession:
     tasks_failed: int = 0
     busy_sec: float = 0.0
     shutdown_sent: bool = False
+    last_seen: float = 0.0
+    dead: bool = False
 
 
 def is_valid_result(task: Task, header: Mapping[str, Any], payload: bytes) -> bool:
@@ -86,12 +90,14 @@ class MasterState:
         events: EventLog,
         scheduler: Scheduler,
         *,
+        max_attempts: int = constants.DEFAULT_MAX_ATTEMPTS,
         clock: Callable[[], float] = time.time,
     ) -> None:
         self.table = TaskTable(tasks)
         self.collector = collector
         self.events = events
         self.scheduler = scheduler
+        self.max_attempts = max_attempts
         self.started = False
         self.start_time: float | None = None
         self.started_at = datetime.now(UTC).isoformat(timespec="seconds")
@@ -99,6 +105,7 @@ class MasterState:
         self._lock = threading.Lock()
         self._sessions: dict[str, WorkerSession] = {}
         self._registered: list[WorkerSession] = []
+        self._known_ids: set[str] = set()
 
     def register(self, session: WorkerSession) -> None:
         """Daftarkan Worker; WorkerRejected bila worker_id masih aktif."""
@@ -108,8 +115,25 @@ class MasterState:
                     ErrorCode.DUPLICATE_WORKER,
                     f"worker_id '{session.worker_id}' masih aktif",
                 )
+            rejoined = session.worker_id in self._known_ids
+            session.last_seen = self._clock()
+            session.dead = False
             self._sessions[session.worker_id] = session
             self._registered.append(session)
+            self._known_ids.add(session.worker_id)
+        self.events.emit(
+            "worker_rejoined" if rejoined else "worker_registered",
+            worker_id=session.worker_id,
+            hostname=session.hostname,
+            procs=session.procs,
+        )
+
+    def touch(self, worker_id: str) -> None:
+        """Perbarui waktu pesan terakhir Worker."""
+        with self._lock:
+            session = self._sessions.get(worker_id)
+            if session is not None:
+                session.last_seen = self._clock()
 
     def remove(self, worker_id: str) -> None:
         """Lepas Worker aktif tanpa memengaruhi statistik yang sudah tercatat."""
@@ -149,12 +173,11 @@ class MasterState:
     def handle_result(
         self, session: WorkerSession, header: Mapping[str, Any], payload: bytes
     ) -> str:
-        """Proses RESULT: tulis chunk bila valid, selain itu tandai gagal."""
-        task = self.table.claim_result(int(header["task_id"]), session.worker_id)
-        if task is None:
-            self.events.emit(
-                "result_ignored", task_id=header["task_id"], worker_id=session.worker_id
-            )
+        """Proses RESULT: tulis chunk bila valid, retry atau dead-letter bila gagal."""
+        task_id = int(header["task_id"])
+        task = self.table.claim_result(task_id, session.worker_id)
+        if task is None or session.dead:
+            self.events.emit("late_or_duplicate", task_id=task_id, worker_id=session.worker_id)
             return "ignored"
 
         session.inflight = max(0, session.inflight - 1)
@@ -182,15 +205,81 @@ class MasterState:
             )
             return "done"
 
-        self.table.mark_failed(task.task_id, now=self._clock())
+        error = str(header.get("error") or "hasil tidak valid")
         session.tasks_failed += 1
-        self.events.emit(
-            "task_failed",
-            task_id=task.task_id,
-            worker_id=session.worker_id,
-            error=header.get("error") or "hasil tidak valid",
+        outcome = self.table.requeue_task(
+            task.task_id,
+            now=self._clock(),
+            max_attempts=self.max_attempts,
+            reason=error,
         )
+        if outcome is not None and outcome.state is TaskState.PENDING:
+            self.scheduler.on_requeue(outcome)
+            self.events.emit(
+                "task_requeued",
+                task_id=outcome.task_id,
+                worker_id=session.worker_id,
+                attempts=outcome.attempts,
+                reason=error,
+            )
+        else:
+            self.events.emit(
+                "task_failed",
+                task_id=task.task_id,
+                worker_id=session.worker_id,
+                attempts=task.attempts,
+                error=error,
+            )
         return "failed"
+
+    def drop_worker(self, worker_id: str, reason: str, now: float) -> list[Task]:
+        """Tutup Worker, catat `worker_dead`, dan requeue task miliknya."""
+        with self._lock:
+            session = self._sessions.pop(worker_id, None)
+            if session is None:
+                return []
+            session.dead = True
+            inflight = session.inflight
+            scheduler = self.scheduler
+        close_quietly(session.sock)
+        self.events.emit("worker_dead", worker_id=worker_id, reason=reason, inflight=inflight)
+        scheduler.on_worker_dead(worker_id)
+        outcomes = self.table.requeue_from(
+            worker_id, now=now, max_attempts=self.max_attempts, reason=reason
+        )
+        requeued: list[Task] = []
+        for task, was_requeued in outcomes:
+            if was_requeued:
+                scheduler.on_requeue(task)
+                self.events.emit(
+                    "task_requeued",
+                    task_id=task.task_id,
+                    worker_id=worker_id,
+                    attempts=task.attempts,
+                    reason=reason,
+                )
+                requeued.append(task)
+            else:
+                self.events.emit(
+                    "task_failed",
+                    task_id=task.task_id,
+                    worker_id=worker_id,
+                    attempts=task.attempts,
+                    error=reason,
+                )
+        return requeued
+
+    def abort(self, reason: str, now: float) -> list[Task]:
+        """Tandai seluruh task yang belum selesai sebagai FAILED (semua Worker mati)."""
+        failed = self.table.fail_unfinished(reason, now)
+        for task in failed:
+            self.events.emit(
+                "task_failed",
+                task_id=task.task_id,
+                attempts=task.attempts,
+                error=reason,
+            )
+        return failed
 
     def all_finished(self) -> bool:
         return self.table.all_finished()
@@ -236,11 +325,22 @@ class MasterServer:
             total_tasks=len(self.tasks),
         )
         self.state = MasterState(
-            self.tasks, self.collector, self.events, self.scheduler, clock=clock
+            self.tasks,
+            self.collector,
+            self.events,
+            self.scheduler,
+            max_attempts=config.max_attempts,
+            clock=clock,
         )
         self.port = config.port
         self.last_error: str | None = None
         self.metrics: dict[str, Any] = {}
+        self.monitor = Monitor(
+            self.state,
+            timeout=config.heartbeat_timeout,
+            interval=max(0.05, min(0.5, config.heartbeat_timeout / 2)),
+            clock=clock,
+        )
         self._listener: socket.socket | None = None
         self._stop = threading.Event()
         self._start_lock = threading.Lock()
@@ -274,14 +374,29 @@ class MasterServer:
             self._maybe_finish()
 
     def run(self) -> int:
-        """Jalankan Master sampai semua task selesai atau barrier habis."""
+        """Jalankan Master sampai semua task selesai, barrier habis, atau semua Worker mati."""
         self._open_listener()
         logger.info("Master mendengarkan di %s:%s", self.config.host, self.port)
+        self.monitor.start()
         deadline = time.monotonic() + self.barrier_timeout
+        empty_since: float | None = None
         try:
             while not self._stop.is_set():
                 self._accept_once()
                 if self.state.started:
+                    if not self.state.sessions() and not self.state.all_finished():
+                        if empty_since is None:
+                            empty_since = time.monotonic()
+                        elif time.monotonic() - empty_since >= self.config.heartbeat_timeout:
+                            self.last_error = "semua Worker mati sebelum semua task selesai"
+                            logger.error(self.last_error)
+                            self.state.abort(self.last_error, self.clock())
+                            self._stop.set()
+                            break
+                    else:
+                        empty_since = None
+                    for session in self.state.sessions():
+                        self._dispatch(session)
                     continue
                 if len(self.state.sessions()) >= self.config.expect_workers:
                     self.begin()
@@ -296,6 +411,7 @@ class MasterServer:
                 self.finalize()
             return constants.EXIT_OK if self._exit_ok() else constants.EXIT_ERROR
         finally:
+            self.monitor.stop()
             self._stop.set()
             if self._listener is not None:
                 close_quietly(self._listener)
@@ -305,7 +421,7 @@ class MasterServer:
 
     def _exit_ok(self) -> bool:
         counts = self.state.table.counts()
-        return counts["FAILED"] == 0
+        return counts["FAILED"] == 0 and counts["PENDING"] == 0 and counts["ASSIGNED"] == 0
 
     def _open_listener(self) -> None:
         listener = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -344,6 +460,7 @@ class MasterServer:
     def serve_connection(self, sock: socket.socket) -> None:
         """Layani satu Worker sampai SHUTDOWN, BYE, atau koneksi putus."""
         session: WorkerSession | None = None
+        bye_received = False
         try:
             sock.settimeout(constants.DEFAULT_SOCKET_TIMEOUT)
             frame = recv_msg(sock)
@@ -375,6 +492,7 @@ class MasterServer:
                 except ProtocolError as exc:
                     self._send_error(sock, ErrorCode.BAD_FRAME, str(exc))
                     break
+                self.state.touch(session.worker_id)
                 if msg_type is MessageType.REQUEST:
                     self.state.add_credits(session.worker_id, int(frame.header["credits"]))
                     self._dispatch(session)
@@ -385,6 +503,7 @@ class MasterServer:
                     with session.send_lock:
                         send_msg(sock, make_header(MessageType.HEARTBEAT_ACK, ts=self.clock()))
                 elif msg_type is MessageType.BYE:
+                    bye_received = True
                     break
                 else:
                     self._send_error(
@@ -397,7 +516,15 @@ class MasterServer:
             logger.warning("koneksi Worker berakhir: %s", exc)
         finally:
             if session is not None:
-                self.state.remove(session.worker_id)
+                if not bye_received and not session.dead:
+                    dropped = self.state.drop_worker(
+                        session.worker_id, "koneksi putus", self.clock()
+                    )
+                    if dropped:
+                        for other in self.state.sessions():
+                            self._dispatch(other)
+                elif bye_received:
+                    self.state.remove(session.worker_id)
                 self.events.emit("worker_disconnected", worker_id=session.worker_id)
             close_quietly(sock)
 
@@ -421,12 +548,6 @@ class MasterServer:
                     level=self.config.level,
                 ),
             )
-        self.events.emit(
-            "worker_registered",
-            worker_id=session.worker_id,
-            hostname=session.hostname,
-            procs=session.procs,
-        )
         if len(self.state.sessions()) >= self.config.expect_workers:
             self.begin()
         return session
@@ -460,12 +581,13 @@ class MasterServer:
             try:
                 data = read_chunk(self.input_dir, task)
             except OSError as exc:
-                self.state.table.mark_failed(task.task_id, now=self.clock())
+                self.state.table.mark_failed(task.task_id, now=self.clock(), reason=str(exc))
                 session.tasks_failed += 1
                 self.events.emit(
                     "task_failed",
                     task_id=task.task_id,
                     worker_id=session.worker_id,
+                    attempts=task.attempts,
                     error=str(exc),
                 )
                 continue
@@ -482,8 +604,21 @@ class MasterServer:
                 orig_size=len(data),
                 sha256=digest,
             )
-            with session.send_lock:
-                send_msg(session.sock, header, data)
+            try:
+                with session.send_lock:
+                    send_msg(session.sock, header, data)
+            except OSError as exc:
+                logger.warning(
+                    "gagal mengirim task %s ke %s: %s", task.task_id, session.worker_id, exc
+                )
+                self.state.table.requeue_task(
+                    task.task_id,
+                    now=self.clock(),
+                    max_attempts=self.config.max_attempts,
+                    reason="gagal kirim task",
+                )
+                self.state.drop_worker(session.worker_id, "gagal kirim task", self.clock())
+                return
             self.events.emit(
                 "task_assigned",
                 task_id=task.task_id,
@@ -516,11 +651,44 @@ class MasterServer:
             if self._finalized:
                 return
             self._finalized = True
-        manifest = self.collector.write_manifest()
+        failed_tasks = self.state.table.failed_tasks()
+        failed_entries = [
+            FailedEntry(
+                task_id=task.task_id,
+                file=task.file,
+                index=task.index,
+                offset=task.offset,
+                length=task.length,
+                attempts=task.attempts,
+                reason=task.fail_reason or "unknown",
+            )
+            for task in failed_tasks
+        ]
+        manifest = self.collector.write_manifest(failed_entries)
         counts = self.state.table.counts()
         elapsed = self.state.elapsed()
         total_mb = manifest.total_orig_bytes / constants.MIB
         sessions = self.state.all_sessions()
+        stats: dict[str, dict[str, Any]] = {}
+        for session in sessions:
+            row = stats.setdefault(
+                session.worker_id,
+                {
+                    "worker_id": session.worker_id,
+                    "hostname": session.hostname,
+                    "procs": session.procs,
+                    "tasks_done": 0,
+                    "tasks_failed": 0,
+                    "busy_sec": 0.0,
+                },
+            )
+            row["tasks_done"] += session.tasks_done
+            row["tasks_failed"] += session.tasks_failed
+            row["busy_sec"] += session.busy_sec
+            row["procs"] = max(int(row["procs"]), session.procs)
+        worker_stats = [
+            {**row, "busy_sec": round(float(row["busy_sec"]), 6)} for row in stats.values()
+        ]
         metrics: dict[str, Any] = {
             "mode": "distributed",
             "algo": self.config.algo,
@@ -528,26 +696,27 @@ class MasterServer:
             "chunk_mb": self.config.chunk_mb,
             "repeat": self.config.repeat,
             "scheduler": self.scheduler.name,
-            "workers": len(sessions),
-            "worker_stats": [
-                {
-                    "worker_id": session.worker_id,
-                    "hostname": session.hostname,
-                    "procs": session.procs,
-                    "tasks_done": session.tasks_done,
-                    "tasks_failed": session.tasks_failed,
-                    "busy_sec": round(session.busy_sec, 6),
-                }
-                for session in sessions
-            ],
+            "workers": len(worker_stats),
+            "worker_stats": worker_stats,
             "tasks": len(self.tasks),
             "tasks_ok": counts["DONE"],
             "tasks_failed": counts["FAILED"],
+            "tasks_retried": sum(max(0, task.attempts - 1) for task in self.state.table.snapshot()),
+            "failed_tasks": [
+                {
+                    "task_id": task.task_id,
+                    "attempts": task.attempts,
+                    "reason": task.fail_reason or "unknown",
+                }
+                for task in failed_tasks
+            ],
             "total_orig_bytes": manifest.total_orig_bytes,
             "total_comp_bytes": manifest.total_comp_bytes,
             "total_mb": round(total_mb, 6),
             "ratio": round(manifest.ratio, 6),
-            "imbalance": round(imbalance_factor([session.busy_sec for session in sessions]), 6),
+            "imbalance": round(
+                imbalance_factor([float(row["busy_sec"]) for row in worker_stats]), 6
+            ),
             "time_s": round(elapsed, 6),
             "throughput_mbs": round(total_mb / elapsed, 6) if elapsed > 0 else 0.0,
             "simulated": is_simulated(self.config.algo),

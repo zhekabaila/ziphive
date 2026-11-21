@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 from pathlib import Path
 
 import pytest
@@ -10,12 +11,14 @@ import pytest
 from pcomp.chunker import plan_tasks, read_chunk
 from pcomp.compressor import compress
 from pcomp.manifest import (
+    FailedEntry,
     ManifestEntry,
     ManifestError,
     build_manifest,
     chunk_output_name,
     read_manifest,
     reconstruct_file,
+    to_dict,
     verify_entries,
     write_manifest,
 )
@@ -148,3 +151,37 @@ def test_read_manifest_missing(tmp_path: Path) -> None:
 def test_chunk_output_name() -> None:
     assert chunk_output_name("a.txt", 0, "lzma", copy=0, repeat=1) == "chunks/a.txt.0000.xz"
     assert chunk_output_name("a.txt", 1, "gzip", copy=2, repeat=3) == "chunks/r2/a.txt.0001.gz"
+
+
+def test_failed_entries_round_trip(tmp_path: Path) -> None:
+    """UT-MAN-04: entri dead-letter tersimpan dan terbaca kembali."""
+    failed = FailedEntry(
+        task_id=2,
+        file="a.bin",
+        index=0,
+        offset=0,
+        length=10,
+        attempts=3,
+        reason="task_fail_rate",
+    )
+    manifest = build_manifest(
+        algo="gzip", level=1, chunk_mb=1, repeat=1, entries=[], failed=[failed]
+    )
+    path = tmp_path / "manifest.json"
+    write_manifest(path, manifest)
+
+    loaded = read_manifest(path)
+
+    assert loaded.failed == (failed,)
+    assert loaded.entries == ()
+
+
+def test_manifest_without_failed_field_is_accepted(tmp_path: Path) -> None:
+    """UT-MAN-04b: manifest lama tanpa field `failed` tetap dapat dibaca."""
+    manifest = build_manifest(algo="gzip", level=1, chunk_mb=1, repeat=1, entries=[])
+    payload = to_dict(manifest)
+    payload.pop("failed")
+    path = tmp_path / "manifest.json"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+
+    assert read_manifest(path).failed == ()

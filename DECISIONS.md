@@ -39,3 +39,13 @@ Format: Konteks, Keputusan, Konsekuensi. Tambah entri baru di bawah, jangan hapu
 - Konteks: perbandingan static vs dynamic perlu Worker lambat yang deterministik tanpa injeksi kegagalan (Fase 6).
 - Keputusan: `--throttle` menambah jeda tidur di dalam proses pool sebelum kompresi dan menghitungnya sebagai `compute_sec`.
 - Konsekuensi: Worker lambat menghabiskan slot proses lebih lama dan menerima lebih sedikit task pada dynamic. Nilai `throttle` harus 0 pada eksperimen resmi agar tidak mencemari hasil.
+
+## ADR-010 Semantik `attempts` dinaikkan saat penugasan
+- Konteks: ARCHITECTURE.md bagian 4 menulis requeue menaikkan `attempts`, sedangkan implementasi `TaskTable` sejak Fase 4 menaikkannya saat task dikirim ke Worker. Bila requeue juga menaikkan, satu task dapat dikirim lebih dari 3 kali dan batas percobaan menjadi kabur.
+- Keputusan: `attempts` dinaikkan tepat sekali saat task berubah PENDING ke ASSIGNED. Requeue tidak menaikkan lagi; task menjadi FAILED ketika `attempts >= max_attempts` pada saat requeue. Diagram ARCHITECTURE.md bagian 4 diperbaiki agar sesuai.
+- Konsekuensi: jumlah kiriman task ke jaringan dibatasi `max_attempts` (default 3). `metrics.json` menghitung `tasks_retried` sebagai `sum(max(0, attempts - 1))`, yaitu jumlah pengiriman ulang.
+
+## ADR-011 Dead-letter aditif pada manifest dan event `worker_rejoined`
+- Konteks: Fase 6 membutuhkan bukti task yang gagal permanen dan bukti Worker yang bergabung ulang, tanpa merusak pembaca manifest versi lama.
+- Keputusan: manifest tetap `MANIFEST_VERSION = 1` dengan larik `failed` opsional (default kosong); `manifest.json` dari run normal tidak berubah bentuk isinya. `MasterState.register` mencatat `worker_id` yang pernah terdaftar dan mengirim `worker_rejoined` alih-alih `worker_registered` pada pendaftaran berikutnya dengan id sama.
+- Konsekuensi: `tools/verify.py` dan `read_manifest` tidak berubah. Pembaca lama yang tidak mengenal `failed` tetap dapat membaca manifest. Kegagalan task kini terlihat pada manifest, `metrics.json` (`failed_tasks`), dan exit code Master bukan nol.

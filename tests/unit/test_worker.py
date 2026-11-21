@@ -22,7 +22,7 @@ from pcomp.worker.client import (
     build_result_header,
     parse_master_address,
 )
-from pcomp.worker.executor import Executor
+from pcomp.worker.executor import Executor, run_task
 from pcomp.worker.heartbeat import HeartbeatSender
 
 
@@ -266,3 +266,35 @@ def test_executor_throttle_delays_task_and_counts_busy() -> None:
     assert result.ok is True
     assert elapsed >= 0.2
     assert result.compute_sec >= 0.2
+
+
+def test_run_task_fail_rate_is_deterministic() -> None:
+    """UT-WRK-12: `task_fail_rate` dengan seed sama memberi hasil yang sama."""
+    task = Task(task_id=3, file="a.bin", index=0, offset=0, length=1000)
+    data = b"x" * 1000
+
+    always = run_task(task, data, "gzip", 1, 0.0, task_fail_rate=1.0, seed=7)
+    first = run_task(task, data, "gzip", 1, 0.0, task_fail_rate=0.5, seed=7)
+    second = run_task(task, data, "gzip", 1, 0.0, task_fail_rate=0.5, seed=7)
+    never = run_task(task, data, "gzip", 1, 0.0, task_fail_rate=0.0, seed=7)
+
+    assert always.ok is False
+    assert first.ok == second.ok
+    assert never.ok is True
+
+
+def test_fail_after_tasks_exits_process(monkeypatch: pytest.MonkeyPatch) -> None:
+    """UT-WRK-13: `fail_after_tasks` memanggil `os._exit` setelah batas tercapai."""
+
+    def fake_exit(code: int) -> None:
+        raise SystemExit(code)
+
+    monkeypatch.setattr(client_module.os, "_exit", fake_exit)
+    worker = WorkerClient(make_worker_config(fail_after_tasks=2))
+
+    worker._after_result_sent()
+    with pytest.raises(SystemExit) as excinfo:
+        worker._after_result_sent()
+
+    assert excinfo.value.code == constants.EXIT_ERROR
+    assert worker._completed == 2
