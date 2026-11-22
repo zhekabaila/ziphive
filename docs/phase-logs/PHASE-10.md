@@ -80,6 +80,34 @@ Gate penuh dijalankan 2026-11-22 pukul 20:48, hasil `PASS (seluruh gate wajib lu
 | G8 Dokumen | PASS | CHANGELOG versi `1.0.0`, phase log, dan status PLAN sinkron |
 | G9 Repo | PASS | `752 file terlacak, tidak ada pelanggaran` |
 
+Uji reproduksi (P10-T5) dijalankan pada folder sementara
+`/private/var/folders/.../opencode/clone-check` dengan langkah sesuai `README.md`:
+
+```
+git clone --branch phase/10-final-b /Users/zhekabaila/ziphive clone-check
+python3 -m venv .venv
+.venv/bin/python -m pip install -e ".[dev,analysis]"
+.venv/bin/python scripts/gate.py
+```
+
+Hasil gate penuh pada hasil clone (2026-11-22 pukul 21:03): `HASIL: PASS (seluruh gate wajib
+lulus)`, dengan `241 passed` unit, `19 passed` integration, coverage `84.56 %`, G6
+`PACKAGE OK: 761 entri, 12 entri wajib lengkap`, dan G9 `757 file terlacak, tidak ada pelanggaran`.
+Versi paket pada hasil clone: `pcomp 1.0.0`, `psutil 7.2.2`, `matplotlib 3.11.2`.
+
+Pemeriksaan paket (P10-T6) memakai `python scripts/pack_source.py`:
+
+```
+berkas : 761
+arsip  : dist/ziphive-source-1.0.0.zip
+ukuran : 2695.2 KiB
+PACK OK
+```
+
+Isi arsip: 621 entri `results/`, 45 `tests/`, 45 `src/`, 17 `docs/`, 9 `scripts/`, 4 `config/`,
+serta 17 dokumen tingkat atas. Tidak ada entri `data/`, `output/`, `reports/`, `.venv`, `venv`,
+`.git`, `dist/`, maupun `results/dev/`.
+
 ## 7. Deviasi dari rencana
 1. Pengerjaan fase 10 dibagi dua bagian atas instruksi user. Bagian A mengerjakan P10-T1 dan
    P10-T4 tanpa tag, Bagian B mengerjakan P10-T2, P10-T3, P10-T5, dan P10-T6.
@@ -138,4 +166,5 @@ Tidak ada.
 
 ## 12. Commit
 Bagian A: `880bde4` (merge `c87a65b`), tanpa tag.
-Bagian B: `<isi setelah commit>`  Tag: `phase-10-done` dan `v1.0.0`
+Bagian B: `4ec1063` (laporan, naskah video, smoke paket, versi 1.0.0), lalu commit catatan ini.
+Tag: `phase-10-done` dan `v1.0.0` pada `main`.
