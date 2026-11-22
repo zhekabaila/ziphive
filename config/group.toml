@@ -5,8 +5,16 @@ mata_kuliah = "Komputasi Paralel dan Sistem Terdistribusi"
 institusi = "Informatika, Universitas Siliwangi"
 
 [kelompok]
-nama = "<ISI NAMA KELOMPOK>"
+nama = "Kelompok 3"
 
 [[anggota]]
-nama = "<ISI NAMA ANGGOTA 1>"
-npm = "<ISI NPM 1>"
+nama = "Raden Anissa"
+npm = "247006111010"
+
+[[anggota]]
+nama = "Shafa Rabbani Fityatul Mukarramah"
+npm = "247006111020"
+
+[[anggota]]
+nama = "Zheka Baila Arkan"
+npm = "247006111152"
