@@ -139,6 +139,8 @@ SMOKE_COMMANDS: dict[int, list[list[str]]] = {
     ],
     8: [[sys.executable, "-m", "pytest", "-m", "slow", "-q"]],
     9: [[sys.executable, "-m", "pcomp.tools.validate_results", "results/raw"]],
+    # Bagian A fase 10 hanya dokumentasi; smoke memeriksa dokumen final masuk daftar paket.
+    10: [[sys.executable, "scripts/pack_source.py", "--list"]],
 }
 
 # Keluaran yang wajib muncul pada smoke fase tertentu.
@@ -151,6 +153,7 @@ SMOKE_EXPECTED: dict[int, list[str]] = {
     7: ["BENCH OK"],
     8: ["1 passed"],
     9: ["RESULTS VALID"],
+    10: ["docs/CODE_GUIDE.md"],
 }
 
 PHASE_LOG_REQUIRED_HEADINGS = (
