@@ -1,0 +1,41 @@
+{
+  "mode": "distributed",
+  "algo": "lzma",
+  "level": 6,
+  "chunk_mb": 4,
+  "repeat": 1,
+  "scheduler": "dynamic",
+  "workers": 2,
+  "worker_stats": [
+    {
+      "worker_id": "w1",
+      "hostname": "w1",
+      "procs": 1,
+      "tasks_done": 258,
+      "tasks_failed": 0,
+      "busy_sec": 107.574234
+    },
+    {
+      "worker_id": "w2",
+      "hostname": "w2",
+      "procs": 1,
+      "tasks_done": 255,
+      "tasks_failed": 0,
+      "busy_sec": 107.670285
+    }
+  ],
+  "tasks": 513,
+  "tasks_ok": 513,
+  "tasks_failed": 0,
+  "tasks_retried": 0,
+  "failed_tasks": [],
+  "total_orig_bytes": 2147485148,
+  "total_comp_bytes": 816018484,
+  "total_mb": 2048.001431,
+  "ratio": 2.631662,
+  "imbalance": 1.000446,
+  "time_s": 116.723,
+  "throughput_mbs": 17.545826,
+  "simulated": false,
+  "started_at": "2026-11-22T10:28:21+00:00"
+}

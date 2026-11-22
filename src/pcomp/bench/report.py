@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt  # noqa: E402 - backend harus diset sebelum pypl
 from pcomp.metrics.calc import recovery_stats  # noqa: E402
 from pcomp.metrics.events import read_events  # noqa: E402
 
-GROUP_KEYS = ("exp", "workers", "procs", "scheduler")
+GROUP_KEYS = ("exp", "workers", "procs", "scheduler", "kill_workers")
 METRIC_COLUMNS = (
     "time_s",
     "throughput_mbs",
@@ -230,12 +230,21 @@ def _read_worker_stats(run_dir: Path) -> list[tuple[str, float]]:
 
 
 def plot_worker_load(run_dirs: Sequence[Path], path: Path) -> Path | None:
-    """Waktu sibuk tiap Worker untuk beberapa run."""
+    """Waktu sibuk tiap Worker untuk beberapa run terdistribusi yang berbeda konfigurasi."""
     datasets: list[tuple[str, list[tuple[str, float]]]] = []
-    for run_dir in list(run_dirs)[:4]:
+    seen: set[tuple[str, str]] = set()
+    for run_dir in run_dirs:
         stats = _read_worker_stats(run_dir)
-        if stats:
-            datasets.append((run_dir.name, stats))
+        if not stats:
+            continue
+        parts = run_dir.name.split("-")
+        key = (parts[0], parts[3] if len(parts) > 3 else "")
+        if key in seen:
+            continue
+        seen.add(key)
+        datasets.append((run_dir.name, stats))
+        if len(datasets) >= 4:
+            break
     if not datasets:
         return None
 

@@ -1,0 +1,14 @@
+{
+  "exp": "E2",
+  "mode": "local",
+  "workers": 0,
+  "procs": 4,
+  "scheduler": "none",
+  "throttle": 0.0,
+  "kill_workers": 0,
+  "algo": "lzma",
+  "level": 6,
+  "chunk_mb": 4,
+  "repeat": 1,
+  "rep": 1
+}

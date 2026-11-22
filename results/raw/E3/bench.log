@@ -1,0 +1,24 @@
+============================================================
+ ZipHive - Distributed Data Compression
+ Komputasi Paralel dan Sistem Terdistribusi
+ Informatika, Universitas Siliwangi
+ Tema: 16 - Distributed Data Compression
+ Kelompok: Kelompok 3
+ Anggota:
+   - Raden Anissa (247006111010)
+   - Shafa Rabbani Fityatul Mukarramah (247006111020)
+   - Zheka Baila Arkan (247006111152)
+============================================================
+LAN: jalankan 9 Worker di node menuju 0.0.0.0:63774
+E3-w9-p1-dynamic-r1-20261122T091424151809: workers=9 procs=1 time_s=58.533495 tasks=513 verify=True
+LAN: jalankan 9 Worker di node menuju 0.0.0.0:63827
+E3-w9-p1-dynamic-r2-20261122T091600577128: workers=9 procs=1 time_s=69.033922 tasks=513 verify=True
+LAN: jalankan 9 Worker di node menuju 0.0.0.0:63872
+E3-w9-p1-dynamic-r3-20261122T091745978623: workers=9 procs=1 time_s=59.369486 tasks=513 verify=True
+exp          : E3
+mode         : lan
+runs         : 3
+baseline_s   : 142.598698
+summary      : results/summary.csv
+figures      : 6 berkas di results/figures
+BENCH OK

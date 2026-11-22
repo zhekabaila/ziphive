@@ -87,3 +87,27 @@ def test_recovery_without_injection_or_unfinished_task() -> None:
     assert detection_latency(no_kill, 1.0) is None
     assert recovery_stats([]).retried_tasks == 0
     assert recovery_stats([]).worker_id is None
+
+
+def test_recovery_stats_tiga_worker_dihitung_semua() -> None:
+    """UT-CAL-07: tiga Worker dihentikan; task dari ketiganya dihitung diulang."""
+    events = [
+        {"ts": 100.0, "event": "worker_exit_injected", "worker_id": "w1"},
+        {"ts": 100.1, "event": "worker_exit_injected", "worker_id": "w2"},
+        {"ts": 100.2, "event": "worker_exit_injected", "worker_id": "w3"},
+        {"ts": 100.7, "event": "worker_dead", "worker_id": "w1"},
+        {"ts": 100.8, "event": "worker_dead", "worker_id": "w2"},
+        {"ts": 100.9, "event": "worker_dead", "worker_id": "w3"},
+        {"ts": 101.0, "event": "task_requeued", "task_id": 1, "worker_id": "w1"},
+        {"ts": 101.0, "event": "task_requeued", "task_id": 2, "worker_id": "w2"},
+        {"ts": 101.0, "event": "task_requeued", "task_id": 3, "worker_id": "w3"},
+        {"ts": 106.0, "event": "task_done", "task_id": 1},
+        {"ts": 107.0, "event": "task_done", "task_id": 2},
+        {"ts": 108.0, "event": "task_done", "task_id": 3},
+    ]
+    stats = recovery_stats(events)
+    assert stats.worker_id == "w1"
+    assert stats.kill_ts == pytest.approx(100.0)
+    assert stats.detect_s == pytest.approx(0.7)
+    assert stats.recovery_s == pytest.approx(8.0)
+    assert stats.retried_tasks == 3

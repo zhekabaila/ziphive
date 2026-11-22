@@ -1,0 +1,1 @@
+payload chunks dihapus setelah VERIFY OK untuk menghemat disk; manifest.json menyimpan hash tiap chunk.

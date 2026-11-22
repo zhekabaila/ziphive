@@ -2,6 +2,31 @@
 
 Format mengikuti Keep a Changelog. Versi `0.<NN>.0` = akhir fase NN. Aturan pencatatan: SDLC.md bagian 6.
 
+## [0.09.0] - 2026-11-22
+### Added
+- `scripts/run_experiments.py`: orkestrasi E1-E6 pada 10 node virtual. Menyalakan dan mematikan container Worker per run, membaca port Master dari `master.log` run tersebut, mematikan Worker E5 pada sekitar 50 % progres, menyimpan log tiap container, menjalankan `verify.py` lalu menulis `verify.log`, dan menghapus payload `chunks/` setelah `VERIFY OK`.
+- `src/pcomp/tools/validate_results.py`: validasi kelengkapan `results/raw` (metadata, `VERIFY OK`, larangan hasil algoritma `sim`, jumlah ulangan minimal tiga, kesesuaian kolom `summary.csv`); mencetak `RESULTS VALID`.
+- Unit test UT-EXP-01..07, UT-VAL-01..07, UT-BEN-09..11, dan UT-CAL-07.
+- `docs/ANALYSIS.md`: analisis E1-E6 beserta angka rata-rata dan simpangan baku dari `results/summary.csv` dan `results/summary_agg.csv`.
+- `docs/evidence/README.md`: perintah pengambilan tangkapan layar 10 node virtual dan bukti pemulihan E5.
+- Hasil eksperimen resmi: 45 run pada `results/raw/`, `results/summary.csv`, `results/summary_agg.csv`, dan 7 grafik pada `results/figures/`; seluruh run `VERIFY OK`.
+
+### Changed
+- `src/pcomp/bench/runner.py`: opsi `--pause` beserta `pause_between_runs` (jeda 30 detik antar run), urutan run diubah menjadi ulangan di luar dan konfigurasi di dalam agar pergeseran beban mesin tidak membiaskan satu konfigurasi, grafik dan `summary_agg.csv` dibangun dari seluruh baris `summary.csv` (bukan hanya eksperimen terakhir), serta kolom baru `kill_workers`.
+- `src/pcomp/bench/report.py`: `kill_workers` masuk kunci agregat sehingga dua skenario E5 tidak tergabung; `plot_worker_load` memilih run terdistribusi dengan konfigurasi berbeda, bukan empat run pertama.
+- `src/pcomp/metrics/calc.py`: `recovery_stats` dan `recovery_time` menghitung seluruh Worker yang diinjeksi, sehingga `retried_tasks` skenario tiga Worker benar.
+- `scripts/gate.py`: smoke Fase 9 menjalankan `validate_results` dengan penanda `RESULTS VALID`.
+- `EXPERIMENTS.md` bagian 4: skema `summary.csv` memuat `kill_workers`.
+- `PLAN.md`: Fase 9 `DONE`, `CURRENT PHASE` menjadi 10.
+
+### Fixed
+- Runner tidak membaca ulang `summary.csv` sehingga grafik dan agregat hanya berisi eksperimen terakhir.
+- `check_artifacts` dan `validate_results` mewajibkan `events.jsonl` pada mode `sequential` dan `local` yang memang tidak menulisnya.
+
+### Docs
+- `docs/phase-logs/PHASE-09.md`: parameter terkunci (dataset 2048 MiB, `lzma` 6, chunk 4 MiB, `--repeat 1`, 3 ulangan, jeda 30 detik), deviasi, masalah, dan keterbatasan.
+- Catatan keterbatasan: `cpu_avg_workers` tidak dapat dipakai karena sampler membaca proses utama Worker sedangkan kompresi berjalan pada proses anak `multiprocessing.Pool`; analisis beban memakai `busy_sec`.
+
 ## [0.08.0] - 2026-11-22
 ### Added
 - `scripts/check_node.py`: pemeriksaan kesiapan node (versi Python minimal 3.11, psutil, versi paket dan `PROTOCOL_VERSION`, jumlah core, RAM) serta opsi `--master host:port` dan `--ping-master` untuk menguji keterjangkauan port Master tanpa mengirim pesan protokol.

@@ -54,6 +54,7 @@ SUMMARY_COLUMNS = (
     "workers",
     "procs",
     "scheduler",
+    "kill_workers",
     "algo",
     "level",
     "chunk_mb",
@@ -234,6 +235,7 @@ def build_row(
     workers: int,
     procs: int,
     scheduler: str,
+    kill_workers: int = 0,
     speedup_seq: float | None = None,
     speedup_rel: float | None = None,
     imbalance: float | None = None,
@@ -270,6 +272,7 @@ def build_row(
         "workers": workers,
         "procs": procs,
         "scheduler": scheduler,
+        "kill_workers": int(kill_workers),
         "algo": str(metrics.get("algo", "")),
         "level": metrics.get("level", 0),
         "chunk_mb": metrics.get("chunk_mb", 0),
@@ -314,6 +317,22 @@ def append_summary(path: Path, rows: Sequence[Mapping[str, Any]]) -> Path:
                 }
             )
     return path
+
+
+def read_summary_rows(path: Path) -> list[dict[str, Any]]:
+    """Baca seluruh baris summary.csv agar grafik mencakup semua eksperimen."""
+    import csv
+
+    if not path.is_file():
+        return []
+    with path.open(encoding="utf-8", newline="") as handle:
+        return [dict(row) for row in csv.DictReader(handle)]
+
+
+def run_dirs_from_rows(root: Path, rows: Sequence[Mapping[str, Any]]) -> list[Path]:
+    """Folder run yang dirujuk summary, dipakai grafik beban dan timeline pemulihan."""
+    paths = [root / str(row.get("exp")) / str(row.get("run_id")) for row in rows]
+    return [path for path in paths if path.is_dir()]
 
 
 def fill_speedup_rel(rows: Sequence[dict[str, Any]]) -> None:
@@ -624,6 +643,12 @@ def _run_baseline(args: argparse.Namespace, root: Path) -> float:
     return float(metrics.get("time_s", 0.0))
 
 
+def pause_between_runs(seconds: float) -> None:
+    """Jeda antar run agar node kembali dingin (EXPERIMENTS.md bagian 1)."""
+    if seconds > 0:
+        time.sleep(seconds)
+
+
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
@@ -655,6 +680,12 @@ def build_parser() -> argparse.ArgumentParser:
         "--worker-procs", type=int, default=2, help="proses per Worker (distributed)"
     )
     parser.add_argument("--reps", type=int, default=DEFAULT_REPS, help="ulangan tiap konfigurasi")
+    parser.add_argument(
+        "--pause",
+        type=float,
+        default=0.0,
+        help="jeda detik antar run; EXPERIMENTS.md bagian 1 menetapkan 30",
+    )
     parser.add_argument("--algo", default="lzma", choices=["gzip", "bz2", "lzma", "sim"])
     parser.add_argument("--level", type=int, default=constants.DEFAULT_LEVEL)
     parser.add_argument("--chunk-mb", type=int, default=constants.DEFAULT_CHUNK_MB)
@@ -698,6 +729,7 @@ def main(argv: list[str] | None = None) -> int:
 
     try:
         baseline = None if args.exp == "E1" else _run_baseline(args, root)
+        pause_between_runs(args.pause)
         specs = plan_runs(
             args.exp,
             workers=_parse_list(args.workers),
@@ -710,8 +742,10 @@ def main(argv: list[str] | None = None) -> int:
 
         rows: list[dict[str, Any]] = []
         run_dirs: list[Path] = []
-        for spec in specs:
-            for rep in range(1, args.reps + 1):
+        # Ulangan di luar, konfigurasi di dalam: mengurangi bias bila beban mesin bergeser
+        # selama eksperimen berjalan.
+        for rep in range(1, args.reps + 1):
+            for spec in specs:
                 stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%S%f")
                 run_id = f"{spec.exp}-w{spec.workers}-p{spec.procs}-{spec.scheduler}-r{rep}-{stamp}"
                 run_dir = root / spec.exp / run_id
@@ -760,6 +794,7 @@ def main(argv: list[str] | None = None) -> int:
                     workers=spec.workers,
                     procs=spec.procs,
                     scheduler=spec.scheduler,
+                    kill_workers=spec.kill_workers,
                     speedup_seq=speedup_seq,
                     detect_s=stats.detect_s,
                     recovery_s=stats.recovery_s,
@@ -778,15 +813,22 @@ def main(argv: list[str] | None = None) -> int:
                 )
                 if not verify_ok:
                     raise RuntimeError(f"verifikasi gagal pada {run_dir} (lihat manifest.json)")
+                pause_between_runs(args.pause)
 
         fill_speedup_rel(rows)
         summary = append_summary(summary_path(args.algo, out_root), rows)
 
         figures: list[Path] = []
         if not args.no_report:
-            figures = plot_all(rows, run_dirs=run_dirs, out_dir=figures_dir(args.algo, out_root))
+            # Grafik dan agregat dibuat dari SELURUH baris summary.csv, bukan hanya
+            # eksperimen terakhir, agar artefak laporan tidak saling menimpa.
+            all_rows = read_summary_rows(summary_path(args.algo, out_root))
+            all_dirs = run_dirs_from_rows(root, all_rows)
+            figures = plot_all(
+                all_rows, run_dirs=all_dirs, out_dir=figures_dir(args.algo, out_root)
+            )
             aggregate_path = figures_dir(args.algo, out_root).parent / "summary_agg.csv"
-            write_aggregate_csv(aggregate_path, aggregate(rows))
+            write_aggregate_csv(aggregate_path, aggregate(all_rows))
     except (RuntimeError, OSError, ValueError) as exc:
         print(f"BENCH GAGAL: {exc}", file=sys.stderr)
         return constants.EXIT_ERROR

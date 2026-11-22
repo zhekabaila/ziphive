@@ -1,0 +1,48 @@
+============================================================
+ ZipHive - Distributed Data Compression
+ Komputasi Paralel dan Sistem Terdistribusi
+ Informatika, Universitas Siliwangi
+ Tema: 16 - Distributed Data Compression
+ Kelompok: Kelompok 3
+ Anggota:
+   - Raden Anissa (247006111010)
+   - Shafa Rabbani Fityatul Mukarramah (247006111020)
+   - Zheka Baila Arkan (247006111152)
+============================================================
+LAN: jalankan 1 Worker di node menuju 0.0.0.0:64994
+E6-w1-p1-dynamic-r1-20261122T095446502218: workers=1 procs=1 time_s=270.069886 tasks=513 verify=True
+LAN: jalankan 2 Worker di node menuju 0.0.0.0:65059
+E6-w2-p1-dynamic-r1-20261122T095952958718: workers=2 procs=1 time_s=174.557166 tasks=513 verify=True
+LAN: jalankan 4 Worker di node menuju 0.0.0.0:65101
+E6-w4-p1-dynamic-r1-20261122T100323450745: workers=4 procs=1 time_s=119.868674 tasks=513 verify=True
+LAN: jalankan 6 Worker di node menuju 0.0.0.0:65176
+E6-w6-p1-dynamic-r1-20261122T100559784878: workers=6 procs=1 time_s=87.156382 tasks=513 verify=True
+LAN: jalankan 9 Worker di node menuju 0.0.0.0:65204
+E6-w9-p1-dynamic-r1-20261122T100803593433: workers=9 procs=1 time_s=87.81071 tasks=513 verify=True
+LAN: jalankan 1 Worker di node menuju 0.0.0.0:65246
+E6-w1-p1-dynamic-r2-20261122T101008474843: workers=1 procs=1 time_s=255.180588 tasks=513 verify=True
+LAN: jalankan 2 Worker di node menuju 0.0.0.0:65358
+E6-w2-p1-dynamic-r2-20261122T101459015260: workers=2 procs=1 time_s=130.224855 tasks=513 verify=True
+LAN: jalankan 4 Worker di node menuju 0.0.0.0:65452
+E6-w4-p1-dynamic-r2-20261122T101745465140: workers=4 procs=1 time_s=100.200251 tasks=513 verify=True
+LAN: jalankan 6 Worker di node menuju 0.0.0.0:65526
+E6-w6-p1-dynamic-r2-20261122T102002100167: workers=6 procs=1 time_s=86.183001 tasks=513 verify=True
+LAN: jalankan 9 Worker di node menuju 0.0.0.0:49218
+E6-w9-p1-dynamic-r2-20261122T102205302889: workers=9 procs=1 time_s=87.094193 tasks=513 verify=True
+LAN: jalankan 1 Worker di node menuju 0.0.0.0:49294
+E6-w1-p1-dynamic-r3-20261122T102409928723: workers=1 procs=1 time_s=216.192131 tasks=513 verify=True
+LAN: jalankan 2 Worker di node menuju 0.0.0.0:49427
+E6-w2-p1-dynamic-r3-20261122T102821231522: workers=2 procs=1 time_s=116.723 tasks=513 verify=True
+LAN: jalankan 4 Worker di node menuju 0.0.0.0:49507
+E6-w4-p1-dynamic-r3-20261122T103053149441: workers=4 procs=1 time_s=75.941657 tasks=513 verify=True
+LAN: jalankan 6 Worker di node menuju 0.0.0.0:49564
+E6-w6-p1-dynamic-r3-20261122T103244664977: workers=6 procs=1 time_s=64.494974 tasks=513 verify=True
+LAN: jalankan 9 Worker di node menuju 0.0.0.0:49631
+E6-w9-p1-dynamic-r3-20261122T103424956470: workers=9 procs=1 time_s=63.052916 tasks=513 verify=True
+exp          : E6
+mode         : lan
+runs         : 15
+baseline_s   : 197.118879
+summary      : results/summary.csv
+figures      : 6 berkas di results/figures
+BENCH OK

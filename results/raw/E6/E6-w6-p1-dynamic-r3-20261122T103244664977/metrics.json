@@ -1,0 +1,73 @@
+{
+  "mode": "distributed",
+  "algo": "lzma",
+  "level": 6,
+  "chunk_mb": 4,
+  "repeat": 1,
+  "scheduler": "dynamic",
+  "workers": 6,
+  "worker_stats": [
+    {
+      "worker_id": "w1",
+      "hostname": "w1",
+      "procs": 1,
+      "tasks_done": 85,
+      "tasks_failed": 0,
+      "busy_sec": 56.412366
+    },
+    {
+      "worker_id": "w2",
+      "hostname": "w2",
+      "procs": 1,
+      "tasks_done": 90,
+      "tasks_failed": 0,
+      "busy_sec": 56.152091
+    },
+    {
+      "worker_id": "w3",
+      "hostname": "w3",
+      "procs": 1,
+      "tasks_done": 88,
+      "tasks_failed": 0,
+      "busy_sec": 55.622889
+    },
+    {
+      "worker_id": "w4",
+      "hostname": "w4",
+      "procs": 1,
+      "tasks_done": 84,
+      "tasks_failed": 0,
+      "busy_sec": 56.491502
+    },
+    {
+      "worker_id": "w5",
+      "hostname": "w5",
+      "procs": 1,
+      "tasks_done": 84,
+      "tasks_failed": 0,
+      "busy_sec": 57.207414
+    },
+    {
+      "worker_id": "w6",
+      "hostname": "w6",
+      "procs": 1,
+      "tasks_done": 82,
+      "tasks_failed": 0,
+      "busy_sec": 56.265157
+    }
+  ],
+  "tasks": 513,
+  "tasks_ok": 513,
+  "tasks_failed": 0,
+  "tasks_retried": 0,
+  "failed_tasks": [],
+  "total_orig_bytes": 2147485148,
+  "total_comp_bytes": 816018484,
+  "total_mb": 2048.001431,
+  "ratio": 2.631662,
+  "imbalance": 1.015061,
+  "time_s": 64.494974,
+  "throughput_mbs": 31.754434,
+  "simulated": false,
+  "started_at": "2026-11-22T10:32:44+00:00"
+}

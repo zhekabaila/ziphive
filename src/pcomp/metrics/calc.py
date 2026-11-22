@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Collection, Mapping, Sequence
 from dataclasses import dataclass
 from typing import Any
 
@@ -65,12 +65,17 @@ def detection_latency(events: Sequence[Event], kill_ts: float) -> float | None:
     return None
 
 
-def recovery_time(events: Sequence[Event], kill_ts: float) -> float | None:
+def recovery_time(
+    events: Sequence[Event], kill_ts: float, workers: Collection[str] | None = None
+) -> float | None:
     """t_task_terakhir_requeue_selesai - t_kill; None bila belum selesai."""
+    scope = set(workers) if workers else None
     requeued = {
         int(event["task_id"])
         for event in events
-        if event.get("event") == "task_requeued" and _timestamp(event) >= kill_ts
+        if event.get("event") == "task_requeued"
+        and _timestamp(event) >= kill_ts
+        and (scope is None or str(event.get("worker_id")) in scope)
     }
     if not requeued:
         return None
@@ -105,28 +110,56 @@ def _pick_worker(events: Sequence[Event], worker_id: str | None) -> str | None:
     return None
 
 
+def killed_workers(events: Sequence[Event]) -> list[str]:
+    """Daftar Worker yang dihentikan lewat injeksi, sesuai urutan kemunculan."""
+    names: list[str] = []
+    for event in events:
+        if event.get("event") != "worker_exit_injected":
+            continue
+        name = event.get("worker_id")
+        if name is not None and str(name) not in names:
+            names.append(str(name))
+    return names
+
+
 def recovery_stats(events: Sequence[Event], worker_id: str | None = None) -> RecoveryStats:
-    """Hitung detection latency, Recovery Time, dan jumlah task diulang dari events."""
-    worker = _pick_worker(events, worker_id)
-    kill_ts: float | None = None
-    if worker is not None:
-        for event in events:
-            if event.get("event") == "worker_exit_injected" and event.get("worker_id") == worker:
-                kill_ts = _timestamp(event)
-                break
+    """Hitung detection latency, Recovery Time, dan jumlah task diulang dari events.
+
+    Bila satu run menghentikan beberapa Worker (E5 skenario tiga Worker), seluruh
+    Worker yang diinjeksi ikut dihitung agar jumlah task yang diulang benar.
+    """
+    killed = killed_workers(events)
+    scope: set[str] | None
+    if worker_id is not None:
+        scope = {worker_id}
+        worker: str | None = worker_id
+    elif killed:
+        scope = set(killed)
+        worker = killed[0]
+    else:
+        scope = None
+        worker = _pick_worker(events, None)
+
+    kills = [
+        _timestamp(event)
+        for event in events
+        if event.get("event") == "worker_exit_injected"
+        and (scope is None or str(event.get("worker_id")) in scope)
+    ]
+    kill_ts: float | None = min(kills) if kills else None
 
     retried = {
         int(event["task_id"])
         for event in events
         if event.get("event") == "task_requeued"
-        and (worker is None or event.get("worker_id") == worker)
+        and (scope is None or str(event.get("worker_id")) in scope)
     }
 
     detect_s: float | None = None
     recovery_s: float | None = None
     if kill_ts is not None:
         detect_s = detection_latency(events, kill_ts)
-        recovery_s = recovery_time(events, kill_ts)
+        recovery_s = recovery_time(events, kill_ts, scope)
 
     return RecoveryStats(
         worker_id=worker,

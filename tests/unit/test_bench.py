@@ -24,7 +24,8 @@ from pcomp.bench.runner import (
 )
 
 EXPECTED_COLUMNS = (
-    "exp,run_id,rep,mode,workers,procs,scheduler,algo,level,chunk_mb,repeat,total_mb,tasks,"
+    "exp,run_id,rep,mode,workers,procs,scheduler,kill_workers,algo,level,chunk_mb,repeat,"
+    "total_mb,tasks,"
     "time_s,throughput_mbs,ratio,speedup_seq,speedup_rel,efficiency,imbalance,cpu_avg_master,"
     "cpu_avg_workers,mem_avg_master,mem_avg_workers,detect_s,recovery_s,retried_tasks,"
     "verify_ok,started_at"
@@ -298,3 +299,99 @@ def test_main_sequential_end_to_end(
     assert (run_dirs[0] / "system.csv").is_file()
     assert (out_root / "summary_agg.csv").is_file()
     assert (out_root / "figures" / "time_vs_workers.png").is_file()
+
+
+def test_pause_option_default_and_positive(monkeypatch: pytest.MonkeyPatch) -> None:
+    """UT-BEN-09: jeda antar run dapat diatur dan tidak memanggil sleep bila nol."""
+    args = vars(bench.build_parser().parse_args(["--exp", "E6", "--local"]))
+    assert args["pause"] == 0.0
+
+    calls: list[float] = []
+    monkeypatch.setattr(bench.time, "sleep", lambda seconds: calls.append(seconds))
+    bench.pause_between_runs(0.0)
+    assert calls == []
+    bench.pause_between_runs(30.0)
+    assert calls == [30.0]
+
+
+def test_urutan_run_ulangan_di_luar(
+    tmp_path: Path, repo_root: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """UT-BEN-10: ulangan berjalan lebih dulu agar pergeseran beban mesin tidak bias."""
+    out_root = tmp_path / "out"
+    code = bench.main(
+        [
+            "--exp",
+            "E2",
+            "--local",
+            "--algo",
+            "sim",
+            "--level",
+            "1",
+            "--size-mb",
+            "1",
+            "--files",
+            "2",
+            "--chunk-mb",
+            "1",
+            "--reps",
+            "2",
+            "--procs",
+            "1,2",
+            "--data-root",
+            str(tmp_path / "data"),
+            "--out-root",
+            str(out_root),
+            "--no-report",
+            "--group-config",
+            str(repo_root / "config" / "group.toml"),
+        ]
+    )
+    assert code == 0
+    capsys.readouterr()
+    specs = sorted(
+        out_root.joinpath("E2").glob("*/spec.json"), key=lambda path: path.stat().st_mtime_ns
+    )
+    urutan = [path.parent.name for path in specs]
+    assert "r1" in urutan[0] and "-p1-" in urutan[0]
+    assert "r1" in urutan[1] and "-p2-" in urutan[1]
+    assert "r2" in urutan[2] and "-p1-" in urutan[2]
+    assert "r2" in urutan[3] and "-p2-" in urutan[3]
+
+
+def test_report_menggabungkan_semua_eksperimen(
+    tmp_path: Path, repo_root: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """UT-BEN-11: summary_agg dan grafik memakai seluruh baris summary.csv."""
+    out_root = tmp_path / "out"
+    common = [
+        "--local",
+        "--algo",
+        "sim",
+        "--level",
+        "1",
+        "--size-mb",
+        "1",
+        "--files",
+        "2",
+        "--chunk-mb",
+        "1",
+        "--reps",
+        "1",
+        "--data-root",
+        str(tmp_path / "data"),
+        "--out-root",
+        str(out_root),
+        "--group-config",
+        str(repo_root / "config" / "group.toml"),
+    ]
+    assert bench.main(["--exp", "E1", *common]) == 0
+    capsys.readouterr()
+    assert bench.main(["--exp", "E6", "--workers", "2", *common]) == 0
+    capsys.readouterr()
+
+    with (out_root / "summary_agg.csv").open(encoding="utf-8", newline="") as handle:
+        agregat = list(csv.DictReader(handle))
+    assert {row["exp"] for row in agregat} == {"E1", "E6"}
+    rows = bench.read_summary_rows(out_root / "summary.csv")
+    assert len(bench.run_dirs_from_rows(out_root, rows)) == 2
