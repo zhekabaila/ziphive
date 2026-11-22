@@ -1,6 +1,6 @@
 # PLAN.md — Rencana Pengerjaan per Fase
 
-CURRENT PHASE: 8
+CURRENT PHASE: 9
 
 ## Ringkasan proyek
 Aplikasi kompresi data terdistribusi. Dataset dipecah menjadi chunk (task), Master membagikan task ke 9 Worker lewat TCP, tiap Worker memproses task secara paralel dengan multiprocessing, hasil kompresi dikumpulkan Master dan diverifikasi (SHA-256). Mencakup dynamic load balancing, fault tolerance, dan evaluasi performa sesuai soal UAS.
@@ -17,6 +17,10 @@ Aplikasi kompresi data terdistribusi. Dataset dipecah menjadi chunk (task), Mast
 | Minimal 10 node fisik | 8, 9 |
 | Source code, laporan, video demo | 10 |
 
+Catatan node: soal meminta minimal 10 node fisik. Berdasarkan keputusan user 2026-11-22, pelaksanaan
+Fase 8 dan 9 memakai 10 node virtual di satu laptop (1 Master di host + 9 Worker container, ADR-015).
+Deviasi ini wajib diungkap di laporan dan video.
+
 ## Status fase
 | Fase | Nama | Ukuran | Pelaku | Status |
 |---|---|---|---|---|
@@ -28,8 +32,8 @@ Aplikasi kompresi data terdistribusi. Dataset dipecah menjadi chunk (task), Mast
 | 5 | Dynamic load balancing | M | Agent | DONE |
 | 6 | Fault tolerance | L | Agent | DONE |
 | 7 | Metrik dan harness benchmark | M | Agent | DONE |
-| 8 | Kesiapan multi-node | M | Agent + User | IN PROGRESS (menunggu user) |
-| 9 | Eksperimen resmi 10 node | L | User + Agent | TODO |
+| 8 | Kesiapan multi-node | M | Agent + User | DONE |
+| 9 | Eksperimen resmi 10 node virtual | L | User + Agent | TODO |
 | 10 | Dokumentasi, laporan, paket pengumpulan | M | Agent + User | TODO |
 
 Ukuran: S kecil, M sedang, L besar. Agent memperbarui kolom Status (TODO, IN PROGRESS, DONE, BLOCKED) dan `CURRENT PHASE` sebelum commit akhir fase.
@@ -163,7 +167,8 @@ Smoke: `python -m pcomp.bench.runner --exp E6 --local --workers 1,2 --reps 2 --a
 Commit: `feat(phase-07): add metrics collection, calculations, benchmark harness`
 
 ## FASE 8 — Kesiapan multi-node (HUMAN-REQUIRED sebagian)
-Tujuan: 10 node siap menjalankan sistem.
+Tujuan: 10 node virtual (1 Master di host + 9 Worker container pada satu laptop) siap menjalankan
+sistem. Soal meminta 10 node fisik; deviasi dicatat pada ADR-015 dan wajib diungkap di laporan.
 Agent:
 - P8-T1 `scripts/check_node.py` (versi Python, psutil, jumlah core, koneksi ke Master, versi protokol).
 - P8-T2 `scripts/launch_workers.py` (baca `config/nodes.toml`; mode cetak perintah dan mode ssh).
@@ -172,15 +177,15 @@ Agent:
 - P8-T5 Opsional bila R1 terjadi: `--data-mode local` (Worker membaca dataset lokal berdasar file, offset, panjang).
 - P8-T6 Uji lokal 9 Worker di satu mesin (marker `slow`).
 User (checklist, hasil dicatat di `PHASE-08.md`):
-- Pasang Python dan dependensi di 9 Worker, jalankan `check_node.py` di semua node, catat inventaris (host, IP, CPU, core, RAM, OS).
-- Dry-run dataset kecil di 10 node, kirim log dan hasil ke agent.
+- Siapkan 9 Worker container (Python dan dependensi terpasang), jalankan `check_node.py` di 10 node virtual, catat inventaris (host, container/IP, CPU, core, RAM, OS).
+- Dry-run dataset kecil di 10 node virtual, kirim log dan hasil ke agent.
 Test unit: parsing nodes.toml, perintah ssh yang dibangkitkan, pengecualian ZIP, check_node dengan mock.
 Smoke: uji 9 Worker lokal (`pytest -m slow`).
 Commit: `feat(phase-08): add node checks, launch scripts, packaging, deployment guide`
 
 ## FASE 9 — Eksperimen resmi (HUMAN-REQUIRED)
 Tujuan: data hasil nyata untuk laporan.
-User: jalankan E1 sampai E6 sesuai EXPERIMENTS.md di 10 node, 3 ulangan; salin `results/raw/` ke repo.
+User: jalankan E1 sampai E6 sesuai EXPERIMENTS.md di 10 node virtual, 3 ulangan; salin `results/raw/` ke repo.
 Agent:
 - P9-T1 `tools/validate_results.py`: semua run punya metadata, `VERIFY OK`, skema lengkap, jumlah ulangan sesuai.
 - P9-T2 Hasilkan `results/summary.csv` dan grafik final.
