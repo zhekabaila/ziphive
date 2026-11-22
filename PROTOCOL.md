@@ -1,4 +1,4 @@
-# PROTOCOL.md — Protokol Master–Worker (PROTOCOL_VERSION = 1)
+# PROTOCOL.md — Protokol Master–Worker (PROTOCOL_VERSION = 2)
 
 Transport: TCP, port default 5050. Satu koneksi per Worker, dua arah.
 
@@ -25,8 +25,10 @@ Transport: TCP, port default 5050. Satu koneksi per Worker, dua arah.
 | M→W | `SHUTDOWN` | `reason` | tidak |
 | W→M | `BYE` | `worker_id` | tidak |
 | M→W | `ERROR` | `code`, `message` | tidak |
+| M→W | `KILL` | `worker_id`, `reason` | tidak |
 
-Kode error: `VERSION_MISMATCH`, `DUPLICATE_WORKER`, `BAD_FRAME`, `UNKNOWN_TYPE`, `INTERNAL`.
+Kode error: `VERSION_MISMATCH`, `DUPLICATE_WORKER`, `SERVER_FULL`, `BAD_FRAME`,
+`UNKNOWN_TYPE`, `INTERNAL`.
 
 ## 3. Aturan
 1. Pesan pertama dari Worker wajib `REGISTER`. Selain itu: `ERROR(BAD_FRAME)` lalu tutup.
@@ -38,6 +40,9 @@ Kode error: `VERSION_MISMATCH`, `DUPLICATE_WORKER`, `BAD_FRAME`, `UNKNOWN_TYPE`,
 7. Worker DEAD bila `now - last_seen > heartbeat_timeout` (default 6 s) atau socket error.
 8. Master mengirim `SHUTDOWN` saat semua task DONE atau FAILED. Worker membalas `BYE` dan keluar.
 9. Penerima mengabaikan field tidak dikenal (kompatibel ke depan dalam versi yang sama). Perubahan format wajib menaikkan `PROTOCOL_VERSION`.
+10. Worker di luar kuota run (`len(sesi aktif) >= --expect-workers`): `ERROR(SERVER_FULL)` lalu tutup, tanpa `REGISTER_ACK`. Aturan ini menjaga konfigurasi E6 dengan jumlah Worker lebih kecil tetap murni ketika laptop lain belum dimatikan.
+11. `KILL` hanya dikirim Master untuk skenario E5 pada node fisik: Worker wajib langsung keluar tanpa `BYE` (setara SIGKILL) dan tanpa menyelesaikan task yang sedang berjalan. Master mencatat `worker_exit_injected` sebelum mengirim pesan, sehingga lama deteksi (`worker_dead - worker_exit_injected`) dan lama pemulihan diukur dengan jam Master saja.
+12. `PROTOCOL_VERSION` naik ke 2 pada Fase 11 karena penambahan pesan `KILL` dan kode error `SERVER_FULL`. Node dengan versi berbeda ditolak saat `REGISTER` (`VERSION_MISMATCH`).
 
 ## 4. Timeout
 | Nama | Default |

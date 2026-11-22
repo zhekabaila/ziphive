@@ -106,7 +106,7 @@ def test_missing_required_field_rejected() -> None:
 def test_credits_must_be_positive() -> None:
     """UT-PRO-06c: REQUEST dengan credits 0 ditolak."""
     with pytest.raises(BadFrameError):
-        validate_message({"type": "REQUEST", "v": 1, "credits": 0})
+        validate_message({"type": "REQUEST", "v": constants.PROTOCOL_VERSION, "credits": 0})
 
 
 def test_version_mismatch_detected() -> None:
@@ -119,7 +119,7 @@ def test_unknown_fields_ignored() -> None:
     """PROTOCOL.md aturan 9: field tidak dikenal diabaikan."""
     header = {
         "type": "HEARTBEAT",
-        "v": 1,
+        "v": constants.PROTOCOL_VERSION,
         "ts": 1.0,
         "cpu_percent": 1.0,
         "mem_percent": 2.0,
@@ -142,13 +142,21 @@ def test_all_message_types_defined() -> None:
         "SHUTDOWN",
         "BYE",
         "ERROR",
+        "KILL",
     }
     assert {member.value for member in MessageType} == expected
 
 
 def test_error_codes_defined() -> None:
     """Seluruh kode error pada PROTOCOL.md bagian 2 tersedia di enum."""
-    expected = {"VERSION_MISMATCH", "DUPLICATE_WORKER", "BAD_FRAME", "UNKNOWN_TYPE", "INTERNAL"}
+    expected = {
+        "VERSION_MISMATCH",
+        "DUPLICATE_WORKER",
+        "SERVER_FULL",
+        "BAD_FRAME",
+        "UNKNOWN_TYPE",
+        "INTERNAL",
+    }
     assert {member.value for member in ErrorCode} == expected
 
 
@@ -156,3 +164,14 @@ def test_build_frame_validates() -> None:
     """build_frame menolak field wajib yang hilang."""
     with pytest.raises(BadFrameError):
         build_frame(MessageType.TASK, task_id=1)
+
+
+def test_kill_header_requires_worker_and_reason() -> None:
+    """UT-PRO-07: pesan KILL versi 2 wajib memuat worker_id dan reason."""
+    header = make_header(MessageType.KILL, worker_id="w3", reason="master-kill")
+    assert validate_message(header) is MessageType.KILL
+
+    with pytest.raises(BadFrameError):
+        validate_message({"type": "KILL", "v": constants.PROTOCOL_VERSION, "worker_id": "w3"})
+    with pytest.raises(BadFrameError):
+        validate_message({"type": "KILL", "v": constants.PROTOCOL_VERSION, "reason": "x"})

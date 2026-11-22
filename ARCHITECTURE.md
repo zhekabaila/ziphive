@@ -22,7 +22,7 @@ Topologi: star. 1 node Master, 9 node Worker, satu jaringan (kabel atau wireless
 ## 2. Komponen Master
 | Modul | Tanggung jawab |
 |---|---|
-| `server.py` | Accept koneksi, satu thread handler per Worker, registry Worker, start barrier `--expect-workers` |
+| `server.py` | Accept koneksi, satu thread handler per Worker, registry Worker, start barrier `--expect-workers`, tolak Worker berlebih (`SERVER_FULL`), injeksi `KILL` untuk E5 (`--inject-kills`) |
 | `scheduler.py` | `StaticScheduler` dan `DynamicScheduler` (memilih task berikutnya untuk Worker tertentu) |
 | `tasks.py` (`TaskTable`) | Seluruh state task, dilindungi satu lock |
 | `monitor.py` | Thread pemeriksa heartbeat, menandai Worker DEAD, requeue |
@@ -32,7 +32,7 @@ Topologi: star. 1 node Master, 9 node Worker, satu jaringan (kabel atau wireless
 ## 3. Komponen Worker
 | Modul | Tanggung jawab |
 |---|---|
-| `client.py` | Connect, REGISTER, loop terima TASK, kirim RESULT, atur credit |
+| `client.py` | Connect, REGISTER, loop terima TASK, kirim RESULT, atur credit, keluar paksa saat menerima `KILL` |
 | `executor.py` | `multiprocessing.Pool(procs)`, fungsi kompresi top-level (spawn-safe) |
 | `heartbeat.py` | Thread kirim HEARTBEAT (CPU, memori, jumlah task berjalan) |
 
@@ -69,7 +69,11 @@ Aturan: `attempts` ditambah saat task dikirim ke Worker, bukan saat dikembalikan
 | Hasil ganda atau terlambat | Task bukan ASSIGNED ke pengirim | Diabaikan, dicatat |
 | Master hilang | Worker tidak menerima HEARTBEAT_ACK 6 detik | Worker berhenti rapi |
 | Worker kembali | REGISTER dengan `worker_id` lama | Sesi baru, credit dihitung ulang |
+| Worker dimatikan Master (E5) | `KILL` dari Master, socket putus | `worker_exit_injected` lalu `worker_dead`, task ASSIGNED di-requeue |
+| Worker berlebih | REGISTER saat kuota `--expect-workers` penuh | `ERROR(SERVER_FULL)`, Worker mengulang koneksi |
 Master tidak direplikasi (single point of failure), dicatat sebagai keterbatasan di laporan.
+
+Pada 10 perangkat fisik (ADR-016), Master tidak dapat mengirim sinyal OS ke laptop Worker. Karena itu skenario E5 memakai pesan `KILL` dari Master: Worker keluar tanpa `BYE` sehingga Master mendeteksinya sebagai koneksi putus, dan kedua timestamp tercatat pada jam Master.
 
 ## 8. Alur data dan integritas
 Master: baca chunk, hitung sha256, kirim TASK+payload. Worker: hitung sha256 data diterima (dikirim balik), kompresi, kirim RESULT+payload terkompresi. Master: bandingkan sha256, tulis `chunks/<file>.<index>.<ext>`, catat di manifest. Verifikasi akhir (`tools/verify.py`): dekompresi semua chunk, gabung, bandingkan sha256 file asli. Task yang habis percobaan dicatat pada larik `failed` manifest (`FailedEntry`: `task_id`, `file`, `index`, `offset`, `length`, `attempts`, `reason`) dan pada `metrics.json` (`failed_tasks`); larik ini kosong pada run normal.
@@ -93,3 +97,5 @@ CLI menimpa TOML.
 - Chunk independen mengurangi rasio kompresi dibanding file utuh.
 - Satu Master melayani 9 Worker dengan thread, cukup untuk skala tugas ini.
 - Mode `--data-mode local` (Worker membaca dataset lokal berdasarkan file, offset, dan panjang) belum tersedia; keputusan menunggu bukti risiko R1 dari dry-run 10 node virtual (ADR-014, ADR-015).
+- Mode `--lan` (Worker eksternal) tidak mematikan Worker yang crash: launcher di laptop Worker mengulang proses, sedangkan Worker yang menerima `KILL` berhenti sampai operator menyalakannya lagi. Perilaku ini disengaja agar skenario E5 tetap terukur (ADR-016).
+- Bandwidth jaringan fisik: satu run 2048 MiB mengirim sekitar 2 GiB chunk ke Worker dan menerima sekitar 816 MB hasil. Hotspot telepon genggam dapat menjadi bottleneck; angka rinci ada di `DEPLOYMENT-PHYSICAL.md` bagian 6.

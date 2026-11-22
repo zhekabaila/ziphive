@@ -24,3 +24,10 @@ reports/
 
 # Hasil eksperimen algoritma sim (bukan data resmi, PLAN.md Fase 7)
 results/dev/
+
+# Berkas runtime launcher laptop fisik (PLAN.md Fase 11): ingatan operator dan log Worker
+config/worker.local.toml
+logs/
+
+# Junk macOS
+.DS_Store

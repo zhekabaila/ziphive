@@ -52,6 +52,18 @@ def build_parser() -> argparse.ArgumentParser:
         default=constants.DEFAULT_BARRIER_TIMEOUT,
         help="detik menunggu Worker sebelum mulai atau berhenti",
     )
+    parser.add_argument(
+        "--inject-kills",
+        type=int,
+        default=0,
+        help="jumlah Worker yang dimatikan Master untuk E5 (0 = nonaktif)",
+    )
+    parser.add_argument(
+        "--inject-kill-fraction",
+        type=float,
+        default=0.5,
+        help="fraksi task selesai saat KILL dikirim (E5)",
+    )
     parser.add_argument("--group-config", default=str(constants.DEFAULT_GROUP_CONFIG))
     parser.add_argument("--log-level", default="INFO")
     return parser
@@ -70,7 +82,12 @@ def main(argv: list[str] | None = None) -> int:
         return constants.EXIT_ERROR
 
     try:
-        server = MasterServer(config, barrier_timeout=args.barrier_timeout)
+        server = MasterServer(
+            config,
+            barrier_timeout=args.barrier_timeout,
+            inject_kills=args.inject_kills,
+            inject_kill_fraction=args.inject_kill_fraction,
+        )
     except (FileNotFoundError, OSError, ValueError) as exc:
         print(f"MASTER GAGAL: {exc}", file=sys.stderr)
         return constants.EXIT_ERROR

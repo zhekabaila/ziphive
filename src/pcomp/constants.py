@@ -6,10 +6,10 @@ from pathlib import Path
 
 PROJECT_NAME = "ZipHive"
 PACKAGE_NAME = "pcomp"
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 
 # Versi format pesan; naikkan bila format berubah (PROTOCOL.md).
-PROTOCOL_VERSION = 1
+PROTOCOL_VERSION = 2
 
 # Lokasi default konfigurasi; dapat ditimpa lewat argumen CLI.
 DEFAULT_GROUP_CONFIG = Path("config") / "group.toml"
@@ -54,3 +54,6 @@ DEFAULT_PROCS = 4
 
 EXIT_OK = 0
 EXIT_ERROR = 1
+# Worker keluar karena pesan KILL dari Master (E5 pada node fisik). Launcher memakai kode
+# ini untuk berhenti, bukan mengulang Worker yang sengaja dimatikan.
+EXIT_KILLED = 3

@@ -92,3 +92,26 @@ def test_required_artifacts_sadar_mode(load_script: Loader, tmp_path) -> None:
         (local / "spec.json").write_text(f'{{"mode": "{mode}"}}', encoding="utf-8")
         assert "events.jsonl" not in mod.required_artifacts(local)
         assert "metrics.json" in mod.required_artifacts(local)
+
+
+def test_mode_external_memakai_port_tetap(load_script: Loader) -> None:
+    """UT-EXP-08: mode external memakai port tetap dan lan-wait, bukan container."""
+    mod = load_script("run_experiments.py")
+    args = mod.build_parser().parse_args(
+        ["--worker-mode", "external", "--port", "5055", "--lan-wait", "120"]
+    )
+    common = ["--reps", "1"]
+
+    e6, lan = mod.experiment_args("E6", args, common)
+    assert "--lan" in e6 and lan
+    assert e6[e6.index("--port") + 1] == "5055"
+    assert e6[e6.index("--lan-wait") + 1] == "120.0"
+    assert mod.uses_containers(e6) is True
+
+    e5_base = mod.lan_args(args, common)
+    assert e5_base[e5_base.index("--port") + 1] == "5055"
+
+    docker = mod.build_parser().parse_args([])
+    assert docker.worker_mode == "docker"
+    plain = mod.lan_args(docker, common)
+    assert "--port" not in plain

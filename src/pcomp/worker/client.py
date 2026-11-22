@@ -139,6 +139,14 @@ class WorkerClient:
             )
             ack = recv_msg(sock)
             msg_type = validate_message(ack.header)
+            if msg_type is MessageType.ERROR:
+                # Master menolak sebelum REGISTER_ACK (mis. SERVER_FULL saat Worker
+                # berlebih pada E6): tampilkan kode agar operator tahu penyebabnya.
+                print(
+                    f"WORKER DITOLAK {ack.header['code']}: {ack.header['message']}",
+                    file=sys.stderr,
+                )
+                return constants.EXIT_ERROR
             if msg_type is not MessageType.REGISTER_ACK:
                 print(f"WORKER: balasan tak terduga {msg_type.value}", file=sys.stderr)
                 return constants.EXIT_ERROR
@@ -240,6 +248,15 @@ class WorkerClient:
                 )
             elif msg_type is MessageType.HEARTBEAT_ACK:
                 continue
+            elif msg_type is MessageType.KILL:
+                # Meniru SIGKILL: tidak ada BYE, tidak ada flush buffer hasil. Master
+                # mencatat `worker_dead` saat socket putus sehingga lama deteksi terukur.
+                print(
+                    f"WORKER DIMATIKAN MASTER: {frame.header.get('reason', '')}",
+                    file=sys.stderr,
+                    flush=True,
+                )
+                os._exit(constants.EXIT_KILLED)
             elif msg_type is MessageType.SHUTDOWN:
                 logger.info("SHUTDOWN diterima: %s", frame.header.get("reason"))
                 return constants.EXIT_OK

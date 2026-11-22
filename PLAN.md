@@ -1,6 +1,6 @@
 # PLAN.md — Rencana Pengerjaan per Fase
 
-CURRENT PHASE: 10
+CURRENT PHASE: 11
 
 ## Ringkasan proyek
 Aplikasi kompresi data terdistribusi. Dataset dipecah menjadi chunk (task), Master membagikan task ke 9 Worker lewat TCP, tiap Worker memproses task secara paralel dengan multiprocessing, hasil kompresi dikumpulkan Master dan diverifikasi (SHA-256). Mencakup dynamic load balancing, fault tolerance, dan evaluasi performa sesuai soal UAS.
@@ -35,6 +35,7 @@ Deviasi ini wajib diungkap di laporan dan video.
 | 8 | Kesiapan multi-node | M | Agent + User | DONE |
 | 9 | Eksperimen resmi 10 node virtual | L | User + Agent | DONE |
 | 10 | Dokumentasi, laporan, paket pengumpulan | M | Agent + User | DONE |
+| 11 | Kesiapan 10 perangkat fisik (launcher 3 OS, injeksi kegagalan, runbook) | L | Agent + User | DONE |
 
 Ukuran: S kecil, M sedang, L besar. Agent memperbarui kolom Status (TODO, IN PROGRESS, DONE, BLOCKED) dan `CURRENT PHASE` sebelum commit akhir fase.
 
@@ -209,3 +210,55 @@ Commit: `docs(phase-10): add code guide, report draft, demo script, final packag
 
 Status akhir: seluruh fase 0 sampai 10 selesai pada 2026-11-22. Tidak ada fase berikutnya;
 `CURRENT PHASE` tetap 10 sebagai fase penutup. Versi paket akhir `1.0.0`.
+
+---
+
+## FASE 11 — Kesiapan 10 perangkat fisik
+Tujuan: eksperimen resmi E1 sampai E6 dapat dijalankan pada 1 Master dan 9 Worker berupa laptop
+fisik di satu jaringan (hotspot atau router), tanpa ssh dan tanpa Docker, pada macOS, Windows,
+dan Linux. Menggantikan pelaksanaan node virtual (ADR-015) dengan perangkat fisik (ADR-016).
+
+Latar: harness fase 7 hanya menjalankan Worker lokal (`subprocess`) atau container Docker
+(`scripts/run_experiments.py`). Pada node fisik, Worker tidak dapat dimatikan dari Master lewat
+sinyal OS, dan laptop teman tidak dapat diminta memasang ssh server. Karena itu Fase 11 menambah
+jalur "Worker eksternal": Master menolak Worker berlebih, memicu kegagalan E5 sendiri lewat pesan
+`KILL`, dan harness memvalidasi jumlah serta `procs` Worker yang benar-benar terdaftar.
+
+Task:
+- P11-T1 Protokol versi 2: pesan `KILL` (Master ke Worker) dan kode error `SERVER_FULL`;
+  `PROTOCOL_VERSION` naik ke 2, `PROTOCOL.md` dan `ARCHITECTURE.md` diperbarui.
+- P11-T2 Master: tolak REGISTER di luar `--expect-workers` (agar Worker berlebih tidak
+  mengontaminasi run dengan jumlah Worker lebih kecil pada E6), dan opsi
+  `--inject-kills N --inject-kill-fraction F` yang mencatat `worker_exit_injected` lalu mengirim
+  `KILL` supaya lama deteksi dan lama pemulihan E5 terukur pada jam Master.
+- P11-T3 Worker: menangani `KILL` dengan keluar paksa (`os._exit`) tanpa BYE, meniru SIGKILL.
+- P11-T4 Harness `--lan`: validasi Worker terdaftar (jumlah, id, `procs`) dari `events.jsonl`,
+  instruksi per run yang eksplisit (jumlah Worker, `procs`, Worker yang diperlambat/dimatikan),
+  opsi `--lan-wait`, dan injeksi kill E5 otomatis pada mode eksternal.
+- P11-T5 `scripts/node_common.py`: helper lintas platform (path python venv, cek versi, IP lokal,
+  format perintah Worker) yang dapat diuji unit.
+- P11-T6 `scripts/bootstrap_node.py` + wrapper `setup-node.{command,sh,bat}`: venv di dalam folder
+  proyek, `pip install -e .`, jalankan `check_node.py`, cetak `SETUP OK`.
+- P11-T7 `scripts/start_worker.py` + wrapper `start-worker.{command,sh,bat}`: simpan
+  `master`/`id`/`procs` di `config/worker.local.toml`, jalankan Worker berulang (loop reconnect)
+  sehingga teman cukup menyalakan sekali, tahan penolakan `SERVER_FULL`.
+- P11-T8 `scripts/start_master.py` + wrapper `start-master.{command,sh,bat}`: siapkan dataset bila
+  belum ada, cetak IP Master dan perintah untuk 9 laptop Worker, lalu jalankan Master.
+- P11-T9 `scripts/run_experiments.py --worker-mode external`: orkestrasi 45 run resmi tanpa
+  Docker, dengan port tetap dan instruksi operator per run.
+- P11-T10 `DEPLOYMENT-PHYSICAL.md`: runbook 10 perangkat fisik (jaringan hotspot/router, urutan
+  eksperimen, pembagian tugas tiap laptop, pemeriksaan, troubleshooting macOS/Windows/Linux,
+  rekap bandwidth, dan langkah membangun ulang laporan dari data baru).
+
+Test: unit untuk helper `node_common`, penjadwalan injeksi kill, validasi registrasi, dan parser
+skrip baru; integration untuk jalur `KILL` (Master + Worker lokal, metrik E5 terisi), penolakan
+Worker berlebih (`SERVER_FULL`), serta `--lan` eksternal dengan Worker dijalankan sebagai proses
+terpisah di localhost.
+Smoke: `python scripts/bootstrap_node.py --check-only` mencetak `SETUP OK` dan
+`python scripts/start_master.py --print-plan --input data/bench` mencetak `PLAN OK`.
+Commit: `feat(phase-11): support physical 10-node runs with launchers and kill injection`.
+Tag: `phase-11-done`; versi `1.1.0`.
+
+Status akhir: seluruh task P11-T1 sampai P11-T10 selesai pada 2026-11-22 dan gate penuh PASS.
+Pengujian pada laptop fisik teman menyusul (rencana 2026-11-23, 1–2 laptop lebih dulu); setelah
+data fisik terkumpul, seluruh angka laporan dibangun ulang dan ADR-015 digantikan ADR-016.

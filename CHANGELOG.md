@@ -3,6 +3,33 @@
 Format mengikuti Keep a Changelog. Versi `0.<NN>.0` = akhir fase NN, versi `1.0.0` = paket akhir.
 Aturan pencatatan: SDLC.md bagian 6.
 
+## [1.1.0] - 2026-11-22
+### Added
+- `scripts/node_common.py`: helper lintas platform untuk launcher laptop fisik (path interpreter `.venv` POSIX/Windows, cek versi Python minimum 3.11, IP LAN lokal, pembentukan perintah Master/Worker, berkas ingatan `config/worker.local.toml`, `PYTHONPATH` proyek).
+- `scripts/bootstrap_node.py` dan wrapper `setup-node.command`/`setup-node.sh`/`setup-node.bat`: membuat `.venv` di dalam folder proyek, memasang paket `pcomp`, menjalankan `check_node.py`, lalu mencetak `SETUP OK`. Python sistem tidak diubah.
+- `scripts/start_worker.py` dan wrapper `start-worker.{command,sh,bat}`: launcher Worker yang mengingat `master`, `id`, `procs`, dan `throttle`, menanyakan nilainya sekali secara interaktif, menjalankan `python -m pcomp.worker` berulang (loop reconnect) dengan log `logs/worker-<id>.log`.
+- `scripts/start_master.py` dan wrapper `start-master.{command,sh,bat}`: launcher Master yang membuat dataset resmi 2048 MiB (8 berkas, seed `20261122`) bila belum ada, mencetak IP Master dan perintah untuk setiap laptop Worker, lalu menjalankan Master. Opsi `--print-plan` mencetak `PLAN OK`.
+- `DEPLOYMENT-PHYSICAL.md`: runbook 10 perangkat fisik (persiapan Master dan 9 Worker, jaringan hotspot/router dan isolasi klien, urutan eksperimen, E4 Worker lambat, E5 Worker dimatikan, perkiraan bandwidth, checklist, pengumpulan bukti, troubleshooting tiga sistem operasi, dan langkah membangun ulang laporan).
+- Protokol versi 2: pesan `KILL` (Master ke Worker) dan kode error `SERVER_FULL` pada `src/pcomp/protocol.py`, `PROTOCOL.md`, dan `ARCHITECTURE.md`.
+- Master: `--inject-kills N --inject-kill-fraction F` mengirim `KILL` setelah fraksi task selesai dan mencatat `worker_exit_injected` pada jam Master; `MasterState` menolak Worker di luar `--expect-workers` dan Worker yang sudah dimatikan pada run yang sama.
+- Harness `--lan`: `wait_lan_workers` memvalidasi jumlah Worker terdaftar dan `procs` tiap Worker dari `events.jsonl`, `lan_instructions` mencetak konfigurasi run, serta opsi `--lan-wait`.
+- `scripts/run_experiments.py`: `--worker-mode {docker,external}` untuk orkestrasi 45 run resmi tanpa Docker, `--port` tetap, dan `--lan-wait`.
+- Unit test UT-NODE-01..08, UT-LAUN-01..07, UT-KILL-01..06, UT-BEN-08..09, UT-EXP-08, UT-PRO-07; integration test IT-KILL-01..02, IT-FULL-01, IT-LAN-01.
+- `docs/phase-logs/PHASE-11.md`.
+
+### Changed
+- `src/pcomp/constants.py`: `PROTOCOL_VERSION` naik dari 1 ke 2, `__version__` menjadi `1.1.0`, dan `EXIT_KILLED = 3` untuk Worker yang dimatikan Master.
+- `src/pcomp/worker/client.py`: Worker keluar paksa (`os._exit`) saat menerima `KILL`, tanpa `BYE`; penolakan `ERROR` sebagai balasan pertama REGISTER kini dicetak `WORKER DITOLAK <code>: <message>`.
+- `scripts/gate.py`: `FINAL_PHASE = 11`, `FINAL_VERSION = "1.1.0"`, smoke fase 11 menjalankan `bootstrap_node.py --check-only` dan `start_master.py --print-plan` dengan penanda `SETUP OK` dan `PLAN OK`.
+- `pyproject.toml`: versi `1.1.0`.
+- `.gitignore`: `config/worker.local.toml` dan `logs/`.
+- `PLAN.md`: status Fase 11 menjadi `DONE` dan versi paket `1.1.0`.
+- `README.md`, `DEPLOYMENT.md`, dan `docs/CODE_GUIDE.md`: perintah launcher laptop fisik, rujukan `DEPLOYMENT-PHYSICAL.md`, dan daftar skrip baru.
+- `tests/unit/test_master_cli.py`, `tests/unit/test_package.py`, `tests/unit/test_protocol.py`: penyesuaian terhadap protokol versi 2 dan argumen injeksi `MasterServer`.
+
+### Fixed
+- Worker yang menerima `SERVER_FULL` sebelumnya hanya mencetak "balasan tak terduga ERROR" sehingga operator tidak tahu penyebab penolakan; sekarang kode dan pesan Master ditampilkan.
+
 ## [1.0.0] - 2026-11-22
 ### Added
 - `docs/CODE_GUIDE.md`: panduan kode dari 40 berkas `src/pcomp` (5.712 baris), 6 skrip `scripts/`, serta peta test; memuat struktur direktori, penjelasan modul/class/fungsi, alur pemanggilan sequential, local parallel, distributed, kegagalan Worker, dan benchmark, daftar berkas keluaran, serta cara menjalankan setiap perintah.
