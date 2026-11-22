@@ -1,0 +1,1050 @@
+{"ts": 1795340194.266366, "event": "worker_registered", "worker_id": "w1", "hostname": "w1", "procs": 1}
+{"ts": 1795340194.381589, "event": "worker_registered", "worker_id": "w2", "hostname": "w2", "procs": 1}
+{"ts": 1795340194.51585, "event": "worker_registered", "worker_id": "w3", "hostname": "w3", "procs": 1}
+{"ts": 1795340194.674043, "event": "worker_registered", "worker_id": "w4", "hostname": "w4", "procs": 1}
+{"ts": 1795340194.8453498, "event": "worker_registered", "worker_id": "w5", "hostname": "w5", "procs": 1}
+{"ts": 1795340194.988162, "event": "worker_registered", "worker_id": "w6", "hostname": "w6", "procs": 1}
+{"ts": 1795340195.1371992, "event": "worker_registered", "worker_id": "w7", "hostname": "w7", "procs": 1}
+{"ts": 1795340195.2812989, "event": "worker_registered", "worker_id": "w8", "hostname": "w8", "procs": 1}
+{"ts": 1795340195.4080808, "event": "worker_registered", "worker_id": "w9", "hostname": "w9", "procs": 1}
+{"ts": 1795340195.4081988, "event": "run_started", "tasks": 513, "expect_workers": 9, "workers": 9}
+{"ts": 1795340195.427367, "event": "task_assigned", "task_id": 1, "worker_id": "w1", "size": 4194304}
+{"ts": 1795340195.453307, "event": "task_assigned", "task_id": 2, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340195.477302, "event": "task_assigned", "task_id": 3, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340195.495046, "event": "task_assigned", "task_id": 4, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340195.505566, "event": "task_assigned", "task_id": 5, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340195.523251, "event": "task_assigned", "task_id": 6, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340195.536085, "event": "task_assigned", "task_id": 7, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340195.552717, "event": "task_assigned", "task_id": 8, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340195.5580459, "event": "task_assigned", "task_id": 9, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340195.9044821, "event": "task_done", "task_id": 5, "worker_id": "w5", "comp_size": 54384, "compute_sec": 0.257486}
+{"ts": 1795340195.910728, "event": "task_assigned", "task_id": 10, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340195.939921, "event": "task_done", "task_id": 6, "worker_id": "w6", "comp_size": 54352, "compute_sec": 0.257278}
+{"ts": 1795340195.9453871, "event": "task_assigned", "task_id": 11, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340195.9787898, "event": "task_done", "task_id": 8, "worker_id": "w8", "comp_size": 54256, "compute_sec": 0.284331}
+{"ts": 1795340195.984533, "event": "task_assigned", "task_id": 12, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340195.986759, "event": "task_done", "task_id": 1, "worker_id": "w1", "comp_size": 54428, "compute_sec": 0.409789}
+{"ts": 1795340195.991863, "event": "task_assigned", "task_id": 13, "worker_id": "w1", "size": 4194304}
+{"ts": 1795340196.0597382, "event": "task_done", "task_id": 3, "worker_id": "w3", "comp_size": 54308, "compute_sec": 0.394409}
+{"ts": 1795340196.064686, "event": "task_assigned", "task_id": 14, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340196.07282, "event": "task_done", "task_id": 4, "worker_id": "w4", "comp_size": 54252, "compute_sec": 0.427239}
+{"ts": 1795340196.089386, "event": "task_assigned", "task_id": 15, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340196.0923321, "event": "task_done", "task_id": 7, "worker_id": "w7", "comp_size": 54236, "compute_sec": 0.364044}
+{"ts": 1795340196.121218, "event": "task_assigned", "task_id": 16, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340196.126869, "event": "task_done", "task_id": 2, "worker_id": "w2", "comp_size": 54296, "compute_sec": 0.456682}
+{"ts": 1795340196.136815, "event": "task_assigned", "task_id": 17, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340196.1644878, "event": "task_done", "task_id": 9, "worker_id": "w9", "comp_size": 54320, "compute_sec": 0.324391}
+{"ts": 1795340196.168376, "event": "task_assigned", "task_id": 18, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340196.276635, "event": "task_done", "task_id": 10, "worker_id": "w5", "comp_size": 54308, "compute_sec": 0.322335}
+{"ts": 1795340196.280648, "event": "task_assigned", "task_id": 19, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340196.303571, "event": "task_done", "task_id": 13, "worker_id": "w1", "comp_size": 54244, "compute_sec": 0.202849}
+{"ts": 1795340196.3082812, "event": "task_assigned", "task_id": 20, "worker_id": "w1", "size": 4194304}
+{"ts": 1795340196.323452, "event": "task_done", "task_id": 16, "worker_id": "w7", "comp_size": 54156, "compute_sec": 0.181476}
+{"ts": 1795340196.328734, "event": "task_assigned", "task_id": 21, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340196.3387609, "event": "task_done", "task_id": 12, "worker_id": "w8", "comp_size": 54412, "compute_sec": 0.265771}
+{"ts": 1795340196.346019, "event": "task_assigned", "task_id": 22, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340196.368581, "event": "task_done", "task_id": 11, "worker_id": "w6", "comp_size": 54212, "compute_sec": 0.313248}
+{"ts": 1795340196.373543, "event": "task_assigned", "task_id": 23, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340196.40254, "event": "task_done", "task_id": 15, "worker_id": "w4", "comp_size": 54352, "compute_sec": 0.232997}
+{"ts": 1795340196.409354, "event": "task_assigned", "task_id": 24, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340196.446202, "event": "task_done", "task_id": 14, "worker_id": "w3", "comp_size": 54284, "compute_sec": 0.314125}
+{"ts": 1795340196.4528341, "event": "task_assigned", "task_id": 25, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340196.487983, "event": "task_done", "task_id": 17, "worker_id": "w2", "comp_size": 54368, "compute_sec": 0.301771}
+{"ts": 1795340196.4934, "event": "task_assigned", "task_id": 26, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340196.508969, "event": "task_done", "task_id": 18, "worker_id": "w9", "comp_size": 54344, "compute_sec": 0.262114}
+{"ts": 1795340196.514175, "event": "task_assigned", "task_id": 27, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340196.573751, "event": "task_done", "task_id": 19, "worker_id": "w5", "comp_size": 54204, "compute_sec": 0.247934}
+{"ts": 1795340196.578298, "event": "task_assigned", "task_id": 28, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340196.640487, "event": "task_done", "task_id": 22, "worker_id": "w8", "comp_size": 54348, "compute_sec": 0.227039}
+{"ts": 1795340196.647888, "event": "task_assigned", "task_id": 29, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340196.649455, "event": "task_done", "task_id": 20, "worker_id": "w1", "comp_size": 54332, "compute_sec": 0.229155}
+{"ts": 1795340196.656424, "event": "task_assigned", "task_id": 30, "worker_id": "w1", "size": 4194304}
+{"ts": 1795340196.722785, "event": "task_done", "task_id": 24, "worker_id": "w4", "comp_size": 54228, "compute_sec": 0.252671}
+{"ts": 1795340196.7306461, "event": "task_assigned", "task_id": 31, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340196.7401679, "event": "task_done", "task_id": 23, "worker_id": "w6", "comp_size": 54156, "compute_sec": 0.274865}
+{"ts": 1795340196.7490308, "event": "task_assigned", "task_id": 32, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340196.757927, "event": "task_done", "task_id": 21, "worker_id": "w7", "comp_size": 54124, "compute_sec": 0.383678}
+{"ts": 1795340196.764514, "event": "task_assigned", "task_id": 33, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340196.779685, "event": "task_done", "task_id": 25, "worker_id": "w3", "comp_size": 54164, "compute_sec": 0.284237}
+{"ts": 1795340196.786857, "event": "task_assigned", "task_id": 34, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340196.831415, "event": "task_done", "task_id": 28, "worker_id": "w5", "comp_size": 54304, "compute_sec": 0.190284}
+{"ts": 1795340196.835294, "event": "task_assigned", "task_id": 35, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340196.878464, "event": "task_done", "task_id": 26, "worker_id": "w2", "comp_size": 54316, "compute_sec": 0.306658}
+{"ts": 1795340196.884937, "event": "task_assigned", "task_id": 36, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340196.9842958, "event": "task_done", "task_id": 30, "worker_id": "w1", "comp_size": 54384, "compute_sec": 0.235834}
+{"ts": 1795340196.989022, "event": "task_done", "task_id": 29, "worker_id": "w8", "comp_size": 54224, "compute_sec": 0.256922}
+{"ts": 1795340196.990134, "event": "task_assigned", "task_id": 37, "worker_id": "w1", "size": 4194304}
+{"ts": 1795340196.990432, "event": "task_done", "task_id": 27, "worker_id": "w9", "comp_size": 54276, "compute_sec": 0.371589}
+{"ts": 1795340196.9983869, "event": "task_assigned", "task_id": 39, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340196.9985652, "event": "task_assigned", "task_id": 38, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340197.035315, "event": "task_done", "task_id": 31, "worker_id": "w4", "comp_size": 54280, "compute_sec": 0.24939}
+{"ts": 1795340197.043626, "event": "task_assigned", "task_id": 40, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340197.0820212, "event": "task_done", "task_id": 32, "worker_id": "w6", "comp_size": 54424, "compute_sec": 0.198753}
+{"ts": 1795340197.086557, "event": "task_assigned", "task_id": 41, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340198.645685, "event": "task_done", "task_id": 36, "worker_id": "w2", "comp_size": 4194576, "compute_sec": 1.551399}
+{"ts": 1795340198.652268, "event": "task_assigned", "task_id": 42, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340198.674293, "event": "task_done", "task_id": 35, "worker_id": "w5", "comp_size": 4194576, "compute_sec": 1.693447}
+{"ts": 1795340198.68113, "event": "task_assigned", "task_id": 43, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340198.696453, "event": "task_done", "task_id": 38, "worker_id": "w8", "comp_size": 4194576, "compute_sec": 1.585825}
+{"ts": 1795340198.700852, "event": "task_assigned", "task_id": 44, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340198.909538, "event": "task_done", "task_id": 40, "worker_id": "w4", "comp_size": 4194576, "compute_sec": 1.771531}
+{"ts": 1795340198.914643, "event": "task_assigned", "task_id": 45, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340198.9717581, "event": "task_done", "task_id": 39, "worker_id": "w9", "comp_size": 4194576, "compute_sec": 1.735888}
+{"ts": 1795340198.9781199, "event": "task_assigned", "task_id": 46, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340199.015481, "event": "task_done", "task_id": 33, "worker_id": "w7", "comp_size": 4194576, "compute_sec": 2.142123}
+{"ts": 1795340199.019959, "event": "task_assigned", "task_id": 47, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340199.312088, "event": "task_done", "task_id": 34, "worker_id": "w3", "comp_size": 4194576, "compute_sec": 2.422195}
+{"ts": 1795340199.3183, "event": "task_assigned", "task_id": 48, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340199.3384478, "event": "task_done", "task_id": 41, "worker_id": "w6", "comp_size": 4194576, "compute_sec": 2.081803}
+{"ts": 1795340199.3424299, "event": "task_assigned", "task_id": 49, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340199.843534, "event": "task_done", "task_id": 37, "worker_id": "w1", "comp_size": 4194576, "compute_sec": 2.618606}
+{"ts": 1795340199.847806, "event": "task_assigned", "task_id": 50, "worker_id": "w1", "size": 4194304}
+{"ts": 1795340200.636445, "event": "task_done", "task_id": 42, "worker_id": "w2", "comp_size": 4194576, "compute_sec": 1.855521}
+{"ts": 1795340200.6418922, "event": "task_assigned", "task_id": 51, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340200.787315, "event": "task_done", "task_id": 43, "worker_id": "w5", "comp_size": 4194576, "compute_sec": 1.970913}
+{"ts": 1795340200.7923431, "event": "task_assigned", "task_id": 52, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340200.8458939, "event": "task_done", "task_id": 45, "worker_id": "w4", "comp_size": 4194576, "compute_sec": 1.795545}
+{"ts": 1795340200.8498912, "event": "task_assigned", "task_id": 53, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340201.127093, "event": "task_done", "task_id": 46, "worker_id": "w9", "comp_size": 4194576, "compute_sec": 1.947875}
+{"ts": 1795340201.1315079, "event": "task_assigned", "task_id": 54, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340201.180144, "event": "task_done", "task_id": 49, "worker_id": "w6", "comp_size": 4194576, "compute_sec": 1.649947}
+{"ts": 1795340201.186451, "event": "task_assigned", "task_id": 55, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340201.334611, "event": "task_done", "task_id": 44, "worker_id": "w8", "comp_size": 4194576, "compute_sec": 2.511141}
+{"ts": 1795340201.34593, "event": "task_assigned", "task_id": 56, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340201.518912, "event": "task_done", "task_id": 48, "worker_id": "w3", "comp_size": 4194576, "compute_sec": 2.051441}
+{"ts": 1795340201.524618, "event": "task_assigned", "task_id": 57, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340201.682268, "event": "task_done", "task_id": 47, "worker_id": "w7", "comp_size": 4194576, "compute_sec": 2.502814}
+{"ts": 1795340201.687, "event": "task_assigned", "task_id": 58, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340202.039781, "event": "task_done", "task_id": 50, "worker_id": "w1", "comp_size": 4194576, "compute_sec": 2.004001}
+{"ts": 1795340202.044281, "event": "task_assigned", "task_id": 59, "worker_id": "w1", "size": 4194304}
+{"ts": 1795340202.535883, "event": "task_done", "task_id": 51, "worker_id": "w2", "comp_size": 4194576, "compute_sec": 1.723822}
+{"ts": 1795340202.542136, "event": "task_assigned", "task_id": 60, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340203.08377, "event": "task_done", "task_id": 54, "worker_id": "w9", "comp_size": 4194576, "compute_sec": 1.775443}
+{"ts": 1795340203.09021, "event": "task_assigned", "task_id": 61, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340203.117124, "event": "task_done", "task_id": 53, "worker_id": "w4", "comp_size": 4194576, "compute_sec": 2.102582}
+{"ts": 1795340203.124726, "event": "task_assigned", "task_id": 62, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340203.392725, "event": "task_done", "task_id": 52, "worker_id": "w5", "comp_size": 4194576, "compute_sec": 2.396941}
+{"ts": 1795340203.398796, "event": "task_assigned", "task_id": 63, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340203.422024, "event": "task_done", "task_id": 55, "worker_id": "w6", "comp_size": 4194576, "compute_sec": 2.032773}
+{"ts": 1795340203.4280362, "event": "task_assigned", "task_id": 64, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340203.7579021, "event": "task_done", "task_id": 56, "worker_id": "w8", "comp_size": 4194576, "compute_sec": 2.291202}
+{"ts": 1795340203.765284, "event": "task_assigned", "task_id": 65, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340203.823056, "event": "task_done", "task_id": 57, "worker_id": "w3", "comp_size": 4194576, "compute_sec": 2.164003}
+{"ts": 1795340203.8287501, "event": "task_assigned", "task_id": 66, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340204.035084, "event": "task_done", "task_id": 58, "worker_id": "w7", "comp_size": 4194576, "compute_sec": 2.243862}
+{"ts": 1795340204.0411048, "event": "task_assigned", "task_id": 67, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340204.096413, "event": "task_done", "task_id": 59, "worker_id": "w1", "comp_size": 4194576, "compute_sec": 1.936906}
+{"ts": 1795340204.1006908, "event": "task_assigned", "task_id": 68, "worker_id": "w1", "size": 4194304}
+{"ts": 1795340204.189544, "event": "task_done", "task_id": 65, "worker_id": "w8", "comp_size": 54400, "compute_sec": 0.342068}
+{"ts": 1795340204.193828, "event": "task_assigned", "task_id": 69, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340204.4644742, "event": "task_done", "task_id": 66, "worker_id": "w3", "comp_size": 54392, "compute_sec": 0.526663}
+{"ts": 1795340204.4703622, "event": "task_assigned", "task_id": 70, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340204.538443, "event": "task_done", "task_id": 67, "worker_id": "w7", "comp_size": 54188, "compute_sec": 0.400022}
+{"ts": 1795340204.543545, "event": "task_assigned", "task_id": 71, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340204.597962, "event": "task_done", "task_id": 60, "worker_id": "w2", "comp_size": 4194576, "compute_sec": 1.8871}
+{"ts": 1795340204.6020741, "event": "task_assigned", "task_id": 72, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340204.686372, "event": "task_done", "task_id": 68, "worker_id": "w1", "comp_size": 54156, "compute_sec": 0.461093}
+{"ts": 1795340204.693176, "event": "task_assigned", "task_id": 73, "worker_id": "w1", "size": 4194304}
+{"ts": 1795340204.704889, "event": "task_done", "task_id": 69, "worker_id": "w8", "comp_size": 54316, "compute_sec": 0.429905}
+{"ts": 1795340204.710073, "event": "task_assigned", "task_id": 74, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340204.8815591, "event": "task_done", "task_id": 71, "worker_id": "w7", "comp_size": 54308, "compute_sec": 0.288653}
+{"ts": 1795340204.888841, "event": "task_assigned", "task_id": 75, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340204.98858, "event": "task_done", "task_id": 70, "worker_id": "w3", "comp_size": 54356, "compute_sec": 0.366978}
+{"ts": 1795340204.9956548, "event": "task_assigned", "task_id": 76, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340205.03041, "event": "task_done", "task_id": 61, "worker_id": "w9", "comp_size": 4194576, "compute_sec": 1.737543}
+{"ts": 1795340205.0372312, "event": "task_assigned", "task_id": 77, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340205.069518, "event": "task_done", "task_id": 72, "worker_id": "w2", "comp_size": 54276, "compute_sec": 0.349149}
+{"ts": 1795340205.073934, "event": "task_done", "task_id": 62, "worker_id": "w4", "comp_size": 4194576, "compute_sec": 1.779156}
+{"ts": 1795340205.07701, "event": "task_assigned", "task_id": 78, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340205.0799448, "event": "task_assigned", "task_id": 79, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340205.142862, "event": "task_done", "task_id": 74, "worker_id": "w8", "comp_size": 54376, "compute_sec": 0.30272}
+{"ts": 1795340205.148012, "event": "task_assigned", "task_id": 80, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340205.1599202, "event": "task_done", "task_id": 73, "worker_id": "w1", "comp_size": 54536, "compute_sec": 0.303076}
+{"ts": 1795340205.166682, "event": "task_assigned", "task_id": 81, "worker_id": "w1", "size": 4194304}
+{"ts": 1795340205.29092, "event": "task_done", "task_id": 75, "worker_id": "w7", "comp_size": 54400, "compute_sec": 0.347352}
+{"ts": 1795340205.295825, "event": "task_assigned", "task_id": 82, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340205.369835, "event": "task_done", "task_id": 79, "worker_id": "w4", "comp_size": 54256, "compute_sec": 0.226588}
+{"ts": 1795340205.377601, "event": "task_assigned", "task_id": 83, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340205.450269, "event": "task_done", "task_id": 63, "worker_id": "w5", "comp_size": 4194576, "compute_sec": 1.907464}
+{"ts": 1795340205.454206, "event": "task_assigned", "task_id": 84, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340205.517765, "event": "task_done", "task_id": 64, "worker_id": "w6", "comp_size": 4194576, "compute_sec": 1.916262}
+{"ts": 1795340205.520788, "event": "task_done", "task_id": 76, "worker_id": "w3", "comp_size": 54440, "compute_sec": 0.296473}
+{"ts": 1795340205.521997, "event": "task_assigned", "task_id": 85, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340205.5258071, "event": "task_assigned", "task_id": 86, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340205.543324, "event": "task_done", "task_id": 78, "worker_id": "w2", "comp_size": 54348, "compute_sec": 0.285168}
+{"ts": 1795340205.548067, "event": "task_assigned", "task_id": 87, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340205.585763, "event": "task_done", "task_id": 81, "worker_id": "w1", "comp_size": 54528, "compute_sec": 0.300707}
+{"ts": 1795340205.5894861, "event": "task_assigned", "task_id": 88, "worker_id": "w1", "size": 4194304}
+{"ts": 1795340205.605233, "event": "task_done", "task_id": 77, "worker_id": "w9", "comp_size": 54292, "compute_sec": 0.342846}
+{"ts": 1795340205.6106272, "event": "task_assigned", "task_id": 89, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340205.627025, "event": "task_done", "task_id": 80, "worker_id": "w8", "comp_size": 54320, "compute_sec": 0.350317}
+{"ts": 1795340205.632965, "event": "task_assigned", "task_id": 90, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340205.646326, "event": "task_done", "task_id": 82, "worker_id": "w7", "comp_size": 54336, "compute_sec": 0.283419}
+{"ts": 1795340205.6509938, "event": "task_assigned", "task_id": 91, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340205.6643991, "event": "task_done", "task_id": 83, "worker_id": "w4", "comp_size": 54256, "compute_sec": 0.230205}
+{"ts": 1795340205.669047, "event": "task_assigned", "task_id": 92, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340205.7507358, "event": "task_done", "task_id": 84, "worker_id": "w5", "comp_size": 54256, "compute_sec": 0.213391}
+{"ts": 1795340205.754931, "event": "task_assigned", "task_id": 93, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340205.873513, "event": "task_done", "task_id": 86, "worker_id": "w3", "comp_size": 54436, "compute_sec": 0.230893}
+{"ts": 1795340205.880128, "event": "task_assigned", "task_id": 94, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340205.937477, "event": "task_done", "task_id": 85, "worker_id": "w6", "comp_size": 54420, "compute_sec": 0.256192}
+{"ts": 1795340205.946073, "event": "task_assigned", "task_id": 95, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340205.946892, "event": "task_done", "task_id": 92, "worker_id": "w4", "comp_size": 54392, "compute_sec": 0.21334}
+{"ts": 1795340205.9550211, "event": "task_assigned", "task_id": 96, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340205.985452, "event": "task_done", "task_id": 91, "worker_id": "w7", "comp_size": 54368, "compute_sec": 0.271881}
+{"ts": 1795340205.9921238, "event": "task_assigned", "task_id": 97, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340206.105206, "event": "task_done", "task_id": 93, "worker_id": "w5", "comp_size": 54428, "compute_sec": 0.254811}
+{"ts": 1795340206.10716, "event": "task_done", "task_id": 89, "worker_id": "w9", "comp_size": 54224, "compute_sec": 0.324574}
+{"ts": 1795340206.113184, "event": "task_assigned", "task_id": 98, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340206.114959, "event": "task_assigned", "task_id": 99, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340206.1181, "event": "task_done", "task_id": 87, "worker_id": "w2", "comp_size": 54352, "compute_sec": 0.334857}
+{"ts": 1795340206.12219, "event": "task_assigned", "task_id": 100, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340206.137322, "event": "task_done", "task_id": 88, "worker_id": "w1", "comp_size": 54212, "compute_sec": 0.321477}
+{"ts": 1795340206.142724, "event": "task_assigned", "task_id": 101, "worker_id": "w1", "size": 4194304}
+{"ts": 1795340206.1436312, "event": "task_done", "task_id": 90, "worker_id": "w8", "comp_size": 54464, "compute_sec": 0.370017}
+{"ts": 1795340206.1482089, "event": "task_assigned", "task_id": 102, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340206.261796, "event": "task_done", "task_id": 94, "worker_id": "w3", "comp_size": 54280, "compute_sec": 0.302822}
+{"ts": 1795340206.2691, "event": "task_assigned", "task_id": 103, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340206.296212, "event": "task_done", "task_id": 96, "worker_id": "w4", "comp_size": 54256, "compute_sec": 0.277924}
+{"ts": 1795340206.30076, "event": "task_assigned", "task_id": 104, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340206.358013, "event": "task_done", "task_id": 95, "worker_id": "w6", "comp_size": 54240, "compute_sec": 0.239085}
+{"ts": 1795340206.365834, "event": "task_assigned", "task_id": 105, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340207.6613, "event": "task_done", "task_id": 97, "worker_id": "w7", "comp_size": 4194576, "compute_sec": 1.55592}
+{"ts": 1795340207.668244, "event": "task_assigned", "task_id": 106, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340207.8077, "event": "task_done", "task_id": 102, "worker_id": "w8", "comp_size": 4194576, "compute_sec": 1.494082}
+{"ts": 1795340207.8149061, "event": "task_assigned", "task_id": 107, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340207.8744588, "event": "task_done", "task_id": 98, "worker_id": "w5", "comp_size": 4194576, "compute_sec": 1.657478}
+{"ts": 1795340207.8790321, "event": "task_assigned", "task_id": 108, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340208.1974258, "event": "task_done", "task_id": 99, "worker_id": "w9", "comp_size": 4194576, "compute_sec": 1.880899}
+{"ts": 1795340208.2020092, "event": "task_assigned", "task_id": 109, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340208.448668, "event": "task_done", "task_id": 101, "worker_id": "w1", "comp_size": 4194576, "compute_sec": 2.13292}
+{"ts": 1795340208.455832, "event": "task_assigned", "task_id": 110, "worker_id": "w1", "size": 4194304}
+{"ts": 1795340208.4792058, "event": "task_done", "task_id": 100, "worker_id": "w2", "comp_size": 4194576, "compute_sec": 2.116962}
+{"ts": 1795340208.4839869, "event": "task_assigned", "task_id": 111, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340208.558848, "event": "task_done", "task_id": 104, "worker_id": "w4", "comp_size": 4194576, "compute_sec": 2.115477}
+{"ts": 1795340208.5626109, "event": "task_assigned", "task_id": 112, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340208.676485, "event": "task_done", "task_id": 103, "worker_id": "w3", "comp_size": 4194576, "compute_sec": 2.220033}
+{"ts": 1795340208.6806011, "event": "task_assigned", "task_id": 113, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340208.802655, "event": "task_done", "task_id": 105, "worker_id": "w6", "comp_size": 4194576, "compute_sec": 2.299537}
+{"ts": 1795340208.806616, "event": "task_assigned", "task_id": 114, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340210.035597, "event": "task_done", "task_id": 107, "worker_id": "w8", "comp_size": 4194576, "compute_sec": 2.003773}
+{"ts": 1795340210.044169, "event": "task_assigned", "task_id": 115, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340210.2470589, "event": "task_done", "task_id": 109, "worker_id": "w9", "comp_size": 4194576, "compute_sec": 1.892544}
+{"ts": 1795340210.251981, "event": "task_assigned", "task_id": 116, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340210.3370612, "event": "task_done", "task_id": 108, "worker_id": "w5", "comp_size": 4194576, "compute_sec": 2.235718}
+{"ts": 1795340210.347842, "event": "task_assigned", "task_id": 117, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340210.367975, "event": "task_done", "task_id": 106, "worker_id": "w7", "comp_size": 4194576, "compute_sec": 2.546853}
+{"ts": 1795340210.373098, "event": "task_done", "task_id": 110, "worker_id": "w1", "comp_size": 4194576, "compute_sec": 1.654667}
+{"ts": 1795340210.37376, "event": "task_assigned", "task_id": 118, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340210.377577, "event": "task_assigned", "task_id": 119, "worker_id": "w1", "size": 4194304}
+{"ts": 1795340210.4955242, "event": "task_done", "task_id": 111, "worker_id": "w2", "comp_size": 4194576, "compute_sec": 1.774585}
+{"ts": 1795340210.500177, "event": "task_assigned", "task_id": 120, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340210.701739, "event": "task_done", "task_id": 112, "worker_id": "w4", "comp_size": 4194576, "compute_sec": 2.018271}
+{"ts": 1795340210.705583, "event": "task_assigned", "task_id": 121, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340211.120116, "event": "task_done", "task_id": 113, "worker_id": "w3", "comp_size": 4194576, "compute_sec": 2.245138}
+{"ts": 1795340211.124907, "event": "task_assigned", "task_id": 122, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340211.191164, "event": "task_done", "task_id": 114, "worker_id": "w6", "comp_size": 4194576, "compute_sec": 2.227387}
+{"ts": 1795340211.195275, "event": "task_assigned", "task_id": 123, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340211.8324459, "event": "task_done", "task_id": 115, "worker_id": "w8", "comp_size": 4194576, "compute_sec": 1.64046}
+{"ts": 1795340211.8400362, "event": "task_assigned", "task_id": 124, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340211.925604, "event": "task_done", "task_id": 118, "worker_id": "w7", "comp_size": 4194576, "compute_sec": 1.424445}
+{"ts": 1795340211.9301069, "event": "task_assigned", "task_id": 125, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340212.313731, "event": "task_done", "task_id": 116, "worker_id": "w9", "comp_size": 4194576, "compute_sec": 1.812224}
+{"ts": 1795340212.318298, "event": "task_assigned", "task_id": 126, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340212.3683798, "event": "task_done", "task_id": 121, "worker_id": "w4", "comp_size": 4194576, "compute_sec": 1.548704}
+{"ts": 1795340212.372276, "event": "task_assigned", "task_id": 127, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340212.514424, "event": "task_done", "task_id": 117, "worker_id": "w5", "comp_size": 4194576, "compute_sec": 1.958377}
+{"ts": 1795340212.518382, "event": "task_assigned", "task_id": 128, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340212.629707, "event": "task_done", "task_id": 119, "worker_id": "w1", "comp_size": 4194576, "compute_sec": 2.011545}
+{"ts": 1795340212.635814, "event": "task_assigned", "task_id": 129, "worker_id": "w1", "size": 4194304}
+{"ts": 1795340212.651287, "event": "task_done", "task_id": 120, "worker_id": "w2", "comp_size": 4194576, "compute_sec": 1.953052}
+{"ts": 1795340212.6562428, "event": "task_assigned", "task_id": 130, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340213.81967, "event": "task_done", "task_id": 122, "worker_id": "w3", "comp_size": 4194576, "compute_sec": 2.491867}
+{"ts": 1795340213.827044, "event": "task_assigned", "task_id": 131, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340213.921424, "event": "task_done", "task_id": 124, "worker_id": "w8", "comp_size": 4194576, "compute_sec": 1.840952}
+{"ts": 1795340213.926325, "event": "task_assigned", "task_id": 132, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340213.9411662, "event": "task_done", "task_id": 123, "worker_id": "w6", "comp_size": 4194576, "compute_sec": 2.580817}
+{"ts": 1795340213.945232, "event": "task_assigned", "task_id": 133, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340214.0135958, "event": "task_done", "task_id": 127, "worker_id": "w4", "comp_size": 4194576, "compute_sec": 1.533888}
+{"ts": 1795340214.022181, "event": "task_assigned", "task_id": 134, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340214.106477, "event": "task_done", "task_id": 125, "worker_id": "w7", "comp_size": 4194576, "compute_sec": 2.068061}
+{"ts": 1795340214.110666, "event": "task_assigned", "task_id": 135, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340214.6490371, "event": "task_done", "task_id": 129, "worker_id": "w1", "comp_size": 4194576, "compute_sec": 1.825308}
+{"ts": 1795340214.6541178, "event": "task_assigned", "task_id": 136, "worker_id": "w1", "size": 4194304}
+{"ts": 1795340214.787081, "event": "task_done", "task_id": 130, "worker_id": "w2", "comp_size": 4194576, "compute_sec": 1.908716}
+{"ts": 1795340214.7981708, "event": "task_assigned", "task_id": 137, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340214.951725, "event": "task_done", "task_id": 126, "worker_id": "w9", "comp_size": 4194576, "compute_sec": 2.418421}
+{"ts": 1795340214.9558568, "event": "task_assigned", "task_id": 138, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340215.373465, "event": "task_done", "task_id": 128, "worker_id": "w5", "comp_size": 4194576, "compute_sec": 2.600574}
+{"ts": 1795340215.378197, "event": "task_assigned", "task_id": 139, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340215.816837, "event": "task_done", "task_id": 132, "worker_id": "w8", "comp_size": 4194576, "compute_sec": 1.651337}
+{"ts": 1795340215.8265972, "event": "task_assigned", "task_id": 140, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340215.960657, "event": "task_done", "task_id": 131, "worker_id": "w3", "comp_size": 4194576, "compute_sec": 1.942859}
+{"ts": 1795340215.968726, "event": "task_assigned", "task_id": 141, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340216.020929, "event": "task_done", "task_id": 133, "worker_id": "w6", "comp_size": 4194576, "compute_sec": 1.850769}
+{"ts": 1795340216.025679, "event": "task_assigned", "task_id": 142, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340216.222974, "event": "task_done", "task_id": 135, "worker_id": "w7", "comp_size": 4194576, "compute_sec": 1.976617}
+{"ts": 1795340216.2278972, "event": "task_assigned", "task_id": 143, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340216.599427, "event": "task_done", "task_id": 134, "worker_id": "w4", "comp_size": 4194576, "compute_sec": 2.436546}
+{"ts": 1795340216.6035829, "event": "task_assigned", "task_id": 144, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340216.864453, "event": "task_done", "task_id": 136, "worker_id": "w1", "comp_size": 4194576, "compute_sec": 2.054679}
+{"ts": 1795340216.868763, "event": "task_assigned", "task_id": 145, "worker_id": "w1", "size": 4194304}
+{"ts": 1795340217.133339, "event": "task_done", "task_id": 137, "worker_id": "w2", "comp_size": 4194576, "compute_sec": 2.065802}
+{"ts": 1795340217.137908, "event": "task_assigned", "task_id": 146, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340217.355787, "event": "task_done", "task_id": 138, "worker_id": "w9", "comp_size": 4194576, "compute_sec": 2.226207}
+{"ts": 1795340217.359599, "event": "task_assigned", "task_id": 147, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340217.767523, "event": "task_done", "task_id": 139, "worker_id": "w5", "comp_size": 4194576, "compute_sec": 2.235298}
+{"ts": 1795340217.7769768, "event": "task_assigned", "task_id": 148, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340217.798229, "event": "task_done", "task_id": 140, "worker_id": "w8", "comp_size": 4194576, "compute_sec": 1.802093}
+{"ts": 1795340217.8065019, "event": "task_assigned", "task_id": 149, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340217.960771, "event": "task_done", "task_id": 141, "worker_id": "w3", "comp_size": 4194576, "compute_sec": 1.813702}
+{"ts": 1795340217.965117, "event": "task_assigned", "task_id": 150, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340218.1830888, "event": "task_done", "task_id": 142, "worker_id": "w6", "comp_size": 4194576, "compute_sec": 1.931404}
+{"ts": 1795340218.19123, "event": "task_assigned", "task_id": 151, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340218.607172, "event": "task_done", "task_id": 143, "worker_id": "w7", "comp_size": 4194576, "compute_sec": 2.277327}
+{"ts": 1795340218.611678, "event": "task_assigned", "task_id": 152, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340218.8213708, "event": "task_done", "task_id": 144, "worker_id": "w4", "comp_size": 4194576, "compute_sec": 2.033821}
+{"ts": 1795340218.8260689, "event": "task_assigned", "task_id": 153, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340218.9400508, "event": "task_done", "task_id": 145, "worker_id": "w1", "comp_size": 4194576, "compute_sec": 1.870531}
+{"ts": 1795340218.944521, "event": "task_assigned", "task_id": 154, "worker_id": "w1", "size": 4194304}
+{"ts": 1795340219.597218, "event": "task_done", "task_id": 146, "worker_id": "w2", "comp_size": 4194576, "compute_sec": 2.326949}
+{"ts": 1795340219.605778, "event": "task_assigned", "task_id": 155, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340219.661692, "event": "task_done", "task_id": 149, "worker_id": "w8", "comp_size": 4194576, "compute_sec": 1.709214}
+{"ts": 1795340219.6664672, "event": "task_assigned", "task_id": 156, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340220.1142242, "event": "task_done", "task_id": 147, "worker_id": "w9", "comp_size": 4194576, "compute_sec": 2.590702}
+{"ts": 1795340220.1187148, "event": "task_assigned", "task_id": 157, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340220.302526, "event": "task_done", "task_id": 151, "worker_id": "w6", "comp_size": 4194576, "compute_sec": 1.979813}
+{"ts": 1795340220.3109279, "event": "task_assigned", "task_id": 158, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340220.412541, "event": "task_done", "task_id": 148, "worker_id": "w5", "comp_size": 4194576, "compute_sec": 2.431478}
+{"ts": 1795340220.416984, "event": "task_assigned", "task_id": 159, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340220.524956, "event": "task_done", "task_id": 150, "worker_id": "w3", "comp_size": 4194576, "compute_sec": 2.397449}
+{"ts": 1795340220.5298188, "event": "task_assigned", "task_id": 160, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340220.727702, "event": "task_done", "task_id": 153, "worker_id": "w4", "comp_size": 4194576, "compute_sec": 1.742723}
+{"ts": 1795340220.7345479, "event": "task_assigned", "task_id": 161, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340220.7478971, "event": "task_done", "task_id": 152, "worker_id": "w7", "comp_size": 4194576, "compute_sec": 1.998296}
+{"ts": 1795340220.752299, "event": "task_assigned", "task_id": 162, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340221.237503, "event": "task_done", "task_id": 154, "worker_id": "w1", "comp_size": 4194576, "compute_sec": 2.124764}
+{"ts": 1795340221.242135, "event": "task_assigned", "task_id": 163, "worker_id": "w1", "size": 4194304}
+{"ts": 1795340221.803023, "event": "task_done", "task_id": 155, "worker_id": "w2", "comp_size": 4194576, "compute_sec": 2.010969}
+{"ts": 1795340221.808438, "event": "task_assigned", "task_id": 164, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340221.9024498, "event": "task_done", "task_id": 156, "worker_id": "w8", "comp_size": 4194576, "compute_sec": 2.045492}
+{"ts": 1795340221.906865, "event": "task_assigned", "task_id": 165, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340222.058146, "event": "task_done", "task_id": 158, "worker_id": "w6", "comp_size": 4194576, "compute_sec": 1.523559}
+{"ts": 1795340222.062531, "event": "task_assigned", "task_id": 166, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340222.194958, "event": "task_done", "task_id": 157, "worker_id": "w9", "comp_size": 4194576, "compute_sec": 1.925413}
+{"ts": 1795340222.199268, "event": "task_assigned", "task_id": 167, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340222.618189, "event": "task_done", "task_id": 160, "worker_id": "w3", "comp_size": 4194576, "compute_sec": 1.930545}
+{"ts": 1795340222.622408, "event": "task_assigned", "task_id": 168, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340222.916637, "event": "task_done", "task_id": 162, "worker_id": "w7", "comp_size": 4194576, "compute_sec": 2.059783}
+{"ts": 1795340222.921489, "event": "task_assigned", "task_id": 169, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340222.9844322, "event": "task_done", "task_id": 159, "worker_id": "w5", "comp_size": 4194576, "compute_sec": 2.407924}
+{"ts": 1795340222.988538, "event": "task_assigned", "task_id": 170, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340223.1391969, "event": "task_done", "task_id": 161, "worker_id": "w4", "comp_size": 4194576, "compute_sec": 2.236012}
+{"ts": 1795340223.1433861, "event": "task_assigned", "task_id": 171, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340223.2106209, "event": "task_done", "task_id": 163, "worker_id": "w1", "comp_size": 4194576, "compute_sec": 1.843008}
+{"ts": 1795340223.2149792, "event": "task_assigned", "task_id": 172, "worker_id": "w1", "size": 4194304}
+{"ts": 1795340224.0170329, "event": "task_done", "task_id": 165, "worker_id": "w8", "comp_size": 4194576, "compute_sec": 1.931159}
+{"ts": 1795340224.021333, "event": "task_assigned", "task_id": 173, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340224.071187, "event": "task_done", "task_id": 164, "worker_id": "w2", "comp_size": 4194576, "compute_sec": 2.097414}
+{"ts": 1795340224.075433, "event": "task_assigned", "task_id": 174, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340224.249983, "event": "task_done", "task_id": 166, "worker_id": "w6", "comp_size": 4194576, "compute_sec": 2.045346}
+{"ts": 1795340224.254852, "event": "task_assigned", "task_id": 175, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340224.325054, "event": "task_done", "task_id": 167, "worker_id": "w9", "comp_size": 4194576, "compute_sec": 1.908566}
+{"ts": 1795340224.332384, "event": "task_assigned", "task_id": 176, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340224.628494, "event": "task_done", "task_id": 168, "worker_id": "w3", "comp_size": 4194576, "compute_sec": 1.876871}
+{"ts": 1795340224.63266, "event": "task_assigned", "task_id": 177, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340224.991476, "event": "task_done", "task_id": 170, "worker_id": "w5", "comp_size": 4194576, "compute_sec": 1.867027}
+{"ts": 1795340224.996168, "event": "task_assigned", "task_id": 178, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340225.177034, "event": "task_done", "task_id": 172, "worker_id": "w1", "comp_size": 4194576, "compute_sec": 1.826308}
+{"ts": 1795340225.1819232, "event": "task_assigned", "task_id": 179, "worker_id": "w1", "size": 4194304}
+{"ts": 1795340225.215081, "event": "task_done", "task_id": 169, "worker_id": "w7", "comp_size": 4194576, "compute_sec": 2.178055}
+{"ts": 1795340225.220363, "event": "task_assigned", "task_id": 180, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340225.635208, "event": "task_done", "task_id": 171, "worker_id": "w4", "comp_size": 4194576, "compute_sec": 2.360776}
+{"ts": 1795340225.640543, "event": "task_assigned", "task_id": 181, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340226.049571, "event": "task_done", "task_id": 174, "worker_id": "w2", "comp_size": 4194576, "compute_sec": 1.768671}
+{"ts": 1795340226.054799, "event": "task_assigned", "task_id": 182, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340226.2823172, "event": "task_done", "task_id": 176, "worker_id": "w9", "comp_size": 4194576, "compute_sec": 1.780264}
+{"ts": 1795340226.2866108, "event": "task_assigned", "task_id": 183, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340226.344241, "event": "task_done", "task_id": 173, "worker_id": "w8", "comp_size": 4194576, "compute_sec": 2.152297}
+{"ts": 1795340226.35174, "event": "task_assigned", "task_id": 184, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340226.911181, "event": "task_done", "task_id": 175, "worker_id": "w6", "comp_size": 4194576, "compute_sec": 2.496676}
+{"ts": 1795340226.9177978, "event": "task_assigned", "task_id": 185, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340226.929534, "event": "task_done", "task_id": 177, "worker_id": "w3", "comp_size": 4194576, "compute_sec": 2.136544}
+{"ts": 1795340226.937984, "event": "task_assigned", "task_id": 186, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340227.099776, "event": "task_done", "task_id": 179, "worker_id": "w1", "comp_size": 4194576, "compute_sec": 1.718536}
+{"ts": 1795340227.106932, "event": "task_assigned", "task_id": 187, "worker_id": "w1", "size": 4194304}
+{"ts": 1795340227.177351, "event": "task_done", "task_id": 180, "worker_id": "w7", "comp_size": 4194576, "compute_sec": 1.786593}
+{"ts": 1795340227.181696, "event": "task_assigned", "task_id": 188, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340227.260792, "event": "task_done", "task_id": 178, "worker_id": "w5", "comp_size": 4194576, "compute_sec": 2.108161}
+{"ts": 1795340227.265218, "event": "task_assigned", "task_id": 189, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340227.696831, "event": "task_done", "task_id": 181, "worker_id": "w4", "comp_size": 4194576, "compute_sec": 1.864181}
+{"ts": 1795340227.701612, "event": "task_assigned", "task_id": 190, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340228.2618308, "event": "task_done", "task_id": 184, "worker_id": "w8", "comp_size": 4194576, "compute_sec": 1.761716}
+{"ts": 1795340228.26656, "event": "task_assigned", "task_id": 191, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340228.289261, "event": "task_done", "task_id": 182, "worker_id": "w2", "comp_size": 4194576, "compute_sec": 2.039128}
+{"ts": 1795340228.293565, "event": "task_assigned", "task_id": 192, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340228.815558, "event": "task_done", "task_id": 183, "worker_id": "w9", "comp_size": 4194576, "compute_sec": 2.358179}
+{"ts": 1795340228.821992, "event": "task_assigned", "task_id": 193, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340229.076659, "event": "task_done", "task_id": 185, "worker_id": "w6", "comp_size": 4194576, "compute_sec": 1.962074}
+{"ts": 1795340229.085048, "event": "task_assigned", "task_id": 194, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340229.209182, "event": "task_done", "task_id": 186, "worker_id": "w3", "comp_size": 4194576, "compute_sec": 2.111893}
+{"ts": 1795340229.2151942, "event": "task_assigned", "task_id": 195, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340229.2460968, "event": "task_done", "task_id": 187, "worker_id": "w1", "comp_size": 4194576, "compute_sec": 2.024586}
+{"ts": 1795340229.250839, "event": "task_assigned", "task_id": 196, "worker_id": "w1", "size": 4194304}
+{"ts": 1795340229.264095, "event": "task_done", "task_id": 189, "worker_id": "w5", "comp_size": 4194576, "compute_sec": 1.839071}
+{"ts": 1795340229.268464, "event": "task_assigned", "task_id": 197, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340229.626692, "event": "task_done", "task_id": 188, "worker_id": "w7", "comp_size": 4194576, "compute_sec": 2.322802}
+{"ts": 1795340229.6310809, "event": "task_assigned", "task_id": 198, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340229.852177, "event": "task_done", "task_id": 190, "worker_id": "w4", "comp_size": 4194576, "compute_sec": 1.956717}
+{"ts": 1795340229.856139, "event": "task_assigned", "task_id": 199, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340230.490331, "event": "task_done", "task_id": 192, "worker_id": "w2", "comp_size": 4194576, "compute_sec": 2.023264}
+{"ts": 1795340230.494705, "event": "task_assigned", "task_id": 200, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340230.8768551, "event": "task_done", "task_id": 194, "worker_id": "w6", "comp_size": 4194576, "compute_sec": 1.668236}
+{"ts": 1795340230.8828852, "event": "task_assigned", "task_id": 201, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340230.900566, "event": "task_done", "task_id": 193, "worker_id": "w9", "comp_size": 4194576, "compute_sec": 1.882848}
+{"ts": 1795340230.904691, "event": "task_assigned", "task_id": 202, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340231.11728, "event": "task_done", "task_id": 191, "worker_id": "w8", "comp_size": 4194576, "compute_sec": 2.687549}
+{"ts": 1795340231.121846, "event": "task_assigned", "task_id": 203, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340231.1678069, "event": "task_done", "task_id": 197, "worker_id": "w5", "comp_size": 4194576, "compute_sec": 1.712297}
+{"ts": 1795340231.172283, "event": "task_assigned", "task_id": 204, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340231.535352, "event": "task_done", "task_id": 198, "worker_id": "w7", "comp_size": 4194576, "compute_sec": 1.810857}
+{"ts": 1795340231.546922, "event": "task_assigned", "task_id": 205, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340231.603662, "event": "task_done", "task_id": 196, "worker_id": "w1", "comp_size": 4194576, "compute_sec": 2.153967}
+{"ts": 1795340231.608243, "event": "task_assigned", "task_id": 206, "worker_id": "w1", "size": 4194304}
+{"ts": 1795340231.687655, "event": "task_done", "task_id": 195, "worker_id": "w3", "comp_size": 4194576, "compute_sec": 2.216995}
+{"ts": 1795340231.695872, "event": "task_assigned", "task_id": 207, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340232.199601, "event": "task_done", "task_id": 199, "worker_id": "w4", "comp_size": 4194576, "compute_sec": 2.156044}
+{"ts": 1795340232.205098, "event": "task_assigned", "task_id": 208, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340232.651111, "event": "task_done", "task_id": 200, "worker_id": "w2", "comp_size": 4194576, "compute_sec": 1.975982}
+{"ts": 1795340232.657362, "event": "task_assigned", "task_id": 209, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340232.8531818, "event": "task_done", "task_id": 204, "worker_id": "w5", "comp_size": 4194576, "compute_sec": 1.489979}
+{"ts": 1795340232.858081, "event": "task_assigned", "task_id": 210, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340233.130504, "event": "task_done", "task_id": 202, "worker_id": "w9", "comp_size": 4194576, "compute_sec": 2.05641}
+{"ts": 1795340233.1350741, "event": "task_assigned", "task_id": 211, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340233.3272681, "event": "task_done", "task_id": 201, "worker_id": "w6", "comp_size": 4194576, "compute_sec": 2.275735}
+{"ts": 1795340233.331719, "event": "task_assigned", "task_id": 212, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340233.450508, "event": "task_done", "task_id": 203, "worker_id": "w8", "comp_size": 4194576, "compute_sec": 2.12731}
+{"ts": 1795340233.456071, "event": "task_assigned", "task_id": 213, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340233.494933, "event": "task_done", "task_id": 205, "worker_id": "w7", "comp_size": 4194576, "compute_sec": 1.854231}
+{"ts": 1795340233.499108, "event": "task_assigned", "task_id": 214, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340233.7087948, "event": "task_done", "task_id": 206, "worker_id": "w1", "comp_size": 4194576, "compute_sec": 1.958299}
+{"ts": 1795340233.715599, "event": "task_assigned", "task_id": 215, "worker_id": "w1", "size": 4194304}
+{"ts": 1795340233.743832, "event": "task_done", "task_id": 207, "worker_id": "w3", "comp_size": 4194576, "compute_sec": 1.906577}
+{"ts": 1795340233.748377, "event": "task_assigned", "task_id": 216, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340234.25023, "event": "task_done", "task_id": 208, "worker_id": "w4", "comp_size": 4194576, "compute_sec": 1.870266}
+{"ts": 1795340234.254475, "event": "task_assigned", "task_id": 217, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340234.780111, "event": "task_done", "task_id": 209, "worker_id": "w2", "comp_size": 4194576, "compute_sec": 1.959668}
+{"ts": 1795340234.789758, "event": "task_assigned", "task_id": 218, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340235.15244, "event": "task_done", "task_id": 211, "worker_id": "w9", "comp_size": 4194576, "compute_sec": 1.847004}
+{"ts": 1795340235.156945, "event": "task_assigned", "task_id": 219, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340235.2959318, "event": "task_done", "task_id": 212, "worker_id": "w6", "comp_size": 4194576, "compute_sec": 1.83808}
+{"ts": 1795340235.300703, "event": "task_assigned", "task_id": 220, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340235.390883, "event": "task_done", "task_id": 210, "worker_id": "w5", "comp_size": 4194576, "compute_sec": 2.392707}
+{"ts": 1795340235.3961642, "event": "task_assigned", "task_id": 221, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340235.480623, "event": "task_done", "task_id": 213, "worker_id": "w8", "comp_size": 4194576, "compute_sec": 1.838896}
+{"ts": 1795340235.485522, "event": "task_assigned", "task_id": 222, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340235.499744, "event": "task_done", "task_id": 214, "worker_id": "w7", "comp_size": 4194576, "compute_sec": 1.874482}
+{"ts": 1795340235.5055842, "event": "task_assigned", "task_id": 223, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340235.6731389, "event": "task_done", "task_id": 215, "worker_id": "w1", "comp_size": 4194576, "compute_sec": 1.772503}
+{"ts": 1795340235.6779509, "event": "task_assigned", "task_id": 224, "worker_id": "w1", "size": 4194304}
+{"ts": 1795340236.196222, "event": "task_done", "task_id": 216, "worker_id": "w3", "comp_size": 4194576, "compute_sec": 2.298727}
+{"ts": 1795340236.201051, "event": "task_assigned", "task_id": 225, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340236.329952, "event": "task_done", "task_id": 217, "worker_id": "w4", "comp_size": 4194576, "compute_sec": 1.941974}
+{"ts": 1795340236.334089, "event": "task_assigned", "task_id": 226, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340236.688361, "event": "task_done", "task_id": 218, "worker_id": "w2", "comp_size": 4194576, "compute_sec": 1.727424}
+{"ts": 1795340236.693808, "event": "task_assigned", "task_id": 227, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340237.258911, "event": "task_done", "task_id": 223, "worker_id": "w7", "comp_size": 4194576, "compute_sec": 1.640671}
+{"ts": 1795340237.2639391, "event": "task_assigned", "task_id": 228, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340237.2887318, "event": "task_done", "task_id": 222, "worker_id": "w8", "comp_size": 4194576, "compute_sec": 1.642581}
+{"ts": 1795340237.293082, "event": "task_assigned", "task_id": 229, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340237.315858, "event": "task_done", "task_id": 220, "worker_id": "w6", "comp_size": 4194576, "compute_sec": 1.744209}
+{"ts": 1795340237.31987, "event": "task_assigned", "task_id": 230, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340237.487828, "event": "task_done", "task_id": 219, "worker_id": "w9", "comp_size": 4194576, "compute_sec": 2.20661}
+{"ts": 1795340237.492519, "event": "task_assigned", "task_id": 231, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340237.704028, "event": "task_done", "task_id": 221, "worker_id": "w5", "comp_size": 4194576, "compute_sec": 2.127925}
+{"ts": 1795340237.7082691, "event": "task_assigned", "task_id": 232, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340238.38175, "event": "task_done", "task_id": 224, "worker_id": "w1", "comp_size": 4194576, "compute_sec": 2.515182}
+{"ts": 1795340238.3862798, "event": "task_assigned", "task_id": 233, "worker_id": "w1", "size": 4194304}
+{"ts": 1795340238.422713, "event": "task_done", "task_id": 225, "worker_id": "w3", "comp_size": 4194576, "compute_sec": 2.067782}
+{"ts": 1795340238.42684, "event": "task_assigned", "task_id": 234, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340238.4312892, "event": "task_done", "task_id": 226, "worker_id": "w4", "comp_size": 4194576, "compute_sec": 1.891198}
+{"ts": 1795340238.4355872, "event": "task_assigned", "task_id": 235, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340239.166817, "event": "task_done", "task_id": 227, "worker_id": "w2", "comp_size": 4194576, "compute_sec": 2.264516}
+{"ts": 1795340239.17132, "event": "task_assigned", "task_id": 236, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340239.371026, "event": "task_done", "task_id": 230, "worker_id": "w6", "comp_size": 4194576, "compute_sec": 1.897366}
+{"ts": 1795340239.379103, "event": "task_assigned", "task_id": 237, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340239.393719, "event": "task_done", "task_id": 228, "worker_id": "w7", "comp_size": 4194576, "compute_sec": 1.978262}
+{"ts": 1795340239.39839, "event": "task_assigned", "task_id": 238, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340239.5057101, "event": "task_done", "task_id": 231, "worker_id": "w9", "comp_size": 4194576, "compute_sec": 1.862403}
+{"ts": 1795340239.509894, "event": "task_assigned", "task_id": 239, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340239.677238, "event": "task_done", "task_id": 229, "worker_id": "w8", "comp_size": 4194576, "compute_sec": 2.192511}
+{"ts": 1795340239.6839008, "event": "task_assigned", "task_id": 240, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340239.8557818, "event": "task_done", "task_id": 232, "worker_id": "w5", "comp_size": 4194576, "compute_sec": 1.992342}
+{"ts": 1795340239.860693, "event": "task_assigned", "task_id": 241, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340240.202977, "event": "task_done", "task_id": 233, "worker_id": "w1", "comp_size": 4194576, "compute_sec": 1.579052}
+{"ts": 1795340240.208353, "event": "task_assigned", "task_id": 242, "worker_id": "w1", "size": 4194304}
+{"ts": 1795340240.931618, "event": "task_done", "task_id": 234, "worker_id": "w3", "comp_size": 4194576, "compute_sec": 2.330386}
+{"ts": 1795340240.936748, "event": "task_assigned", "task_id": 243, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340241.126318, "event": "task_done", "task_id": 238, "worker_id": "w7", "comp_size": 4194576, "compute_sec": 1.594121}
+{"ts": 1795340241.137602, "event": "task_assigned", "task_id": 244, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340241.3247519, "event": "task_done", "task_id": 235, "worker_id": "w4", "comp_size": 4194576, "compute_sec": 2.651311}
+{"ts": 1795340241.3302011, "event": "task_assigned", "task_id": 245, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340241.629977, "event": "task_done", "task_id": 239, "worker_id": "w9", "comp_size": 4194576, "compute_sec": 1.872863}
+{"ts": 1795340241.63449, "event": "task_assigned", "task_id": 246, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340241.765314, "event": "task_done", "task_id": 236, "worker_id": "w2", "comp_size": 4194576, "compute_sec": 2.416927}
+{"ts": 1795340241.770484, "event": "task_assigned", "task_id": 247, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340242.0204449, "event": "task_done", "task_id": 240, "worker_id": "w8", "comp_size": 4194576, "compute_sec": 2.168844}
+{"ts": 1795340242.026892, "event": "task_assigned", "task_id": 248, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340242.134691, "event": "task_done", "task_id": 241, "worker_id": "w5", "comp_size": 4194576, "compute_sec": 2.089347}
+{"ts": 1795340242.139759, "event": "task_assigned", "task_id": 249, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340242.14175, "event": "task_done", "task_id": 237, "worker_id": "w6", "comp_size": 4194576, "compute_sec": 2.538852}
+{"ts": 1795340242.14581, "event": "task_assigned", "task_id": 250, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340242.6208158, "event": "task_done", "task_id": 242, "worker_id": "w1", "comp_size": 4194576, "compute_sec": 2.261089}
+{"ts": 1795340242.625101, "event": "task_assigned", "task_id": 251, "worker_id": "w1", "size": 4194304}
+{"ts": 1795340243.3051589, "event": "task_done", "task_id": 245, "worker_id": "w4", "comp_size": 4194576, "compute_sec": 1.687558}
+{"ts": 1795340243.309653, "event": "task_assigned", "task_id": 252, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340243.413692, "event": "task_done", "task_id": 243, "worker_id": "w3", "comp_size": 4194576, "compute_sec": 2.34136}
+{"ts": 1795340243.4186509, "event": "task_assigned", "task_id": 253, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340243.544696, "event": "task_done", "task_id": 247, "worker_id": "w2", "comp_size": 4194576, "compute_sec": 1.614717}
+{"ts": 1795340243.5509608, "event": "task_assigned", "task_id": 254, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340243.570215, "event": "task_done", "task_id": 246, "worker_id": "w9", "comp_size": 4194576, "compute_sec": 1.783643}
+{"ts": 1795340243.580173, "event": "task_assigned", "task_id": 255, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340243.795274, "event": "task_done", "task_id": 244, "worker_id": "w7", "comp_size": 4194576, "compute_sec": 2.49809}
+{"ts": 1795340243.799894, "event": "task_assigned", "task_id": 256, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340244.274845, "event": "task_done", "task_id": 249, "worker_id": "w5", "comp_size": 4194576, "compute_sec": 1.991889}
+{"ts": 1795340244.281528, "event": "task_assigned", "task_id": 257, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340244.322061, "event": "task_done", "task_id": 250, "worker_id": "w6", "comp_size": 4194576, "compute_sec": 2.028806}
+{"ts": 1795340244.328116, "event": "task_assigned", "task_id": 258, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340244.50161, "event": "task_done", "task_id": 251, "worker_id": "w1", "comp_size": 4194576, "compute_sec": 1.725486}
+{"ts": 1795340244.50628, "event": "task_assigned", "task_id": 259, "worker_id": "w1", "size": 4194304}
+{"ts": 1795340244.5106611, "event": "task_done", "task_id": 248, "worker_id": "w8", "comp_size": 4194576, "compute_sec": 2.22756}
+{"ts": 1795340244.515255, "event": "task_assigned", "task_id": 260, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340244.674963, "event": "task_done", "task_id": 257, "worker_id": "w5", "comp_size": 1788, "compute_sec": 0.258811}
+{"ts": 1795340244.683528, "event": "task_assigned", "task_id": 261, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340244.82284, "event": "task_done", "task_id": 258, "worker_id": "w6", "comp_size": 1788, "compute_sec": 0.365249}
+{"ts": 1795340244.827738, "event": "task_assigned", "task_id": 262, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340244.850522, "event": "task_done", "task_id": 260, "worker_id": "w8", "comp_size": 1788, "compute_sec": 0.236402}
+{"ts": 1795340244.856241, "event": "task_assigned", "task_id": 263, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340244.89682, "event": "task_done", "task_id": 259, "worker_id": "w1", "comp_size": 1788, "compute_sec": 0.300291}
+{"ts": 1795340244.9043598, "event": "task_assigned", "task_id": 264, "worker_id": "w1", "size": 4194304}
+{"ts": 1795340245.010842, "event": "task_done", "task_id": 261, "worker_id": "w5", "comp_size": 1788, "compute_sec": 0.21911}
+{"ts": 1795340245.0186272, "event": "task_assigned", "task_id": 265, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340245.16051, "event": "worker_exit_injected", "worker_id": "w1", "pid": 0, "reason": "bench-e5"}
+{"ts": 1795340245.191423, "event": "task_done", "task_id": 252, "worker_id": "w4", "comp_size": 4194576, "compute_sec": 1.765998}
+{"ts": 1795340245.195688, "event": "task_assigned", "task_id": 266, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340245.370832, "event": "worker_dead", "worker_id": "w1", "reason": "koneksi putus", "inflight": 1}
+{"ts": 1795340245.371522, "event": "task_requeued", "task_id": 264, "worker_id": "w1", "attempts": 1, "reason": "koneksi putus"}
+{"ts": 1795340245.371603, "event": "worker_disconnected", "worker_id": "w1"}
+{"ts": 1795340245.383536, "event": "task_done", "task_id": 263, "worker_id": "w8", "comp_size": 1788, "compute_sec": 0.401308}
+{"ts": 1795340245.39249, "event": "task_assigned", "task_id": 264, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340245.620872, "event": "task_done", "task_id": 265, "worker_id": "w5", "comp_size": 1788, "compute_sec": 0.29882}
+{"ts": 1795340245.6290271, "event": "task_assigned", "task_id": 267, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340245.723619, "event": "task_done", "task_id": 262, "worker_id": "w6", "comp_size": 1788, "compute_sec": 0.752566}
+{"ts": 1795340245.731047, "event": "task_assigned", "task_id": 268, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340245.8301141, "event": "task_done", "task_id": 255, "worker_id": "w9", "comp_size": 4194576, "compute_sec": 2.117085}
+{"ts": 1795340245.837943, "event": "task_assigned", "task_id": 269, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340245.841662, "event": "task_done", "task_id": 266, "worker_id": "w4", "comp_size": 1788, "compute_sec": 0.492707}
+{"ts": 1795340245.8489149, "event": "task_assigned", "task_id": 270, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340245.940475, "event": "task_done", "task_id": 254, "worker_id": "w2", "comp_size": 4194576, "compute_sec": 2.222581}
+{"ts": 1795340245.944555, "event": "task_assigned", "task_id": 271, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340245.98468, "event": "task_done", "task_id": 264, "worker_id": "w8", "comp_size": 1788, "compute_sec": 0.402667}
+{"ts": 1795340245.991803, "event": "task_assigned", "task_id": 272, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340246.045666, "event": "task_done", "task_id": 268, "worker_id": "w6", "comp_size": 1788, "compute_sec": 0.157898}
+{"ts": 1795340246.052311, "event": "task_assigned", "task_id": 273, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340246.104449, "event": "task_done", "task_id": 253, "worker_id": "w3", "comp_size": 4194576, "compute_sec": 2.525639}
+{"ts": 1795340246.110327, "event": "task_assigned", "task_id": 274, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340246.116951, "event": "task_done", "task_id": 267, "worker_id": "w5", "comp_size": 1788, "compute_sec": 0.211179}
+{"ts": 1795340246.122279, "event": "task_assigned", "task_id": 275, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340246.17932, "event": "task_done", "task_id": 270, "worker_id": "w4", "comp_size": 1788, "compute_sec": 0.177252}
+{"ts": 1795340246.186711, "event": "task_assigned", "task_id": 276, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340246.224789, "event": "task_done", "task_id": 269, "worker_id": "w9", "comp_size": 1788, "compute_sec": 0.245229}
+{"ts": 1795340246.22645, "event": "task_done", "task_id": 271, "worker_id": "w2", "comp_size": 1788, "compute_sec": 0.189558}
+{"ts": 1795340246.231179, "event": "task_assigned", "task_id": 277, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340246.232815, "event": "task_assigned", "task_id": 278, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340246.280281, "event": "task_done", "task_id": 256, "worker_id": "w7", "comp_size": 4194576, "compute_sec": 2.375525}
+{"ts": 1795340246.2846022, "event": "task_assigned", "task_id": 279, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340246.367651, "event": "task_done", "task_id": 272, "worker_id": "w8", "comp_size": 1788, "compute_sec": 0.276157}
+{"ts": 1795340246.372076, "event": "task_assigned", "task_id": 280, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340246.3818681, "event": "task_done", "task_id": 273, "worker_id": "w6", "comp_size": 1788, "compute_sec": 0.226553}
+{"ts": 1795340246.38624, "event": "task_assigned", "task_id": 281, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340246.457079, "event": "task_done", "task_id": 274, "worker_id": "w3", "comp_size": 1788, "compute_sec": 0.209472}
+{"ts": 1795340246.460354, "event": "task_done", "task_id": 275, "worker_id": "w5", "comp_size": 1788, "compute_sec": 0.205829}
+{"ts": 1795340246.463897, "event": "task_assigned", "task_id": 282, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340246.4668381, "event": "task_assigned", "task_id": 283, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340246.515213, "event": "task_done", "task_id": 279, "worker_id": "w7", "comp_size": 1788, "compute_sec": 0.167872}
+{"ts": 1795340246.520891, "event": "task_assigned", "task_id": 284, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340246.593081, "event": "task_done", "task_id": 278, "worker_id": "w2", "comp_size": 1788, "compute_sec": 0.188096}
+{"ts": 1795340246.6002162, "event": "task_assigned", "task_id": 285, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340246.637862, "event": "task_done", "task_id": 277, "worker_id": "w9", "comp_size": 1788, "compute_sec": 0.23102}
+{"ts": 1795340246.6455948, "event": "task_assigned", "task_id": 286, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340246.6983051, "event": "task_done", "task_id": 280, "worker_id": "w8", "comp_size": 1788, "compute_sec": 0.226629}
+{"ts": 1795340246.705672, "event": "task_assigned", "task_id": 287, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340246.715725, "event": "task_done", "task_id": 281, "worker_id": "w6", "comp_size": 1788, "compute_sec": 0.233458}
+{"ts": 1795340246.721951, "event": "task_assigned", "task_id": 288, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340246.7356539, "event": "task_done", "task_id": 276, "worker_id": "w4", "comp_size": 1788, "compute_sec": 0.351591}
+{"ts": 1795340246.742701, "event": "task_assigned", "task_id": 289, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340246.767982, "event": "task_done", "task_id": 284, "worker_id": "w7", "comp_size": 1788, "compute_sec": 0.187377}
+{"ts": 1795340246.773932, "event": "task_assigned", "task_id": 290, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340246.817624, "event": "task_done", "task_id": 283, "worker_id": "w5", "comp_size": 1788, "compute_sec": 0.19963}
+{"ts": 1795340246.82261, "event": "task_assigned", "task_id": 291, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340246.851937, "event": "task_done", "task_id": 282, "worker_id": "w3", "comp_size": 1788, "compute_sec": 0.255646}
+{"ts": 1795340246.857365, "event": "task_assigned", "task_id": 292, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340246.913846, "event": "task_done", "task_id": 285, "worker_id": "w2", "comp_size": 1788, "compute_sec": 0.209564}
+{"ts": 1795340246.919174, "event": "task_assigned", "task_id": 293, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340246.925459, "event": "task_done", "task_id": 286, "worker_id": "w9", "comp_size": 1788, "compute_sec": 0.159423}
+{"ts": 1795340246.9321449, "event": "task_assigned", "task_id": 294, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340246.9934652, "event": "task_done", "task_id": 290, "worker_id": "w7", "comp_size": 1788, "compute_sec": 0.169334}
+{"ts": 1795340247.000264, "event": "task_assigned", "task_id": 295, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340247.052928, "event": "task_done", "task_id": 288, "worker_id": "w6", "comp_size": 1788, "compute_sec": 0.191011}
+{"ts": 1795340247.057943, "event": "task_assigned", "task_id": 296, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340247.0750341, "event": "task_done", "task_id": 287, "worker_id": "w8", "comp_size": 1788, "compute_sec": 0.255389}
+{"ts": 1795340247.082041, "event": "task_assigned", "task_id": 297, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340247.087669, "event": "task_done", "task_id": 289, "worker_id": "w4", "comp_size": 1788, "compute_sec": 0.19334}
+{"ts": 1795340247.092473, "event": "task_assigned", "task_id": 298, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340247.128358, "event": "task_done", "task_id": 291, "worker_id": "w5", "comp_size": 1788, "compute_sec": 0.197594}
+{"ts": 1795340247.135221, "event": "task_assigned", "task_id": 299, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340247.14021, "event": "task_done", "task_id": 292, "worker_id": "w3", "comp_size": 1788, "compute_sec": 0.19431}
+{"ts": 1795340247.145258, "event": "task_assigned", "task_id": 300, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340247.221233, "event": "task_done", "task_id": 293, "worker_id": "w2", "comp_size": 1788, "compute_sec": 0.184251}
+{"ts": 1795340247.226023, "event": "task_assigned", "task_id": 301, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340247.261334, "event": "task_done", "task_id": 295, "worker_id": "w7", "comp_size": 1788, "compute_sec": 0.216956}
+{"ts": 1795340247.266088, "event": "task_assigned", "task_id": 302, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340247.2710972, "event": "task_done", "task_id": 294, "worker_id": "w9", "comp_size": 1788, "compute_sec": 0.216123}
+{"ts": 1795340247.275379, "event": "task_assigned", "task_id": 303, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340247.361174, "event": "task_done", "task_id": 297, "worker_id": "w8", "comp_size": 1788, "compute_sec": 0.158053}
+{"ts": 1795340247.367779, "event": "task_assigned", "task_id": 304, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340247.374974, "event": "task_done", "task_id": 296, "worker_id": "w6", "comp_size": 1788, "compute_sec": 0.184336}
+{"ts": 1795340247.381908, "event": "task_assigned", "task_id": 305, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340247.4052951, "event": "task_done", "task_id": 298, "worker_id": "w4", "comp_size": 1788, "compute_sec": 0.198469}
+{"ts": 1795340247.4120672, "event": "task_assigned", "task_id": 306, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340247.432954, "event": "task_done", "task_id": 299, "worker_id": "w5", "comp_size": 1788, "compute_sec": 0.196382}
+{"ts": 1795340247.4376278, "event": "task_assigned", "task_id": 307, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340247.4721322, "event": "task_done", "task_id": 300, "worker_id": "w3", "comp_size": 1788, "compute_sec": 0.226245}
+{"ts": 1795340247.479844, "event": "task_assigned", "task_id": 308, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340247.5151439, "event": "task_done", "task_id": 302, "worker_id": "w7", "comp_size": 1788, "compute_sec": 0.188721}
+{"ts": 1795340247.519964, "event": "task_done", "task_id": 301, "worker_id": "w2", "comp_size": 1788, "compute_sec": 0.154243}
+{"ts": 1795340247.5223901, "event": "task_assigned", "task_id": 309, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340247.525331, "event": "task_assigned", "task_id": 310, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340247.5824, "event": "task_done", "task_id": 303, "worker_id": "w9", "comp_size": 1788, "compute_sec": 0.175427}
+{"ts": 1795340247.589599, "event": "task_assigned", "task_id": 311, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340247.646461, "event": "task_done", "task_id": 304, "worker_id": "w8", "comp_size": 1788, "compute_sec": 0.166268}
+{"ts": 1795340247.6538072, "event": "task_assigned", "task_id": 312, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340247.690618, "event": "task_done", "task_id": 306, "worker_id": "w4", "comp_size": 1788, "compute_sec": 0.185445}
+{"ts": 1795340247.6965802, "event": "task_assigned", "task_id": 313, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340247.7124, "event": "task_done", "task_id": 305, "worker_id": "w6", "comp_size": 1788, "compute_sec": 0.173726}
+{"ts": 1795340247.717053, "event": "task_assigned", "task_id": 314, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340247.737795, "event": "task_done", "task_id": 309, "worker_id": "w7", "comp_size": 1788, "compute_sec": 0.156583}
+{"ts": 1795340247.74436, "event": "task_assigned", "task_id": 315, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340247.801538, "event": "task_done", "task_id": 307, "worker_id": "w5", "comp_size": 1788, "compute_sec": 0.19855}
+{"ts": 1795340247.8064919, "event": "task_assigned", "task_id": 316, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340247.824854, "event": "task_done", "task_id": 310, "worker_id": "w2", "comp_size": 1788, "compute_sec": 0.184041}
+{"ts": 1795340247.831933, "event": "task_assigned", "task_id": 317, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340247.8464909, "event": "task_done", "task_id": 308, "worker_id": "w3", "comp_size": 1788, "compute_sec": 0.250457}
+{"ts": 1795340247.8514822, "event": "task_assigned", "task_id": 318, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340247.880499, "event": "task_done", "task_id": 311, "worker_id": "w9", "comp_size": 1788, "compute_sec": 0.19318}
+{"ts": 1795340247.885026, "event": "task_assigned", "task_id": 319, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340247.9337568, "event": "task_done", "task_id": 312, "worker_id": "w8", "comp_size": 1788, "compute_sec": 0.181902}
+{"ts": 1795340247.939302, "event": "task_assigned", "task_id": 320, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340248.004768, "event": "task_done", "task_id": 314, "worker_id": "w6", "comp_size": 1788, "compute_sec": 0.175246}
+{"ts": 1795340248.010918, "event": "task_done", "task_id": 313, "worker_id": "w4", "comp_size": 1788, "compute_sec": 0.189373}
+{"ts": 1795340248.011234, "event": "task_assigned", "task_id": 321, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340248.0180979, "event": "task_assigned", "task_id": 322, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340248.0467, "event": "task_done", "task_id": 315, "worker_id": "w7", "comp_size": 1788, "compute_sec": 0.248636}
+{"ts": 1795340248.054781, "event": "task_assigned", "task_id": 323, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340248.0924659, "event": "task_done", "task_id": 316, "worker_id": "w5", "comp_size": 1788, "compute_sec": 0.182279}
+{"ts": 1795340248.0974662, "event": "task_assigned", "task_id": 324, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340248.1423738, "event": "task_done", "task_id": 317, "worker_id": "w2", "comp_size": 1788, "compute_sec": 0.186707}
+{"ts": 1795340248.148159, "event": "task_assigned", "task_id": 325, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340248.1782012, "event": "task_done", "task_id": 319, "worker_id": "w9", "comp_size": 1788, "compute_sec": 0.203633}
+{"ts": 1795340248.1827068, "event": "task_assigned", "task_id": 326, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340248.2423959, "event": "task_done", "task_id": 318, "worker_id": "w3", "comp_size": 1788, "compute_sec": 0.194446}
+{"ts": 1795340248.24938, "event": "task_assigned", "task_id": 327, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340248.287682, "event": "task_done", "task_id": 323, "worker_id": "w7", "comp_size": 1792, "compute_sec": 0.181821}
+{"ts": 1795340248.292198, "event": "task_assigned", "task_id": 328, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340248.313466, "event": "task_done", "task_id": 320, "worker_id": "w8", "comp_size": 1788, "compute_sec": 0.204136}
+{"ts": 1795340248.320211, "event": "task_assigned", "task_id": 329, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340248.332309, "event": "task_done", "task_id": 321, "worker_id": "w6", "comp_size": 1792, "compute_sec": 0.180599}
+{"ts": 1795340248.334653, "event": "task_done", "task_id": 322, "worker_id": "w4", "comp_size": 1792, "compute_sec": 0.190654}
+{"ts": 1795340248.339363, "event": "task_assigned", "task_id": 330, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340248.339988, "event": "task_assigned", "task_id": 331, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340248.45824, "event": "task_done", "task_id": 324, "worker_id": "w5", "comp_size": 1792, "compute_sec": 0.217181}
+{"ts": 1795340248.463037, "event": "task_assigned", "task_id": 332, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340248.472215, "event": "task_done", "task_id": 325, "worker_id": "w2", "comp_size": 1792, "compute_sec": 0.184442}
+{"ts": 1795340248.476647, "event": "task_assigned", "task_id": 333, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340248.479137, "event": "task_done", "task_id": 326, "worker_id": "w9", "comp_size": 1792, "compute_sec": 0.203578}
+{"ts": 1795340248.486152, "event": "task_assigned", "task_id": 334, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340248.504457, "event": "task_done", "task_id": 328, "worker_id": "w7", "comp_size": 1792, "compute_sec": 0.165993}
+{"ts": 1795340248.511552, "event": "task_assigned", "task_id": 335, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340248.611014, "event": "task_done", "task_id": 331, "worker_id": "w4", "comp_size": 1792, "compute_sec": 0.203212}
+{"ts": 1795340248.6139698, "event": "task_done", "task_id": 327, "worker_id": "w3", "comp_size": 1792, "compute_sec": 0.240795}
+{"ts": 1795340248.615941, "event": "task_assigned", "task_id": 336, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340248.618742, "event": "task_assigned", "task_id": 337, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340248.635948, "event": "task_done", "task_id": 329, "worker_id": "w8", "comp_size": 1792, "compute_sec": 0.187533}
+{"ts": 1795340248.640815, "event": "task_assigned", "task_id": 338, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340248.6511989, "event": "task_done", "task_id": 330, "worker_id": "w6", "comp_size": 1792, "compute_sec": 0.161635}
+{"ts": 1795340248.6561549, "event": "task_assigned", "task_id": 339, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340248.753802, "event": "task_done", "task_id": 332, "worker_id": "w5", "comp_size": 1792, "compute_sec": 0.168726}
+{"ts": 1795340248.759509, "event": "task_assigned", "task_id": 340, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340248.7953868, "event": "task_done", "task_id": 335, "worker_id": "w7", "comp_size": 1792, "compute_sec": 0.180387}
+{"ts": 1795340248.802402, "event": "task_assigned", "task_id": 341, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340248.830226, "event": "task_done", "task_id": 333, "worker_id": "w2", "comp_size": 1792, "compute_sec": 0.179555}
+{"ts": 1795340248.837458, "event": "task_assigned", "task_id": 342, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340248.8670442, "event": "task_done", "task_id": 334, "worker_id": "w9", "comp_size": 1792, "compute_sec": 0.237958}
+{"ts": 1795340248.871796, "event": "task_assigned", "task_id": 343, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340248.912971, "event": "task_done", "task_id": 336, "worker_id": "w4", "comp_size": 1792, "compute_sec": 0.188563}
+{"ts": 1795340248.9199, "event": "task_assigned", "task_id": 344, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340248.930565, "event": "task_done", "task_id": 337, "worker_id": "w3", "comp_size": 1792, "compute_sec": 0.182474}
+{"ts": 1795340248.9383109, "event": "task_assigned", "task_id": 345, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340248.947459, "event": "task_done", "task_id": 338, "worker_id": "w8", "comp_size": 1792, "compute_sec": 0.208986}
+{"ts": 1795340248.9540439, "event": "task_assigned", "task_id": 346, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340248.970688, "event": "task_done", "task_id": 339, "worker_id": "w6", "comp_size": 1792, "compute_sec": 0.193247}
+{"ts": 1795340248.975434, "event": "task_assigned", "task_id": 347, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340249.029202, "event": "task_done", "task_id": 341, "worker_id": "w7", "comp_size": 1792, "compute_sec": 0.169929}
+{"ts": 1795340249.034793, "event": "task_assigned", "task_id": 348, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340249.12049, "event": "task_done", "task_id": 340, "worker_id": "w5", "comp_size": 1792, "compute_sec": 0.213127}
+{"ts": 1795340249.126168, "event": "task_assigned", "task_id": 349, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340249.130355, "event": "task_done", "task_id": 343, "worker_id": "w9", "comp_size": 1792, "compute_sec": 0.170236}
+{"ts": 1795340249.136661, "event": "task_assigned", "task_id": 350, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340249.141035, "event": "task_done", "task_id": 342, "worker_id": "w2", "comp_size": 1792, "compute_sec": 0.204676}
+{"ts": 1795340249.1474938, "event": "task_assigned", "task_id": 351, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340249.240911, "event": "task_done", "task_id": 345, "worker_id": "w3", "comp_size": 1792, "compute_sec": 0.18035}
+{"ts": 1795340249.247761, "event": "task_assigned", "task_id": 352, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340249.2505898, "event": "task_done", "task_id": 344, "worker_id": "w4", "comp_size": 1792, "compute_sec": 0.218322}
+{"ts": 1795340249.2557209, "event": "task_assigned", "task_id": 353, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340249.322357, "event": "task_done", "task_id": 348, "worker_id": "w7", "comp_size": 1792, "compute_sec": 0.219947}
+{"ts": 1795340249.3268611, "event": "task_assigned", "task_id": 354, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340249.339527, "event": "task_done", "task_id": 346, "worker_id": "w8", "comp_size": 1792, "compute_sec": 0.236862}
+{"ts": 1795340249.345757, "event": "task_assigned", "task_id": 355, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340249.3956711, "event": "task_done", "task_id": 347, "worker_id": "w6", "comp_size": 1792, "compute_sec": 0.309011}
+{"ts": 1795340249.401231, "event": "task_assigned", "task_id": 356, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340249.45768, "event": "task_done", "task_id": 350, "worker_id": "w9", "comp_size": 1792, "compute_sec": 0.253283}
+{"ts": 1795340249.465446, "event": "task_assigned", "task_id": 357, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340249.466531, "event": "task_done", "task_id": 351, "worker_id": "w2", "comp_size": 1792, "compute_sec": 0.211589}
+{"ts": 1795340249.472516, "event": "task_assigned", "task_id": 358, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340249.4743521, "event": "task_done", "task_id": 349, "worker_id": "w5", "comp_size": 1792, "compute_sec": 0.231231}
+{"ts": 1795340249.4790761, "event": "task_assigned", "task_id": 359, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340249.552471, "event": "task_done", "task_id": 353, "worker_id": "w4", "comp_size": 1792, "compute_sec": 0.188973}
+{"ts": 1795340249.559631, "event": "task_assigned", "task_id": 360, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340249.585349, "event": "task_done", "task_id": 352, "worker_id": "w3", "comp_size": 1792, "compute_sec": 0.171004}
+{"ts": 1795340249.590152, "event": "task_assigned", "task_id": 361, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340249.6093462, "event": "task_done", "task_id": 354, "worker_id": "w7", "comp_size": 1792, "compute_sec": 0.216906}
+{"ts": 1795340249.6166599, "event": "task_assigned", "task_id": 362, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340249.6343539, "event": "task_done", "task_id": 355, "worker_id": "w8", "comp_size": 1792, "compute_sec": 0.182866}
+{"ts": 1795340249.640089, "event": "task_assigned", "task_id": 363, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340249.7756171, "event": "task_done", "task_id": 356, "worker_id": "w6", "comp_size": 1792, "compute_sec": 0.222823}
+{"ts": 1795340249.782238, "event": "task_assigned", "task_id": 364, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340249.788427, "event": "task_done", "task_id": 358, "worker_id": "w2", "comp_size": 1792, "compute_sec": 0.190922}
+{"ts": 1795340249.790678, "event": "task_done", "task_id": 357, "worker_id": "w9", "comp_size": 1792, "compute_sec": 0.198552}
+{"ts": 1795340249.793443, "event": "task_done", "task_id": 359, "worker_id": "w5", "comp_size": 1792, "compute_sec": 0.181975}
+{"ts": 1795340249.794057, "event": "task_assigned", "task_id": 365, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340249.796854, "event": "task_assigned", "task_id": 366, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340249.800278, "event": "task_assigned", "task_id": 367, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340249.914185, "event": "task_done", "task_id": 360, "worker_id": "w4", "comp_size": 1792, "compute_sec": 0.215237}
+{"ts": 1795340249.9185688, "event": "task_assigned", "task_id": 368, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340249.949022, "event": "task_done", "task_id": 361, "worker_id": "w3", "comp_size": 1792, "compute_sec": 0.205618}
+{"ts": 1795340249.956023, "event": "task_assigned", "task_id": 369, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340249.974077, "event": "task_done", "task_id": 363, "worker_id": "w8", "comp_size": 1792, "compute_sec": 0.255414}
+{"ts": 1795340249.979628, "event": "task_assigned", "task_id": 370, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340249.985248, "event": "task_done", "task_id": 362, "worker_id": "w7", "comp_size": 1792, "compute_sec": 0.281527}
+{"ts": 1795340249.9919848, "event": "task_assigned", "task_id": 371, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340250.070223, "event": "task_done", "task_id": 364, "worker_id": "w6", "comp_size": 1792, "compute_sec": 0.204891}
+{"ts": 1795340250.075337, "event": "task_assigned", "task_id": 372, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340250.11137, "event": "task_done", "task_id": 367, "worker_id": "w5", "comp_size": 1792, "compute_sec": 0.198498}
+{"ts": 1795340250.1181152, "event": "task_assigned", "task_id": 373, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340250.124, "event": "task_done", "task_id": 366, "worker_id": "w9", "comp_size": 1792, "compute_sec": 0.22307}
+{"ts": 1795340250.128675, "event": "task_done", "task_id": 365, "worker_id": "w2", "comp_size": 1792, "compute_sec": 0.192036}
+{"ts": 1795340250.130605, "event": "task_assigned", "task_id": 374, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340250.1337202, "event": "task_assigned", "task_id": 375, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340250.213068, "event": "task_done", "task_id": 369, "worker_id": "w3", "comp_size": 1792, "compute_sec": 0.150941}
+{"ts": 1795340250.220178, "event": "task_assigned", "task_id": 376, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340250.2535849, "event": "task_done", "task_id": 370, "worker_id": "w8", "comp_size": 1792, "compute_sec": 0.167666}
+{"ts": 1795340250.2605498, "event": "task_assigned", "task_id": 377, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340250.276463, "event": "task_done", "task_id": 371, "worker_id": "w7", "comp_size": 1792, "compute_sec": 0.206569}
+{"ts": 1795340250.2777338, "event": "task_done", "task_id": 368, "worker_id": "w4", "comp_size": 1792, "compute_sec": 0.217835}
+{"ts": 1795340250.282083, "event": "task_assigned", "task_id": 378, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340250.2838001, "event": "task_assigned", "task_id": 379, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340250.372295, "event": "task_done", "task_id": 372, "worker_id": "w6", "comp_size": 1792, "compute_sec": 0.192096}
+{"ts": 1795340250.378175, "event": "task_assigned", "task_id": 380, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340250.387957, "event": "task_done", "task_id": 375, "worker_id": "w2", "comp_size": 1792, "compute_sec": 0.158852}
+{"ts": 1795340250.394933, "event": "task_assigned", "task_id": 381, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340250.4013498, "event": "task_done", "task_id": 373, "worker_id": "w5", "comp_size": 1792, "compute_sec": 0.162144}
+{"ts": 1795340250.405914, "event": "task_assigned", "task_id": 382, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340250.448617, "event": "task_done", "task_id": 374, "worker_id": "w9", "comp_size": 1792, "compute_sec": 0.187741}
+{"ts": 1795340250.453738, "event": "task_assigned", "task_id": 383, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340250.502883, "event": "task_done", "task_id": 376, "worker_id": "w3", "comp_size": 1792, "compute_sec": 0.199406}
+{"ts": 1795340250.507807, "event": "task_assigned", "task_id": 384, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340250.550261, "event": "task_done", "task_id": 377, "worker_id": "w8", "comp_size": 1792, "compute_sec": 0.172075}
+{"ts": 1795340250.5559769, "event": "task_assigned", "task_id": 385, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340250.568877, "event": "task_done", "task_id": 379, "worker_id": "w4", "comp_size": 1792, "compute_sec": 0.196001}
+{"ts": 1795340250.5744991, "event": "task_assigned", "task_id": 386, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340250.596875, "event": "task_done", "task_id": 378, "worker_id": "w7", "comp_size": 1792, "compute_sec": 0.23829}
+{"ts": 1795340250.6044328, "event": "task_assigned", "task_id": 387, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340250.647722, "event": "task_done", "task_id": 382, "worker_id": "w5", "comp_size": 1792, "compute_sec": 0.157078}
+{"ts": 1795340250.654581, "event": "task_assigned", "task_id": 388, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340250.680217, "event": "task_done", "task_id": 380, "worker_id": "w6", "comp_size": 1792, "compute_sec": 0.178511}
+{"ts": 1795340250.687094, "event": "task_assigned", "task_id": 389, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340250.7224472, "event": "task_done", "task_id": 381, "worker_id": "w2", "comp_size": 1792, "compute_sec": 0.217006}
+{"ts": 1795340250.729672, "event": "task_assigned", "task_id": 390, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340250.744313, "event": "task_done", "task_id": 383, "worker_id": "w9", "comp_size": 1792, "compute_sec": 0.190468}
+{"ts": 1795340250.749055, "event": "task_assigned", "task_id": 391, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340250.812667, "event": "task_done", "task_id": 384, "worker_id": "w3", "comp_size": 1792, "compute_sec": 0.169925}
+{"ts": 1795340250.819745, "event": "task_assigned", "task_id": 392, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340250.888772, "event": "task_done", "task_id": 385, "worker_id": "w8", "comp_size": 54220, "compute_sec": 0.194088}
+{"ts": 1795340250.895665, "event": "task_assigned", "task_id": 393, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340250.938742, "event": "task_done", "task_id": 386, "worker_id": "w4", "comp_size": 54388, "compute_sec": 0.234263}
+{"ts": 1795340250.945492, "event": "task_assigned", "task_id": 394, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340251.0204659, "event": "task_done", "task_id": 388, "worker_id": "w5", "comp_size": 54264, "compute_sec": 0.282011}
+{"ts": 1795340251.026784, "event": "task_assigned", "task_id": 395, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340251.028437, "event": "task_done", "task_id": 387, "worker_id": "w7", "comp_size": 54400, "compute_sec": 0.326347}
+{"ts": 1795340251.033321, "event": "task_assigned", "task_id": 396, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340251.054234, "event": "task_done", "task_id": 389, "worker_id": "w6", "comp_size": 54244, "compute_sec": 0.235128}
+{"ts": 1795340251.058998, "event": "task_assigned", "task_id": 397, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340251.120366, "event": "task_done", "task_id": 390, "worker_id": "w2", "comp_size": 54368, "compute_sec": 0.299945}
+{"ts": 1795340251.128095, "event": "task_assigned", "task_id": 398, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340251.1403048, "event": "task_done", "task_id": 391, "worker_id": "w9", "comp_size": 54280, "compute_sec": 0.305831}
+{"ts": 1795340251.146919, "event": "task_assigned", "task_id": 399, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340251.1761558, "event": "task_done", "task_id": 392, "worker_id": "w3", "comp_size": 54520, "compute_sec": 0.266296}
+{"ts": 1795340251.1820319, "event": "task_assigned", "task_id": 400, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340251.254223, "event": "task_done", "task_id": 393, "worker_id": "w8", "comp_size": 54280, "compute_sec": 0.277296}
+{"ts": 1795340251.25764, "event": "task_done", "task_id": 394, "worker_id": "w4", "comp_size": 54400, "compute_sec": 0.244571}
+{"ts": 1795340251.2595, "event": "task_assigned", "task_id": 401, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340251.2625122, "event": "task_assigned", "task_id": 402, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340251.36945, "event": "task_done", "task_id": 397, "worker_id": "w6", "comp_size": 54324, "compute_sec": 0.247244}
+{"ts": 1795340251.374368, "event": "task_assigned", "task_id": 403, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340251.383586, "event": "task_done", "task_id": 396, "worker_id": "w7", "comp_size": 54336, "compute_sec": 0.274193}
+{"ts": 1795340251.390126, "event": "task_assigned", "task_id": 404, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340251.403496, "event": "task_done", "task_id": 395, "worker_id": "w5", "comp_size": 54304, "compute_sec": 0.257431}
+{"ts": 1795340251.409696, "event": "task_assigned", "task_id": 405, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340251.4713469, "event": "task_done", "task_id": 398, "worker_id": "w2", "comp_size": 54284, "compute_sec": 0.235845}
+{"ts": 1795340251.4781, "event": "task_assigned", "task_id": 406, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340251.495324, "event": "task_done", "task_id": 400, "worker_id": "w3", "comp_size": 54316, "compute_sec": 0.224775}
+{"ts": 1795340251.501322, "event": "task_assigned", "task_id": 407, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340251.564554, "event": "task_done", "task_id": 399, "worker_id": "w9", "comp_size": 54280, "compute_sec": 0.313069}
+{"ts": 1795340251.5692108, "event": "task_assigned", "task_id": 408, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340251.597624, "event": "task_done", "task_id": 402, "worker_id": "w4", "comp_size": 54456, "compute_sec": 0.222148}
+{"ts": 1795340251.597692, "event": "task_done", "task_id": 401, "worker_id": "w8", "comp_size": 54312, "compute_sec": 0.230057}
+{"ts": 1795340251.6043048, "event": "task_assigned", "task_id": 409, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340251.6051252, "event": "task_assigned", "task_id": 410, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340251.722912, "event": "task_done", "task_id": 403, "worker_id": "w6", "comp_size": 54372, "compute_sec": 0.229418}
+{"ts": 1795340251.728344, "event": "task_assigned", "task_id": 411, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340251.7488399, "event": "task_done", "task_id": 405, "worker_id": "w5", "comp_size": 54272, "compute_sec": 0.265449}
+{"ts": 1795340251.755253, "event": "task_assigned", "task_id": 412, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340251.809765, "event": "task_done", "task_id": 404, "worker_id": "w7", "comp_size": 54396, "compute_sec": 0.345106}
+{"ts": 1795340251.814634, "event": "task_assigned", "task_id": 413, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340251.825376, "event": "task_done", "task_id": 407, "worker_id": "w3", "comp_size": 54348, "compute_sec": 0.209827}
+{"ts": 1795340251.832296, "event": "task_assigned", "task_id": 414, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340251.84198, "event": "task_done", "task_id": 406, "worker_id": "w2", "comp_size": 54348, "compute_sec": 0.229088}
+{"ts": 1795340251.848471, "event": "task_assigned", "task_id": 415, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340251.941943, "event": "task_done", "task_id": 409, "worker_id": "w8", "comp_size": 54296, "compute_sec": 0.223222}
+{"ts": 1795340251.949023, "event": "task_assigned", "task_id": 416, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340251.9605918, "event": "task_done", "task_id": 410, "worker_id": "w4", "comp_size": 54452, "compute_sec": 0.247473}
+{"ts": 1795340251.962576, "event": "task_done", "task_id": 408, "worker_id": "w9", "comp_size": 54292, "compute_sec": 0.284532}
+{"ts": 1795340251.966591, "event": "task_assigned", "task_id": 417, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340251.969023, "event": "task_assigned", "task_id": 418, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340252.0781791, "event": "task_done", "task_id": 411, "worker_id": "w6", "comp_size": 54416, "compute_sec": 0.24512}
+{"ts": 1795340252.084779, "event": "task_assigned", "task_id": 419, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340252.092461, "event": "task_done", "task_id": 413, "worker_id": "w7", "comp_size": 54304, "compute_sec": 0.223531}
+{"ts": 1795340252.099935, "event": "task_assigned", "task_id": 420, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340252.1593049, "event": "task_done", "task_id": 412, "worker_id": "w5", "comp_size": 54276, "compute_sec": 0.24699}
+{"ts": 1795340252.165556, "event": "task_assigned", "task_id": 421, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340252.193413, "event": "task_done", "task_id": 415, "worker_id": "w2", "comp_size": 54176, "compute_sec": 0.225711}
+{"ts": 1795340252.1976929, "event": "task_assigned", "task_id": 422, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340252.270141, "event": "task_done", "task_id": 414, "worker_id": "w3", "comp_size": 54272, "compute_sec": 0.329598}
+{"ts": 1795340252.275326, "event": "task_assigned", "task_id": 423, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340252.348943, "event": "task_done", "task_id": 417, "worker_id": "w4", "comp_size": 54424, "compute_sec": 0.257395}
+{"ts": 1795340252.353201, "event": "task_assigned", "task_id": 424, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340252.363704, "event": "task_done", "task_id": 416, "worker_id": "w8", "comp_size": 54204, "compute_sec": 0.311395}
+{"ts": 1795340252.36847, "event": "task_assigned", "task_id": 425, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340252.375333, "event": "task_done", "task_id": 418, "worker_id": "w9", "comp_size": 54392, "compute_sec": 0.249471}
+{"ts": 1795340252.38198, "event": "task_assigned", "task_id": 426, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340252.404551, "event": "task_done", "task_id": 420, "worker_id": "w7", "comp_size": 54364, "compute_sec": 0.226505}
+{"ts": 1795340252.411356, "event": "task_assigned", "task_id": 427, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340252.441498, "event": "task_done", "task_id": 419, "worker_id": "w6", "comp_size": 54376, "compute_sec": 0.256218}
+{"ts": 1795340252.446651, "event": "task_assigned", "task_id": 428, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340252.501725, "event": "task_done", "task_id": 421, "worker_id": "w5", "comp_size": 54404, "compute_sec": 0.213963}
+{"ts": 1795340252.508534, "event": "task_assigned", "task_id": 429, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340252.562657, "event": "task_done", "task_id": 422, "worker_id": "w2", "comp_size": 54384, "compute_sec": 0.231929}
+{"ts": 1795340252.569767, "event": "task_assigned", "task_id": 430, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340252.576996, "event": "task_done", "task_id": 423, "worker_id": "w3", "comp_size": 54312, "compute_sec": 0.188674}
+{"ts": 1795340252.582031, "event": "task_assigned", "task_id": 431, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340252.7205691, "event": "task_done", "task_id": 425, "worker_id": "w8", "comp_size": 54172, "compute_sec": 0.223275}
+{"ts": 1795340252.7256992, "event": "task_assigned", "task_id": 432, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340252.728579, "event": "task_done", "task_id": 424, "worker_id": "w4", "comp_size": 54368, "compute_sec": 0.245725}
+{"ts": 1795340252.7332811, "event": "task_assigned", "task_id": 433, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340252.7441752, "event": "task_done", "task_id": 427, "worker_id": "w7", "comp_size": 54416, "compute_sec": 0.228118}
+{"ts": 1795340252.751174, "event": "task_assigned", "task_id": 434, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340252.7915258, "event": "task_done", "task_id": 428, "worker_id": "w6", "comp_size": 54252, "compute_sec": 0.233641}
+{"ts": 1795340252.7940512, "event": "task_done", "task_id": 426, "worker_id": "w9", "comp_size": 54300, "compute_sec": 0.238249}
+{"ts": 1795340252.798645, "event": "task_assigned", "task_id": 435, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340252.7987452, "event": "task_assigned", "task_id": 436, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340252.931252, "event": "task_done", "task_id": 429, "worker_id": "w5", "comp_size": 54168, "compute_sec": 0.273456}
+{"ts": 1795340252.935675, "event": "task_assigned", "task_id": 437, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340252.93631, "event": "task_done", "task_id": 430, "worker_id": "w2", "comp_size": 54488, "compute_sec": 0.245545}
+{"ts": 1795340252.9453309, "event": "task_assigned", "task_id": 438, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340252.969106, "event": "task_done", "task_id": 431, "worker_id": "w3", "comp_size": 54360, "compute_sec": 0.299602}
+{"ts": 1795340252.973383, "event": "task_assigned", "task_id": 439, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340253.038595, "event": "task_done", "task_id": 432, "worker_id": "w8", "comp_size": 54264, "compute_sec": 0.240258}
+{"ts": 1795340253.0453498, "event": "task_assigned", "task_id": 440, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340253.071979, "event": "task_done", "task_id": 433, "worker_id": "w4", "comp_size": 54248, "compute_sec": 0.221951}
+{"ts": 1795340253.077997, "event": "task_assigned", "task_id": 441, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340253.120867, "event": "task_done", "task_id": 434, "worker_id": "w7", "comp_size": 54252, "compute_sec": 0.263979}
+{"ts": 1795340253.1283772, "event": "task_assigned", "task_id": 442, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340253.149539, "event": "task_done", "task_id": 435, "worker_id": "w6", "comp_size": 54200, "compute_sec": 0.249773}
+{"ts": 1795340253.149933, "event": "task_done", "task_id": 436, "worker_id": "w9", "comp_size": 54468, "compute_sec": 0.249924}
+{"ts": 1795340253.1573849, "event": "task_assigned", "task_id": 444, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340253.157471, "event": "task_assigned", "task_id": 443, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340253.26719, "event": "task_done", "task_id": 438, "worker_id": "w2", "comp_size": 54340, "compute_sec": 0.221213}
+{"ts": 1795340253.274654, "event": "task_assigned", "task_id": 445, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340253.303427, "event": "task_done", "task_id": 439, "worker_id": "w3", "comp_size": 54448, "compute_sec": 0.22648}
+{"ts": 1795340253.308403, "event": "task_assigned", "task_id": 446, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340253.3312461, "event": "task_done", "task_id": 437, "worker_id": "w5", "comp_size": 54364, "compute_sec": 0.294051}
+{"ts": 1795340253.336939, "event": "task_assigned", "task_id": 447, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340253.374305, "event": "task_done", "task_id": 440, "worker_id": "w8", "comp_size": 54244, "compute_sec": 0.235702}
+{"ts": 1795340253.379219, "event": "task_assigned", "task_id": 448, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340253.462065, "event": "task_done", "task_id": 441, "worker_id": "w4", "comp_size": 54296, "compute_sec": 0.253737}
+{"ts": 1795340253.468556, "event": "task_assigned", "task_id": 449, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340253.479487, "event": "task_done", "task_id": 443, "worker_id": "w6", "comp_size": 54188, "compute_sec": 0.208839}
+{"ts": 1795340253.486551, "event": "task_assigned", "task_id": 450, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340253.4989, "event": "task_done", "task_id": 444, "worker_id": "w9", "comp_size": 54272, "compute_sec": 0.258185}
+{"ts": 1795340253.503227, "event": "task_assigned", "task_id": 451, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340253.588277, "event": "task_done", "task_id": 445, "worker_id": "w2", "comp_size": 54296, "compute_sec": 0.216306}
+{"ts": 1795340253.593056, "event": "task_assigned", "task_id": 452, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340253.629079, "event": "task_done", "task_id": 442, "worker_id": "w7", "comp_size": 54424, "compute_sec": 0.388763}
+{"ts": 1795340253.633426, "event": "task_done", "task_id": 446, "worker_id": "w3", "comp_size": 54420, "compute_sec": 0.250575}
+{"ts": 1795340253.635725, "event": "task_assigned", "task_id": 453, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340253.639492, "event": "task_assigned", "task_id": 454, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340253.695392, "event": "task_done", "task_id": 448, "worker_id": "w8", "comp_size": 54372, "compute_sec": 0.223965}
+{"ts": 1795340253.7018838, "event": "task_assigned", "task_id": 455, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340253.7055612, "event": "task_done", "task_id": 447, "worker_id": "w5", "comp_size": 54236, "compute_sec": 0.263445}
+{"ts": 1795340253.71014, "event": "task_assigned", "task_id": 456, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340253.8076491, "event": "task_done", "task_id": 449, "worker_id": "w4", "comp_size": 54276, "compute_sec": 0.211485}
+{"ts": 1795340253.814512, "event": "task_assigned", "task_id": 457, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340253.8970912, "event": "task_done", "task_id": 451, "worker_id": "w9", "comp_size": 54432, "compute_sec": 0.2531}
+{"ts": 1795340253.903834, "event": "task_assigned", "task_id": 458, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340253.904809, "event": "task_done", "task_id": 453, "worker_id": "w7", "comp_size": 54192, "compute_sec": 0.198588}
+{"ts": 1795340253.911816, "event": "task_assigned", "task_id": 459, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340253.9528298, "event": "task_done", "task_id": 450, "worker_id": "w6", "comp_size": 54352, "compute_sec": 0.344098}
+{"ts": 1795340253.958548, "event": "task_assigned", "task_id": 460, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340253.9822981, "event": "task_done", "task_id": 454, "worker_id": "w3", "comp_size": 54460, "compute_sec": 0.246863}
+{"ts": 1795340253.98797, "event": "task_assigned", "task_id": 461, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340254.0898628, "event": "task_done", "task_id": 452, "worker_id": "w2", "comp_size": 54128, "compute_sec": 0.412739}
+{"ts": 1795340254.095188, "event": "task_assigned", "task_id": 462, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340254.10398, "event": "task_done", "task_id": 456, "worker_id": "w5", "comp_size": 54332, "compute_sec": 0.279767}
+{"ts": 1795340254.11084, "event": "task_assigned", "task_id": 463, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340254.1405928, "event": "task_done", "task_id": 455, "worker_id": "w8", "comp_size": 54428, "compute_sec": 0.305293}
+{"ts": 1795340254.144704, "event": "task_assigned", "task_id": 464, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340254.374759, "event": "task_done", "task_id": 457, "worker_id": "w4", "comp_size": 54324, "compute_sec": 0.48243}
+{"ts": 1795340254.379822, "event": "task_assigned", "task_id": 465, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340254.3867269, "event": "task_done", "task_id": 459, "worker_id": "w7", "comp_size": 54252, "compute_sec": 0.412019}
+{"ts": 1795340254.395103, "event": "task_assigned", "task_id": 466, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340254.416383, "event": "task_done", "task_id": 458, "worker_id": "w9", "comp_size": 54408, "compute_sec": 0.407566}
+{"ts": 1795340254.42099, "event": "task_assigned", "task_id": 467, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340254.518995, "event": "task_done", "task_id": 460, "worker_id": "w6", "comp_size": 54264, "compute_sec": 0.417796}
+{"ts": 1795340254.5251892, "event": "task_assigned", "task_id": 468, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340254.5733771, "event": "task_done", "task_id": 461, "worker_id": "w3", "comp_size": 54200, "compute_sec": 0.416948}
+{"ts": 1795340254.579814, "event": "task_assigned", "task_id": 469, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340254.6280582, "event": "task_done", "task_id": 462, "worker_id": "w2", "comp_size": 54264, "compute_sec": 0.392062}
+{"ts": 1795340254.628289, "event": "task_done", "task_id": 464, "worker_id": "w8", "comp_size": 54408, "compute_sec": 0.360268}
+{"ts": 1795340254.634036, "event": "task_assigned", "task_id": 470, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340254.634315, "event": "task_assigned", "task_id": 471, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340254.63858, "event": "task_done", "task_id": 463, "worker_id": "w5", "comp_size": 54280, "compute_sec": 0.390699}
+{"ts": 1795340254.643344, "event": "task_assigned", "task_id": 472, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340254.7451699, "event": "task_done", "task_id": 465, "worker_id": "w4", "comp_size": 54460, "compute_sec": 0.291936}
+{"ts": 1795340254.750483, "event": "task_assigned", "task_id": 473, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340254.824735, "event": "task_done", "task_id": 467, "worker_id": "w9", "comp_size": 54264, "compute_sec": 0.281909}
+{"ts": 1795340254.827793, "event": "task_done", "task_id": 466, "worker_id": "w7", "comp_size": 54340, "compute_sec": 0.311896}
+{"ts": 1795340254.8301032, "event": "task_assigned", "task_id": 474, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340254.832319, "event": "task_assigned", "task_id": 475, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340254.933461, "event": "task_done", "task_id": 468, "worker_id": "w6", "comp_size": 54420, "compute_sec": 0.312271}
+{"ts": 1795340254.93794, "event": "task_assigned", "task_id": 476, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340254.958385, "event": "task_done", "task_id": 469, "worker_id": "w3", "comp_size": 54284, "compute_sec": 0.249081}
+{"ts": 1795340254.9630258, "event": "task_assigned", "task_id": 477, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340255.024245, "event": "task_done", "task_id": 472, "worker_id": "w5", "comp_size": 54268, "compute_sec": 0.271843}
+{"ts": 1795340255.0290291, "event": "task_assigned", "task_id": 478, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340255.124613, "event": "task_done", "task_id": 471, "worker_id": "w8", "comp_size": 54420, "compute_sec": 0.374212}
+{"ts": 1795340255.131069, "event": "task_assigned", "task_id": 479, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340255.150431, "event": "task_done", "task_id": 470, "worker_id": "w2", "comp_size": 54276, "compute_sec": 0.376493}
+{"ts": 1795340255.155342, "event": "task_assigned", "task_id": 480, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340255.169732, "event": "task_done", "task_id": 473, "worker_id": "w4", "comp_size": 54188, "compute_sec": 0.318124}
+{"ts": 1795340255.176236, "event": "task_assigned", "task_id": 481, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340255.1926699, "event": "task_done", "task_id": 474, "worker_id": "w9", "comp_size": 54396, "compute_sec": 0.236638}
+{"ts": 1795340255.1966872, "event": "task_assigned", "task_id": 482, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340255.229322, "event": "task_done", "task_id": 475, "worker_id": "w7", "comp_size": 54436, "compute_sec": 0.284492}
+{"ts": 1795340255.236143, "event": "task_assigned", "task_id": 483, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340255.367869, "event": "task_done", "task_id": 477, "worker_id": "w3", "comp_size": 54204, "compute_sec": 0.297648}
+{"ts": 1795340255.372428, "event": "task_assigned", "task_id": 484, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340255.3799481, "event": "task_done", "task_id": 476, "worker_id": "w6", "comp_size": 54404, "compute_sec": 0.30499}
+{"ts": 1795340255.383927, "event": "task_assigned", "task_id": 485, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340255.392256, "event": "task_done", "task_id": 478, "worker_id": "w5", "comp_size": 54376, "compute_sec": 0.255944}
+{"ts": 1795340255.3983529, "event": "task_assigned", "task_id": 486, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340255.498025, "event": "task_done", "task_id": 480, "worker_id": "w2", "comp_size": 54460, "compute_sec": 0.237371}
+{"ts": 1795340255.504669, "event": "task_assigned", "task_id": 487, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340255.5283468, "event": "task_done", "task_id": 481, "worker_id": "w4", "comp_size": 54268, "compute_sec": 0.273333}
+{"ts": 1795340255.534367, "event": "task_assigned", "task_id": 488, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340255.584399, "event": "task_done", "task_id": 479, "worker_id": "w8", "comp_size": 54448, "compute_sec": 0.30993}
+{"ts": 1795340255.591085, "event": "task_assigned", "task_id": 489, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340255.592225, "event": "task_done", "task_id": 482, "worker_id": "w9", "comp_size": 54132, "compute_sec": 0.265272}
+{"ts": 1795340255.595205, "event": "task_done", "task_id": 483, "worker_id": "w7", "comp_size": 54444, "compute_sec": 0.239489}
+{"ts": 1795340255.5984378, "event": "task_assigned", "task_id": 490, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340255.6002, "event": "task_assigned", "task_id": 491, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340255.733713, "event": "task_done", "task_id": 484, "worker_id": "w3", "comp_size": 54408, "compute_sec": 0.22367}
+{"ts": 1795340255.738912, "event": "task_assigned", "task_id": 492, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340255.776883, "event": "task_done", "task_id": 485, "worker_id": "w6", "comp_size": 54156, "compute_sec": 0.276012}
+{"ts": 1795340255.780504, "event": "task_done", "task_id": 486, "worker_id": "w5", "comp_size": 54200, "compute_sec": 0.266549}
+{"ts": 1795340255.7839959, "event": "task_assigned", "task_id": 493, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340255.78651, "event": "task_assigned", "task_id": 494, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340255.837172, "event": "task_done", "task_id": 487, "worker_id": "w2", "comp_size": 54328, "compute_sec": 0.270636}
+{"ts": 1795340255.841722, "event": "task_assigned", "task_id": 495, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340255.856736, "event": "task_done", "task_id": 488, "worker_id": "w4", "comp_size": 54400, "compute_sec": 0.234923}
+{"ts": 1795340255.861899, "event": "task_assigned", "task_id": 496, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340255.9468749, "event": "task_done", "task_id": 491, "worker_id": "w7", "comp_size": 54328, "compute_sec": 0.238413}
+{"ts": 1795340255.9539788, "event": "task_assigned", "task_id": 497, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340255.980376, "event": "task_done", "task_id": 489, "worker_id": "w8", "comp_size": 54456, "compute_sec": 0.269781}
+{"ts": 1795340255.987201, "event": "task_assigned", "task_id": 498, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340256.0065541, "event": "task_done", "task_id": 490, "worker_id": "w9", "comp_size": 54388, "compute_sec": 0.281913}
+{"ts": 1795340256.0115762, "event": "task_assigned", "task_id": 499, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340256.050108, "event": "task_done", "task_id": 492, "worker_id": "w3", "comp_size": 54240, "compute_sec": 0.22373}
+{"ts": 1795340256.054733, "event": "task_assigned", "task_id": 500, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340256.127866, "event": "task_done", "task_id": 494, "worker_id": "w5", "comp_size": 54424, "compute_sec": 0.246227}
+{"ts": 1795340256.1326358, "event": "task_assigned", "task_id": 501, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340256.174597, "event": "task_done", "task_id": 493, "worker_id": "w6", "comp_size": 54260, "compute_sec": 0.306477}
+{"ts": 1795340256.179105, "event": "task_assigned", "task_id": 502, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340256.184969, "event": "task_done", "task_id": 495, "worker_id": "w2", "comp_size": 54264, "compute_sec": 0.256223}
+{"ts": 1795340256.1919858, "event": "task_assigned", "task_id": 503, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340256.231372, "event": "task_done", "task_id": 496, "worker_id": "w4", "comp_size": 54436, "compute_sec": 0.284345}
+{"ts": 1795340256.238435, "event": "task_assigned", "task_id": 504, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340256.305828, "event": "task_done", "task_id": 497, "worker_id": "w7", "comp_size": 54344, "compute_sec": 0.246066}
+{"ts": 1795340256.310508, "event": "task_assigned", "task_id": 505, "worker_id": "w7", "size": 4194304}
+{"ts": 1795340256.3711438, "event": "task_done", "task_id": 499, "worker_id": "w9", "comp_size": 54372, "compute_sec": 0.235161}
+{"ts": 1795340256.376251, "event": "task_assigned", "task_id": 506, "worker_id": "w9", "size": 4194304}
+{"ts": 1795340256.414388, "event": "task_done", "task_id": 498, "worker_id": "w8", "comp_size": 54208, "compute_sec": 0.282832}
+{"ts": 1795340256.420414, "event": "task_assigned", "task_id": 507, "worker_id": "w8", "size": 4194304}
+{"ts": 1795340256.440798, "event": "task_done", "task_id": 500, "worker_id": "w3", "comp_size": 54376, "compute_sec": 0.279792}
+{"ts": 1795340256.445785, "event": "task_assigned", "task_id": 508, "worker_id": "w3", "size": 4194304}
+{"ts": 1795340256.4486458, "event": "task_done", "task_id": 501, "worker_id": "w5", "comp_size": 54420, "compute_sec": 0.230409}
+{"ts": 1795340256.453252, "event": "task_assigned", "task_id": 509, "worker_id": "w5", "size": 4194304}
+{"ts": 1795340256.495195, "event": "task_done", "task_id": 503, "worker_id": "w2", "comp_size": 54228, "compute_sec": 0.23018}
+{"ts": 1795340256.500233, "event": "task_assigned", "task_id": 510, "worker_id": "w2", "size": 4194304}
+{"ts": 1795340256.548054, "event": "task_done", "task_id": 502, "worker_id": "w6", "comp_size": 54436, "compute_sec": 0.233464}
+{"ts": 1795340256.552338, "event": "task_assigned", "task_id": 511, "worker_id": "w6", "size": 4194304}
+{"ts": 1795340256.629226, "event": "task_done", "task_id": 504, "worker_id": "w4", "comp_size": 54280, "compute_sec": 0.284561}
+{"ts": 1795340256.635086, "event": "task_done", "task_id": 505, "worker_id": "w7", "comp_size": 54396, "compute_sec": 0.209381}
+{"ts": 1795340256.6357372, "event": "task_assigned", "task_id": 512, "worker_id": "w4", "size": 4194304}
+{"ts": 1795340256.635958, "event": "task_assigned", "task_id": 0, "worker_id": "w7", "size": 1500}
+{"ts": 1795340256.650062, "event": "task_done", "task_id": 0, "worker_id": "w7", "comp_size": 620, "compute_sec": 0.007648}
+{"ts": 1795340256.705759, "event": "task_done", "task_id": 506, "worker_id": "w9", "comp_size": 54276, "compute_sec": 0.238656}
+{"ts": 1795340256.769654, "event": "task_done", "task_id": 507, "worker_id": "w8", "comp_size": 54328, "compute_sec": 0.257593}
+{"ts": 1795340256.8138182, "event": "task_done", "task_id": 509, "worker_id": "w5", "comp_size": 54360, "compute_sec": 0.217074}
+{"ts": 1795340256.814046, "event": "task_done", "task_id": 510, "worker_id": "w2", "comp_size": 54160, "compute_sec": 0.22545}
+{"ts": 1795340256.842369, "event": "task_done", "task_id": 508, "worker_id": "w3", "comp_size": 54600, "compute_sec": 0.268917}
+{"ts": 1795340256.871822, "event": "task_done", "task_id": 511, "worker_id": "w6", "comp_size": 54224, "compute_sec": 0.215789}
+{"ts": 1795340256.904136, "event": "task_done", "task_id": 512, "worker_id": "w4", "comp_size": 54372, "compute_sec": 0.214864}
+{"ts": 1795340256.9097338, "event": "worker_disconnected", "worker_id": "w3"}
+{"ts": 1795340256.910381, "event": "worker_disconnected", "worker_id": "w4"}
+{"ts": 1795340256.911941, "event": "worker_disconnected", "worker_id": "w5"}
+{"ts": 1795340256.912269, "event": "worker_disconnected", "worker_id": "w2"}
+{"ts": 1795340256.912443, "event": "worker_disconnected", "worker_id": "w7"}
+{"ts": 1795340256.91454, "event": "worker_disconnected", "worker_id": "w8"}
+{"ts": 1795340256.917064, "event": "worker_disconnected", "worker_id": "w6"}
+{"ts": 1795340256.927192, "event": "worker_disconnected", "worker_id": "w9"}
+{"ts": 1795340257.099426, "event": "run_finished", "tasks_ok": 513, "tasks_failed": 0, "time_s": 61.690958}

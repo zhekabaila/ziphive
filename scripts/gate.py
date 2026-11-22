@@ -138,6 +138,7 @@ SMOKE_COMMANDS: dict[int, list[list[str]]] = {
         ]
     ],
     8: [[sys.executable, "-m", "pytest", "-m", "slow", "-q"]],
+    9: [[sys.executable, "-m", "pcomp.tools.validate_results", "results/raw"]],
 }
 
 # Keluaran yang wajib muncul pada smoke fase tertentu.
@@ -149,6 +150,7 @@ SMOKE_EXPECTED: dict[int, list[str]] = {
     6: ["E2E OK", "worker_dead"],
     7: ["BENCH OK"],
     8: ["1 passed"],
+    9: ["RESULTS VALID"],
 }
 
 PHASE_LOG_REQUIRED_HEADINGS = (

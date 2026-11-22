@@ -1,0 +1,30 @@
+============================================================
+ ZipHive - Distributed Data Compression
+ Komputasi Paralel dan Sistem Terdistribusi
+ Informatika, Universitas Siliwangi
+ Tema: 16 - Distributed Data Compression
+ Kelompok: Kelompok 3
+ Anggota:
+   - Raden Anissa (247006111010)
+   - Shafa Rabbani Fityatul Mukarramah (247006111020)
+   - Zheka Baila Arkan (247006111152)
+============================================================
+E2-w0-p1-none-r1-20261122T084737112174: workers=0 procs=1 time_s=153.909564 tasks=513 verify=True
+E2-w0-p2-none-r1-20261122T085046593219: workers=0 procs=2 time_s=86.264971 tasks=513 verify=True
+E2-w0-p4-none-r1-20261122T085248570334: workers=0 procs=4 time_s=51.155284 tasks=513 verify=True
+E2-w0-p8-none-r1-20261122T085415353798: workers=0 procs=8 time_s=34.585564 tasks=513 verify=True
+E2-w0-p1-none-r2-20261122T085525549614: workers=0 procs=1 time_s=148.1436 tasks=513 verify=True
+E2-w0-p2-none-r2-20261122T085829422949: workers=0 procs=2 time_s=88.576274 tasks=513 verify=True
+E2-w0-p4-none-r2-20261122T090033614259: workers=0 procs=4 time_s=54.018568 tasks=513 verify=True
+E2-w0-p8-none-r2-20261122T090203591958: workers=0 procs=8 time_s=46.690092 tasks=513 verify=True
+E2-w0-p1-none-r3-20261122T090326405070: workers=0 procs=1 time_s=155.313278 tasks=513 verify=True
+E2-w0-p2-none-r3-20261122T090637319874: workers=0 procs=2 time_s=90.42612 tasks=513 verify=True
+E2-w0-p4-none-r3-20261122T090843668546: workers=0 procs=4 time_s=49.27856 tasks=513 verify=True
+E2-w0-p8-none-r3-20261122T091008667625: workers=0 procs=8 time_s=45.64829 tasks=513 verify=True
+exp          : E2
+mode         : local
+runs         : 12
+baseline_s   : 153.978663
+summary      : results/summary.csv
+figures      : 5 berkas di results/figures
+BENCH OK

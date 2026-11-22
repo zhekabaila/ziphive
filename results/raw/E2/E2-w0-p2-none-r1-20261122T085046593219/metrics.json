@@ -1,0 +1,24 @@
+{
+  "mode": "local",
+  "procs": 2,
+  "algo": "lzma",
+  "level": 6,
+  "chunk_mb": 4,
+  "repeat": 1,
+  "tasks": 513,
+  "tasks_ok": 513,
+  "tasks_failed": 0,
+  "total_orig_bytes": 2147485148,
+  "total_comp_bytes": 816018484,
+  "total_mb": 2048.001431,
+  "ratio": 2.631662,
+  "time_s": 86.264971,
+  "throughput_mbs": 23.740823,
+  "busy_per_process": {
+    "77106": 85.282369,
+    "77107": 85.286793
+  },
+  "errors": [],
+  "simulated": false,
+  "started_at": "2026-11-22T08:50:46+00:00"
+}

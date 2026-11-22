@@ -1,0 +1,57 @@
+{
+  "mode": "distributed",
+  "algo": "lzma",
+  "level": 6,
+  "chunk_mb": 4,
+  "repeat": 1,
+  "scheduler": "dynamic",
+  "workers": 4,
+  "worker_stats": [
+    {
+      "worker_id": "w1",
+      "hostname": "w1",
+      "procs": 1,
+      "tasks_done": 127,
+      "tasks_failed": 0,
+      "busy_sec": 86.850433
+    },
+    {
+      "worker_id": "w2",
+      "hostname": "w2",
+      "procs": 1,
+      "tasks_done": 128,
+      "tasks_failed": 0,
+      "busy_sec": 86.641749
+    },
+    {
+      "worker_id": "w3",
+      "hostname": "w3",
+      "procs": 1,
+      "tasks_done": 129,
+      "tasks_failed": 0,
+      "busy_sec": 87.467105
+    },
+    {
+      "worker_id": "w4",
+      "hostname": "w4",
+      "procs": 1,
+      "tasks_done": 129,
+      "tasks_failed": 0,
+      "busy_sec": 86.299073
+    }
+  ],
+  "tasks": 513,
+  "tasks_ok": 513,
+  "tasks_failed": 0,
+  "tasks_retried": 0,
+  "failed_tasks": [],
+  "total_orig_bytes": 2147485148,
+  "total_comp_bytes": 816018484,
+  "total_mb": 2048.001431,
+  "ratio": 2.631662,
+  "imbalance": 1.007516,
+  "time_s": 100.200251,
+  "throughput_mbs": 20.439085,
+  "simulated": false,
+  "started_at": "2026-11-22T10:17:45+00:00"
+}

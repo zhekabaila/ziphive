@@ -1,0 +1,97 @@
+{
+  "mode": "distributed",
+  "algo": "lzma",
+  "level": 6,
+  "chunk_mb": 4,
+  "repeat": 1,
+  "scheduler": "dynamic",
+  "workers": 9,
+  "worker_stats": [
+    {
+      "worker_id": "w1",
+      "hostname": "w1",
+      "procs": 1,
+      "tasks_done": 30,
+      "tasks_failed": 0,
+      "busy_sec": 73.75294
+    },
+    {
+      "worker_id": "w2",
+      "hostname": "w2",
+      "procs": 1,
+      "tasks_done": 28,
+      "tasks_failed": 0,
+      "busy_sec": 75.313489
+    },
+    {
+      "worker_id": "w3",
+      "hostname": "w3",
+      "procs": 1,
+      "tasks_done": 30,
+      "tasks_failed": 0,
+      "busy_sec": 76.332734
+    },
+    {
+      "worker_id": "w4",
+      "hostname": "w4",
+      "procs": 1,
+      "tasks_done": 71,
+      "tasks_failed": 0,
+      "busy_sec": 91.539311
+    },
+    {
+      "worker_id": "w5",
+      "hostname": "w5",
+      "procs": 1,
+      "tasks_done": 69,
+      "tasks_failed": 0,
+      "busy_sec": 93.961586
+    },
+    {
+      "worker_id": "w6",
+      "hostname": "w6",
+      "procs": 1,
+      "tasks_done": 69,
+      "tasks_failed": 0,
+      "busy_sec": 93.561915
+    },
+    {
+      "worker_id": "w7",
+      "hostname": "w7",
+      "procs": 1,
+      "tasks_done": 73,
+      "tasks_failed": 0,
+      "busy_sec": 94.202301
+    },
+    {
+      "worker_id": "w8",
+      "hostname": "w8",
+      "procs": 1,
+      "tasks_done": 72,
+      "tasks_failed": 0,
+      "busy_sec": 92.986134
+    },
+    {
+      "worker_id": "w9",
+      "hostname": "w9",
+      "procs": 1,
+      "tasks_done": 71,
+      "tasks_failed": 0,
+      "busy_sec": 90.191762
+    }
+  ],
+  "tasks": 513,
+  "tasks_ok": 513,
+  "tasks_failed": 0,
+  "tasks_retried": 3,
+  "failed_tasks": [],
+  "total_orig_bytes": 2147485148,
+  "total_comp_bytes": 816018484,
+  "total_mb": 2048.001431,
+  "ratio": 2.631662,
+  "imbalance": 1.084389,
+  "time_s": 112.366872,
+  "throughput_mbs": 18.226025,
+  "simulated": false,
+  "started_at": "2026-11-22T09:46:02+00:00"
+}

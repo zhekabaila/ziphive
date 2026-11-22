@@ -1,0 +1,16 @@
+{
+  "mode": "sequential",
+  "algo": "lzma",
+  "level": 6,
+  "chunk_mb": 4,
+  "repeat": 1,
+  "tasks": 513,
+  "total_orig_bytes": 2147485148,
+  "total_comp_bytes": 816018484,
+  "total_mb": 2048.001431,
+  "ratio": 2.631662,
+  "time_s": 197.118879,
+  "throughput_mbs": 10.389677,
+  "simulated": false,
+  "started_at": "2026-11-22T09:50:59+00:00"
+}

@@ -25,7 +25,10 @@ Dataset, algoritma, level, chunk size, dan `--repeat` sama untuk semua eksperime
 - Detection latency: t_dead_detected - t_kill. Recovery Time: t_all_requeued_done - t_kill, dengan t_all_requeued_done = waktu task terakhir yang tadinya milik Worker mati selesai DONE. t_kill dicatat oleh `inject_failure.py` atau event `worker_exit_injected`.
 
 ## 4. Skema CSV (`results/summary.csv`)
-`exp, run_id, rep, mode, workers, procs, scheduler, algo, level, chunk_mb, repeat, total_mb, tasks, time_s, throughput_mbs, ratio, speedup_seq, speedup_rel, efficiency, imbalance, cpu_avg_master, cpu_avg_workers, mem_avg_master, mem_avg_workers, detect_s, recovery_s, retried_tasks, verify_ok, started_at`
+`exp, run_id, rep, mode, workers, procs, scheduler, kill_workers, algo, level, chunk_mb, repeat, total_mb, tasks, time_s, throughput_mbs, ratio, speedup_seq, speedup_rel, efficiency, imbalance, cpu_avg_master, cpu_avg_workers, mem_avg_master, mem_avg_workers, detect_s, recovery_s, retried_tasks, verify_ok, started_at`
+
+Kolom `kill_workers` ditambahkan pada Fase 9 agar dua skenario E5 (1 Worker dan 3 Worker
+dimatikan) tidak tergabung menjadi satu baris agregat.
 
 ## 5. Prosedur satu run (LAN)
 1. Master: `python -m pcomp.master --input data/silesia --expect-workers N --scheduler dynamic --out results/raw/E6/<run_id>`

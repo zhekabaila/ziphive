@@ -1,0 +1,30 @@
+============================================================
+ ZipHive - Distributed Data Compression
+ Komputasi Paralel dan Sistem Terdistribusi
+ Informatika, Universitas Siliwangi
+ Tema: 16 - Distributed Data Compression
+ Kelompok: Kelompok 3
+ Anggota:
+   - Raden Anissa (247006111010)
+   - Shafa Rabbani Fityatul Mukarramah (247006111020)
+   - Zheka Baila Arkan (247006111152)
+============================================================
+LAN: jalankan 9 Worker di node menuju 0.0.0.0:64006
+E4-w9-p1-static-r1-20261122T092213166458: workers=9 procs=1 time_s=67.732876 tasks=513 verify=True
+LAN: jalankan 9 Worker di node menuju 0.0.0.0:64074
+E4-w9-p1-dynamic-r1-20261122T092357261708: workers=9 procs=1 time_s=56.26806 tasks=513 verify=True
+LAN: jalankan 9 Worker di node menuju 0.0.0.0:64138
+E4-w9-p1-static-r2-20261122T092529691309: workers=9 procs=1 time_s=65.297691 tasks=513 verify=True
+LAN: jalankan 9 Worker di node menuju 0.0.0.0:64187
+E4-w9-p1-dynamic-r2-20261122T092711081389: workers=9 procs=1 time_s=57.197509 tasks=513 verify=True
+LAN: jalankan 9 Worker di node menuju 0.0.0.0:64246
+E4-w9-p1-static-r3-20261122T092844357292: workers=9 procs=1 time_s=67.318364 tasks=513 verify=True
+LAN: jalankan 9 Worker di node menuju 0.0.0.0:64313
+E4-w9-p1-dynamic-r3-20261122T093027808515: workers=9 procs=1 time_s=58.025102 tasks=513 verify=True
+exp          : E4
+mode         : lan
+runs         : 6
+baseline_s   : 140.117152
+summary      : results/summary.csv
+figures      : 6 berkas di results/figures
+BENCH OK

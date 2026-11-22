@@ -1,0 +1,14 @@
+{
+  "exp": "E6",
+  "mode": "distributed",
+  "workers": 9,
+  "procs": 1,
+  "scheduler": "dynamic",
+  "throttle": 0.0,
+  "kill_workers": 0,
+  "algo": "lzma",
+  "level": 6,
+  "chunk_mb": 4,
+  "repeat": 1,
+  "rep": 2
+}
