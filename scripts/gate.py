@@ -26,6 +26,10 @@ MAX_FILE_BYTES = 5 * 1024 * 1024
 FORBIDDEN_PREFIXES = ("data/", "output/")
 FLAKY_GATE_MIN_PHASE = 4
 COMMAND_TIMEOUT_SEC = 1800
+# Fase terakhir memakai versi 1.0.0 sebagai versi paket akhir (instruksi user 2026-11-22),
+# bukan pola 0.<NN>.0 seperti fase sebelumnya.
+FINAL_PHASE = 10
+FINAL_VERSION = "1.0.0"
 
 # Smoke test per fase, disalin dari bagian "Smoke" PLAN.md fase terkait.
 SMOKE_COMMANDS: dict[int, list[list[str]]] = {
@@ -139,8 +143,8 @@ SMOKE_COMMANDS: dict[int, list[list[str]]] = {
     ],
     8: [[sys.executable, "-m", "pytest", "-m", "slow", "-q"]],
     9: [[sys.executable, "-m", "pcomp.tools.validate_results", "results/raw"]],
-    # Bagian A fase 10 hanya dokumentasi; smoke memeriksa dokumen final masuk daftar paket.
-    10: [[sys.executable, "scripts/pack_source.py", "--list"]],
+    # Fase 10: ZIP dibuat, isinya diperiksa, lalu dijalankan dari nol sesuai README.
+    10: [[sys.executable, "scripts/smoke_package.py"]],
 }
 
 # Keluaran yang wajib muncul pada smoke fase tertentu.
@@ -153,7 +157,7 @@ SMOKE_EXPECTED: dict[int, list[str]] = {
     7: ["BENCH OK"],
     8: ["1 passed"],
     9: ["RESULTS VALID"],
-    10: ["docs/CODE_GUIDE.md"],
+    10: ["PACKAGE OK"],
 }
 
 PHASE_LOG_REQUIRED_HEADINGS = (
@@ -375,6 +379,8 @@ def _changelog_has_entry(phase: int) -> bool:
     text = CHANGELOG_PATH.read_text(encoding="utf-8")
     version_heading = re.compile(rf"^## \[0\.{phase:02d}\.0\][^\n]*$", re.MULTILINE)
     match = version_heading.search(text)
+    if match is None and phase == FINAL_PHASE:
+        match = re.search(rf"^## \[{re.escape(FINAL_VERSION)}\][^\n]*$", text, re.MULTILINE)
     if match is not None:
         body = text[match.end() :]
         next_heading = re.search(r"^## ", body, re.MULTILINE)

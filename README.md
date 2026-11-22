@@ -14,7 +14,7 @@ Siliwangi (Tema 16). Identitas kelompok dibaca dari `config/group.toml`.
 | Fase 0-9 | Selesai. Tag terakhir `phase-09-done` |
 | Eksperimen resmi | 45 run (E1-E6, 3 ulangan) pada 10 node virtual; seluruh run `VERIFY OK`; `validate_results results/raw` mencetak `RESULTS VALID` |
 | Hasil | `results/summary.csv`, `results/summary_agg.csv`, 7 grafik di `results/figures/` |
-| Fase 10 | Dokumentasi, laporan, dan paket pengumpulan |
+| Fase 10 | Selesai. Versi `1.0.0`, laporan DOCX, naskah video (`docs/DEMO_SCRIPT.md`), dan ZIP sumber di `dist/` |
 
 Soal meminta minimal 10 node fisik. Pelaksanaan 2026-11-22 memakai 10 node virtual di satu laptop
 (1 Master di host + 9 Worker container, ADR-015). Deviasi ini diungkap di laporan dan video.
@@ -97,6 +97,8 @@ Nilai default ada di `config/master.toml` dan `config/worker.toml`; CLI menimpa 
 | `python scripts/check_node.py --master HOST:PORT` | periksa kesiapan node |
 | `python scripts/launch_workers.py --print` | cetak perintah Worker dari `config/nodes.toml` |
 | `python scripts/pack_source.py` | buat ZIP sumber di `dist/` |
+| `python scripts/build_report.py` | bangun laporan DOCX di `reports/laporan/` |
+| `python scripts/smoke_package.py` | bangun ZIP, periksa isinya, lalu jalankan dari nol (smoke gate Fase 10) |
 | `python scripts/run_experiments.py --exps E1,E2,E3,E4,E5,E6` | orkestrasi E1-E6 pada 10 node virtual |
 
 ### Test dan gate
@@ -184,7 +186,20 @@ Keluaran terakhir: 45 run (E1 3, E2 12, E3 3, E4 6, E5 6, E6 15), seluruhnya `VE
 | `ASSETS.md` | sumber dataset, pustaka, formula, lisensi |
 | `docs/CODE_GUIDE.md` | panduan kode per modul dan perintah |
 | `docs/ANALYSIS.md` | analisis hasil eksperimen |
+| `docs/DEMO_SCRIPT.md` | naskah video demo maksimal 5 menit dan checklist rekaman |
 | `SUBMISSION.md` | isi paket pengumpulan |
+
+## Paket pengumpulan
+
+```bash
+python scripts/build_report.py      # laporan DOCX di reports/laporan/
+python scripts/pack_source.py       # ZIP sumber di dist/
+python scripts/smoke_package.py     # periksa isi ZIP lalu jalankan dari nol
+```
+
+Laporan memakai angka dari `results/summary.csv` dan `docs/ANALYSIS.md`, sedangkan naskah video
+demo ada di `docs/DEMO_SCRIPT.md`. Gambar yang belum tersedia tetap ditandai kotak placeholder di
+dalam laporan beserta instruksi pengambilannya.
 
 ## Catatan
 

@@ -1,7 +1,7 @@
 # CODE_GUIDE.md — Panduan Kode ZipHive
 
 Dokumen ini menjelaskan struktur kode yang benar-benar ada di repo pada Fase 10 (versi paket
-`0.09.0`). Isinya disusun dari pembacaan berkas sumber, bukan dari rencana. Rujukan desain yang
+`1.0.0`). Isinya disusun dari pembacaan berkas sumber, bukan dari rencana. Rujukan desain yang
 lebih konseptual ada di `ARCHITECTURE.md` (komponen dan state machine), `FLOW.md` (urutan
 kejadian), dan `PROTOCOL.md` (format pesan). Panduan ini menjelaskan **di mana** setiap hal
 diimplementasikan dan **bagaimana** memakainya.
@@ -73,7 +73,7 @@ Satu tempat untuk seluruh nilai tetap. Tidak ada state yang dapat berubah.
 
 | Kelompok | Nilai penting |
 |---|---|
-| Identitas | `PROJECT_NAME="ZipHive"`, `PACKAGE_NAME="pcomp"`, `__version__="0.09.0"` |
+| Identitas | `PROJECT_NAME="ZipHive"`, `PACKAGE_NAME="pcomp"`, `__version__="1.0.0"` |
 | Protokol | `PROTOCOL_VERSION=1`, `FRAME_PREFIX_SIZE=12` (4 byte panjang header + 8 byte panjang payload), `MAX_HEADER_BYTES=64 KiB`, `MAX_PAYLOAD_BYTES=64 MiB` |
 | Jaringan | `DEFAULT_PORT=5050`, `DEFAULT_SOCKET_TIMEOUT=30.0`, `DEFAULT_CONNECT_TIMEOUT=5.0`, `DEFAULT_CONNECT_ATTEMPTS=10`, backoff `0.5` sampai `5.0` detik |
 | Heartbeat | `DEFAULT_HEARTBEAT_INTERVAL=2.0`, `DEFAULT_HEARTBEAT_TIMEOUT=6.0`, `DEFAULT_MAX_ATTEMPTS=3`, `DEFAULT_BARRIER_TIMEOUT=120.0` |
@@ -573,7 +573,7 @@ Semua perintah dijalankan dari akar repo. Bila paket belum dipasang dengan
 python -m venv .venv
 source .venv/bin/activate            # Windows: .venv\Scripts\activate
 python -m pip install -e ".[dev,analysis]"   # dev: test/lint, analysis: matplotlib
-python -m pcomp --version            # mencetak "ZipHive 0.09.0"
+python -m pcomp --version            # mencetak "ZipHive 1.0.0"
 python -m pcomp                      # mencetak banner dari config/group.toml
 ```
 
@@ -651,7 +651,7 @@ python scripts/check_node.py --master 10.0.0.1:5050 --ping-master
 python scripts/launch_workers.py --print           # cetak perintah Worker dari nodes.toml
 python scripts/launch_workers.py --ssh             # jalankan lewat ssh (butuh nodes.toml terisi)
 python scripts/pack_source.py --list               # daftar berkas yang akan dipaketkan
-python scripts/pack_source.py                      # buat dist/ziphive-source-0.09.0.zip
+python scripts/pack_source.py                      # buat dist/ziphive-source-1.0.0.zip
 ```
 
 `launch_workers.py` menolak placeholder di `config/nodes.toml`. `check_node.py` tidak mengirim

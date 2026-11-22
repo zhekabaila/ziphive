@@ -1,8 +1,9 @@
 # Changelog
 
-Format mengikuti Keep a Changelog. Versi `0.<NN>.0` = akhir fase NN. Aturan pencatatan: SDLC.md bagian 6.
+Format mengikuti Keep a Changelog. Versi `0.<NN>.0` = akhir fase NN, versi `1.0.0` = paket akhir.
+Aturan pencatatan: SDLC.md bagian 6.
 
-## [Unreleased]
+## [1.0.0] - 2026-11-22
 ### Added
 - `docs/CODE_GUIDE.md`: panduan kode dari 40 berkas `src/pcomp` (5.712 baris), 6 skrip `scripts/`, serta peta test; memuat struktur direktori, penjelasan modul/class/fungsi, alur pemanggilan sequential, local parallel, distributed, kegagalan Worker, dan benchmark, daftar berkas keluaran, serta cara menjalankan setiap perintah.
 - `README.md` final: status proyek sampai Fase 9, setup `pip install -e ".[dev,analysis]"`, daftar perintah CLI/tool/skrip, struktur repo, langkah menjalankan 10 node virtual beserta rujukan `docs/evidence/RUNBOOK.md`, serta perintah test dan gate.
@@ -10,9 +11,17 @@ Format mengikuti Keep a Changelog. Versi `0.<NN>.0` = akhir fase NN. Aturan penc
 - `docs/evidence/RUNBOOK.md`: runbook pengambilan empat tangkapan layar bukti (10 node virtual, terminal Master, terminal Worker, bukti E5 satu Worker mati) dengan perintah yang sudah diuji pada skala 1 Master + 9 container, keluaran yang diharapkan, perkiraan durasi terukur, dan tabel penanganan masalah.
 - `docs/evidence/README.md` bagian 3a: status pengambilan gambar beserta isi yang terverifikasi, bukti teks pendukung run E5 (2565/2565 task selesai, event `worker_dead` lalu `task_requeued`), dan catatan bahwa angka pada gambar bukan angka laporan.
 
+- `scripts/build_report.py` dan `scripts/report_content.py`: pembangun laporan UAS dalam format DOCX memakai `zipfile` dan OOXML langsung dari pustaka standar (tanpa dependensi baru). Laporan memuat sampul, daftar isi otomatis, BAB I sampai BAB IV, kesimpulan, dan daftar pustaka; seluruh angka diambil dari `results/summary.csv`, `results/summary_agg.csv`, dan `docs/ANALYSIS.md`. Sebelas gambar disematkan dari `results/figures/` dan `reports/img/`, sedangkan gambar yang tidak tersedia diganti kotak placeholder tiga baris berisi nomor, isi, dan cara memperoleh.
+- `docs/DEMO_SCRIPT.md`: naskah video demo maksimal 5 menit sesuai tabel adegan `SUBMISSION.md` bagian 3, daftar perintah yang ditampilkan, checklist rekaman, dan daftar bahan yang disiapkan; angka yang disebut berasal dari `docs/ANALYSIS.md`.
+- `scripts/smoke_package.py`: smoke Fase 10 yang membangun ZIP sumber, memeriksa entri terlarang (`data/`, `output/`, `reports/`, `.venv`, `dist/`, cache) dan entri wajib, lalu menjalankan `--version`, `make_dataset`, `sequential`, dan `verify` dari folder hasil ekstrak tanpa memasang paket; mencetak `PACKAGE OK`.
+
 ### Changed
 - `scripts/gate.py`: smoke Fase 10 Bagian A menjalankan `scripts/pack_source.py --list` dan mewajibkan `docs/CODE_GUIDE.md` muncul pada daftar paket. Smoke ZIP utuh sesuai PLAN.md fase 10 baru dapat dijalankan pada Bagian B (P10-T5 dan P10-T6).
 - `PLAN.md`: status Fase 10 menjadi `IN PROGRESS` (Bagian A selesai, Bagian B belum).
+- `scripts/gate.py`: smoke Fase 10 Bagian A (`pack_source.py --list`) diganti smoke paket utuh sesuai PLAN.md fase 10, yaitu `scripts/smoke_package.py` dengan penanda `PACKAGE OK`.
+- Versi proyek naik dari `0.09.0` menjadi `1.0.0` pada `pyproject.toml` dan `src/pcomp/constants.py`, beserta penyebutan versi di `docs/CODE_GUIDE.md`.
+- `README.md`: status Fase 10 selesai, tabel perintah memuat `build_report.py`, `smoke_package.py`, dan tabel dokumentasi memuat `docs/DEMO_SCRIPT.md`, serta bagian baru `Paket pengumpulan`.
+- `docs/phase-logs/PHASE-10.md`: Bagian B (P10-T2, P10-T3, P10-T5, P10-T6) beserta hasil gate, uji clone, dan pemeriksaan ZIP.
 
 ### Docs
 - `docs/phase-logs/PHASE-09.md` bagian 11: perintah tangkapan layar kini merujuk `docs/evidence/RUNBOOK.md`.
