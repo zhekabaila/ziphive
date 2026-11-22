@@ -6,7 +6,7 @@ from pathlib import Path
 
 PROJECT_NAME = "ZipHive"
 PACKAGE_NAME = "pcomp"
-__version__ = "0.09.0"
+__version__ = "1.0.0"
 
 # Versi format pesan; naikkan bila format berubah (PROTOCOL.md).
 PROTOCOL_VERSION = 1
