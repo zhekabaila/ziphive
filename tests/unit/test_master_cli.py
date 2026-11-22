@@ -16,13 +16,22 @@ class FakeServer:
     """Pengganti MasterServer agar CLI diuji tanpa jaringan."""
 
     last_scheduler: str | None = None
+    last_inject: tuple[int, float] | None = None
 
-    def __init__(self, config: MasterConfig, *, barrier_timeout: float) -> None:
+    def __init__(
+        self,
+        config: MasterConfig,
+        *,
+        barrier_timeout: float,
+        inject_kills: int = 0,
+        inject_kill_fraction: float = 0.5,
+    ) -> None:
         self.config = config
         self.barrier_timeout = barrier_timeout
         self.last_error = None
         self.metrics: dict = {}
         FakeServer.last_scheduler = config.scheduler
+        FakeServer.last_inject = (inject_kills, inject_kill_fraction)
 
     def run(self) -> int:
         return constants.EXIT_OK
@@ -35,6 +44,8 @@ def test_parser_defaults() -> None:
     assert args.host is None
     assert args.port is None
     assert args.barrier_timeout == constants.DEFAULT_BARRIER_TIMEOUT
+    assert args.inject_kills == 0
+    assert args.inject_kill_fraction == 0.5
     assert Path(args.config) == constants.DEFAULT_MASTER_CONFIG
 
 
@@ -91,8 +102,16 @@ def test_heartbeat_options_forwarded(
     captured: dict[str, object] = {}
 
     class CaptureServer:
-        def __init__(self, config: MasterConfig, *, barrier_timeout: float) -> None:
+        def __init__(
+            self,
+            config: MasterConfig,
+            *,
+            barrier_timeout: float,
+            inject_kills: int = 0,
+            inject_kill_fraction: float = 0.5,
+        ) -> None:
             captured["config"] = config
+            captured["inject"] = (inject_kills, inject_kill_fraction)
             self.last_error = None
             self.metrics: dict = {}
 

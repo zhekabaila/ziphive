@@ -1,5 +1,9 @@
 # DEPLOYMENT.md — Menjalankan di 10 Node Virtual
 
+> Untuk 10 perangkat fisik (laptop Master + 9 laptop Worker, macOS/Windows/Linux, tanpa ssh dan
+> tanpa Docker), pakai `DEPLOYMENT-PHYSICAL.md`. Berkas ini tetap berlaku untuk mereproduksi hasil
+> node virtual (ADR-015).
+
 ## 0. Mode 10 node virtual (ADR-015)
 Soal meminta 10 node fisik, tetapi pelaksanaan 2026-11-22 memakai 10 node virtual pada satu laptop:
 1 Master berjalan di host dan 9 Worker berjalan sebagai container Linux, masing-masing dengan
@@ -183,3 +187,10 @@ Arsip memuat `src/`, `tests/`, `scripts/`, `config/`, `docs/`, dokumen `.md`, `p
 `requirements*.txt`, `Makefile`, dan `results/` (ringkasan dan grafik). `data/`, `output/`,
 `.venv`, `.git`, cache Python, dan `results/dev/` (hasil algoritma `sim`) tidak ikut. Keluaran
 akhir skrip adalah baris `PACK OK` beserta jumlah berkas dan ukuran arsip.
+
+## 9. Perangkat fisik
+Bila eksperimen dijalankan pada 10 laptop sungguhan (ADR-016), jangan memakai Docker maupun ssh.
+Gunakan launcher `setup-node`, `start-worker`, dan `start-master`, lalu orkestrasi dengan
+`python scripts/run_experiments.py --worker-mode external`. Seluruh prosedur, termasuk pengaturan
+E4 (`--throttle 0.25` pada w9) dan E5 (injeksi `KILL` dari Master), ada di
+`DEPLOYMENT-PHYSICAL.md`.

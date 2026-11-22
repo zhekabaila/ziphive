@@ -15,9 +15,12 @@ Siliwangi (Tema 16). Identitas kelompok dibaca dari `config/group.toml`.
 | Eksperimen resmi | 45 run (E1-E6, 3 ulangan) pada 10 node virtual; seluruh run `VERIFY OK`; `validate_results results/raw` mencetak `RESULTS VALID` |
 | Hasil | `results/summary.csv`, `results/summary_agg.csv`, 7 grafik di `results/figures/` |
 | Fase 10 | Selesai. Versi `1.0.0`, laporan DOCX, naskah video (`docs/DEMO_SCRIPT.md`), dan ZIP sumber di `dist/` |
+| Fase 11 | Selesai. Versi `1.1.0`. Launcher sekali-klik macOS/Windows/Linux, injeksi kegagalan E5 dari Master, protokol v2, runbook `DEPLOYMENT-PHYSICAL.md`. Uji pada laptop fisik menyusul |
 
-Soal meminta minimal 10 node fisik. Pelaksanaan 2026-11-22 memakai 10 node virtual di satu laptop
-(1 Master di host + 9 Worker container, ADR-015). Deviasi ini diungkap di laporan dan video.
+Soal meminta minimal 10 node fisik. Eksperimen resmi pertama (2026-11-22) memakai 10 node virtual
+di satu laptop (1 Master di host + 9 Worker container, ADR-015). Fase 11 menyiapkan pelaksanaan
+ulang pada 10 perangkat fisik (ADR-016); setelah data fisik terkumpul, seluruh angka laporan
+dibangun ulang dari hasil baru.
 
 ## Kebutuhan
 
@@ -80,7 +83,8 @@ Keluaran yang diharapkan: `SEQUENTIAL OK`, `VERIFY OK`, `LOCAL OK`, `VERIFY OK`,
 
 Opsi Master: `--config`, `--host`, `--port`, `--input`, `--out`, `--algo`, `--level`,
 `--chunk-mb`, `--repeat`, `--expect-workers`, `--scheduler static|dynamic`,
-`--heartbeat-interval`, `--heartbeat-timeout`, `--max-attempts`, `--barrier-timeout`.
+`--heartbeat-interval`, `--heartbeat-timeout`, `--max-attempts`, `--barrier-timeout`,
+`--inject-kills`, `--inject-kill-fraction`.
 Opsi Worker: `--config`, `--master`, `--id`, `--procs`, `--throttle`, `--fail-after-tasks`,
 `--fail-after-sec`, `--task-fail-rate`, `--seed`, `--protocol-version`.
 Nilai default ada di `config/master.toml` dan `config/worker.toml`; CLI menimpa nilai TOML.
@@ -100,6 +104,10 @@ Nilai default ada di `config/master.toml` dan `config/worker.toml`; CLI menimpa 
 | `python scripts/build_report.py` | bangun laporan DOCX di `reports/laporan/` |
 | `python scripts/smoke_package.py` | bangun ZIP, periksa isinya, lalu jalankan dari nol (smoke gate Fase 10) |
 | `python scripts/run_experiments.py --exps E1,E2,E3,E4,E5,E6` | orkestrasi E1-E6 pada 10 node virtual |
+| `python scripts/bootstrap_node.py` | siapkan `.venv` dan dependensi di laptop ini (smoke: `SETUP OK`) |
+| `python scripts/start_worker.py --master HOST:PORT --id wN` | launcher Worker untuk laptop fisik |
+| `python scripts/start_master.py --workers 9` | launcher Master: dataset, rencana Worker, lalu Master |
+| `python scripts/run_experiments.py --worker-mode external --exps E1,E2,E6,E3,E4,E5` | orkestrasi E1-E6 pada 9 laptop fisik |
 
 ### Test dan gate
 
@@ -120,7 +128,8 @@ Bila paket belum dipasang (`pip install -e .`), jalankan dengan `PYTHONPATH=src`
 src/pcomp/            kode utama (Master, Worker, protokol, kompresi, metrik, harness)
 tests/unit/           unit test per modul
 tests/integration/    test dengan proses dan socket nyata
-scripts/              gate, e2e, check_node, launch_workers, pack_source, run_experiments
+scripts/              gate, e2e, check_node, launch_workers, pack_source, run_experiments,
+                      bootstrap_node, start_worker, start_master, node_common
 config/               group.toml, master.toml, worker.toml, nodes.toml
 docs/                 CODE_GUIDE.md, ANALYSIS.md, phase-logs/, evidence/
 results/              raw/, summary.csv, summary_agg.csv, figures/, dev/ (hasil sim)
@@ -154,8 +163,29 @@ komponen ada di `ARCHITECTURE.md`, alur kejadian di `FLOW.md`, dan format pesan 
 
 Prosedur lengkap, termasuk pemeriksaan `docker ps` dan pengambilan tangkapan layar bukti, ada di
 `docs/evidence/RUNBOOK.md`. Ringkasan status gambar bukti ada di `docs/evidence/README.md`.
-Untuk sepuluh node fisik, lengkapi `config/nodes.toml` lalu pakai `scripts/launch_workers.py`
-(lihat `DEPLOYMENT.md`).
+
+## Menjalankan di 10 perangkat fisik
+
+Tiga perintah, satu per peran, berjalan di macOS, Windows, dan Linux:
+
+| Laptop | Perintah | Keterangan |
+|---|---|---|
+| Semua | `setup-node.command` / `setup-node.sh` / `setup-node.bat` | sekali saja; membuat `.venv` di folder proyek dan mencetak `SETUP OK` |
+| Master | `start-master.command` / `.sh` / `.bat` | membuat dataset 2048 MiB bila belum ada, mencetak IP Master dan perintah Worker, lalu menjalankan Master |
+| Worker | `start-worker.command` / `.sh` / `.bat` | menanyakan IP Master dan `id` sekali, menyimpannya di `config/worker.local.toml`, lalu menyambung berulang |
+
+Rangkaian eksperimen resmi dijalankan di laptop Master:
+
+```bash
+python scripts/run_experiments.py --worker-mode external --port 5050 --exps E1,E2,E6,E3,E4,E5
+```
+
+Setiap run mencetak instruksi operator (jumlah Worker, `procs`, Worker yang diperlambat pada E4,
+Worker yang akan dimatikan Master pada E5) dan menunggu Worker benar-benar terdaftar sebelum
+menghitung waktu. Skenario E5 dijalankan Master sendiri lewat pesan `KILL` (protokol v2), sehingga
+lama deteksi dan lama pemulihan terukur tanpa ssh maupun sinyal OS. Runbook lengkap, termasuk
+jaringan hotspot, bandwidth, checklist, dan troubleshooting, ada di `DEPLOYMENT-PHYSICAL.md`.
+Panduan node virtual lama tetap ada di `DEPLOYMENT.md`.
 
 ## Hasil eksperimen
 
@@ -181,7 +211,8 @@ Keluaran terakhir: 45 run (E1 3, E2 12, E3 3, E4 6, E5 6, E6 15), seluruhnya `VE
 | `FLOW.md` | urutan kejadian Master-Worker |
 | `PROTOCOL.md` | format frame dan pesan |
 | `EXPERIMENTS.md` | rancangan E1-E6 dan metrik |
-| `DEPLOYMENT.md` | persiapan node dan checklist |
+| `DEPLOYMENT.md` | persiapan node virtual dan checklist |
+| `DEPLOYMENT-PHYSICAL.md` | runbook 10 perangkat fisik (launcher, jaringan, E4/E5, troubleshooting) |
 | `TESTING.md` | strategi pengujian |
 | `ASSETS.md` | sumber dataset, pustaka, formula, lisensi |
 | `docs/CODE_GUIDE.md` | panduan kode per modul dan perintah |

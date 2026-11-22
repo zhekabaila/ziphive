@@ -57,7 +57,11 @@ scripts/                   utilitas di luar paket (dijalankan dengan python scri
   check_node.py            pemeriksaan kesiapan node
   launch_workers.py        cetak/jalankan perintah Worker dari config/nodes.toml
   pack_source.py           paket ZIP sumber
-  run_experiments.py       orkestrasi E1-E6 pada 10 node virtual
+  run_experiments.py       orkestrasi E1-E6 (container atau laptop fisik)
+  node_common.py           helper lintas platform untuk launcher laptop fisik
+  bootstrap_node.py        siapkan .venv + dependensi di satu laptop
+  start_worker.py          launcher Worker untuk laptop fisik
+  start_master.py          launcher Master (dataset, rencana Worker, Master)
 tests/
   conftest.py              fixture bersama
   unit/                    unit test per modul
@@ -471,7 +475,11 @@ diinjeksi ikut dihitung.
 | `check_node.py` | Kesiapan node | `python scripts/check_node.py --master host:port`, `--ping-master`, `--json` |
 | `launch_workers.py` | Perintah Worker dari `config/nodes.toml` | `--print`, `--ssh`, `--ssh --dry-run`, `--port`, `--procs`, `--dir` |
 | `pack_source.py` | ZIP sumber | `--list`, `--out`, `--repo` |
-| `run_experiments.py` | Orkestrasi E1-E6 dengan container | `--exps`, `--reps`, `--pause`, `--input`, `--algo`, `--level`, `--chunk-mb`, `--repeat`, `--workers`, `--procs`, `--throttle`, `--kill-workers`, `--kill-fraction`, `--out-root`, `--timeout`, `--keep-payload` |
+| `run_experiments.py` | Orkestrasi E1-E6 (container atau laptop fisik) | `--exps`, `--reps`, `--pause`, `--input`, `--algo`, `--level`, `--chunk-mb`, `--repeat`, `--workers`, `--procs`, `--throttle`, `--kill-workers`, `--kill-fraction`, `--out-root`, `--timeout`, `--keep-payload`, `--worker-mode docker\|external`, `--port`, `--lan-wait` |
+| `node_common.py` | Helper launcher lintas platform | fungsi murni: `venv_python`, `venv_ready`, `version_ok`, `local_ip`, `worker_command`, `master_command`, `bootstrap_commands`, `write_worker_local_config`, `read_worker_local_config` |
+| `bootstrap_node.py` | Siapkan satu laptop | `--check-only` (cetak `SETUP OK`), `--no-install`, `--python`, `--root` |
+| `start_worker.py` | Launcher Worker laptop fisik | `--master`, `--id`, `--procs`, `--throttle`, `--once`, `--print-command`, `--no-prompt`, `--retry-delay`, `--log-dir` |
+| `start_master.py` | Launcher Master laptop fisik | `--workers`, `--input`, `--out`, `--port`, `--scheduler`, `--algo`, `--level`, `--chunk-mb`, `--repeat`, `--size-mb`, `--files`, `--seed`, `--inject-kills`, `--inject-kill-fraction`, `--print-plan`, `--no-dataset` |
 
 `gate.py` menjalankan G1 lint/format, G2 mypy, G3 unit test dengan coverage minimal 80 %, G4
 integration test, G5 regresi (G3+G4), G6 smoke fase dari `SMOKE_COMMANDS`, G7 integration test 3
@@ -651,7 +659,7 @@ python scripts/check_node.py --master 10.0.0.1:5050 --ping-master
 python scripts/launch_workers.py --print           # cetak perintah Worker dari nodes.toml
 python scripts/launch_workers.py --ssh             # jalankan lewat ssh (butuh nodes.toml terisi)
 python scripts/pack_source.py --list               # daftar berkas yang akan dipaketkan
-python scripts/pack_source.py                      # buat dist/ziphive-source-1.0.0.zip
+python scripts/pack_source.py                      # buat dist/ziphive-source-<versi>.zip
 ```
 
 `launch_workers.py` menolak placeholder di `config/nodes.toml`. `check_node.py` tidak mengirim
@@ -671,6 +679,25 @@ Skrip menjalankan Master di host, menyalakan 9 container Worker per run, mematik
 sesuai `--kill-workers` (default `1,3`) setelah sekitar 50 % task selesai, menyimpan log tiap
 container, menjalankan `verify.py`, lalu menghapus payload `chunks/` (kecuali `--keep-payload`).
 Prosedur tangkapan layar bukti ada di `docs/evidence/RUNBOOK.md`.
+
+### 11.8a Eksperimen 10 perangkat fisik
+
+```bash
+# di setiap laptop, sekali
+python scripts/bootstrap_node.py                   # atau setup-node.command/.sh/.bat
+# di laptop Worker
+python scripts/start_worker.py --master 192.168.43.10:5050 --id w3
+# di laptop Master
+python scripts/start_master.py --workers 9 --input data/bench
+# rangkaian resmi
+python scripts/run_experiments.py --worker-mode external --port 5050 --exps E1,E2,E6,E3,E4,E5
+```
+
+`start_worker.py` menyimpan pilihan di `config/worker.local.toml` dan menjalankan
+`python -m pcomp.worker` berulang dengan log `logs/worker-<id>.log`. Worker yang menerima `KILL`
+dari Master (E5) keluar dengan kode `EXIT_KILLED`; launcher mengulang prosesnya, tetapi Master
+menolak pendaftarannya (`SERVER_FULL`) sampai run berakhir. Runbook lengkap ada di
+`DEPLOYMENT-PHYSICAL.md`.
 
 ### 11.9 Test dan gate
 
@@ -699,9 +726,11 @@ Bila paket belum terpasang, gate tetap dapat dijalankan dengan
 | `tests/unit/test_bench.py`, `test_report.py` | perencanaan run, agregasi, grafik |
 | `tests/unit/test_tools.py`, `test_validate_results.py`, `test_inject_failure.py` | alat bantu dan validator hasil |
 | `tests/unit/test_gate.py`, `test_check_node.py`, `test_launch_workers.py`, `test_pack_source.py` | skrip utilitas |
+| `tests/unit/test_node_common.py`, `test_launchers.py`, `test_master_kill.py` | helper launcher laptop fisik, launcher, kuota Worker dan injeksi `KILL` |
 | `tests/integration/test_echo.py` | server echo, payload besar |
 | `tests/integration/test_master_worker.py`, `test_load_balancing.py`, `test_fault_tolerance.py` | Master-Worker nyata, load balancing, worker mati dan requeue |
 | `tests/integration/test_sequential_cli.py`, `test_local_parallel_cli.py`, `test_cli_smoke.py`, `test_bench_cli.py` | CLI nyata dan harness |
+| `tests/integration/test_kill_injection.py`, `test_server_full.py`, `test_lan_external.py` | injeksi `KILL` (metrik E5), penolakan Worker berlebih, harness `--lan` dengan Worker proses terpisah |
 | `tests/integration/test_slow_9_workers.py` | 9 Worker lokal (marker `slow`) |
 
 Fixture di `tests/conftest.py`: `repo_root`, `load_script` (memuat skrip `scripts/` sebagai
@@ -717,5 +746,10 @@ modul), `valid_group_file`, `placeholder_group_file`, `free_port`, `synth_datase
 - `cpu_avg_workers` pada `results/summary.csv` tidak dapat dipakai karena sampler membaca proses
   induk Worker, sedangkan kompresi berjalan di proses anak `multiprocessing.Pool`. Analisis beban
   memakai `busy_sec` per Worker.
-- Pelaksanaan 10 node memakai node virtual (ADR-015), bukan 10 perangkat fisik. Deviasi ini wajib
-  diungkap di laporan dan video.
+- Pelaksanaan 10 node pada 2026-11-22 memakai node virtual (ADR-015). Fase 11 menyiapkan
+  pelaksanaan ulang pada 10 perangkat fisik (ADR-016); selama data fisik belum ada, angka laporan
+  masih berasal dari node virtual dan hal itu wajib diungkap di laporan dan video.
+- `throttle` Worker tidak dapat diverifikasi dari Master; hanya `procs` yang diperiksa
+  `wait_lan_workers`. Kesalahan `--throttle` pada E4 menjadi tanggung jawab operator.
+- Protokol versi 2 (pesan `KILL`, kode `SERVER_FULL`) membuat node versi 1 ditolak saat REGISTER;
+  semua laptop wajib memakai versi paket yang sama.

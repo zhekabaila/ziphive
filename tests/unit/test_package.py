@@ -29,7 +29,7 @@ def test_project_constants() -> None:
 
 
 def test_protocol_version_matches_protocol_doc() -> None:
-    assert constants.PROTOCOL_VERSION == 1
+    assert constants.PROTOCOL_VERSION == 2
 
 
 def test_pyproject_version_matches_constants(repo_root: Path) -> None:

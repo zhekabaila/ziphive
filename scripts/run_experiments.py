@@ -1,9 +1,14 @@
-"""Orkestrasi eksperimen E1-E6 pada 10 node virtual (ADR-015).
+"""Orkestrasi eksperimen E1-E6 pada 10 node.
 
-Master berjalan di host, Worker berjalan sebagai container `ziphive-node:min`.
-Skrip ini menyalakan container sebelum tiap run, mematikan container pada E5,
-menyimpan log Worker dan `verify.log`, lalu menghapus payload chunk agar disk
-tidak penuh (metrics, events, manifest, dan log tetap disimpan).
+Dua mode Worker (`--worker-mode`):
+- `docker` (ADR-015): Worker berjalan sebagai container `ziphive-node:min` di satu laptop.
+  Skrip menyalakan container sebelum tiap run dan mematikannya pada E5.
+- `external` (ADR-016): Worker berjalan di 9 laptop fisik lewat `scripts/start_worker.py`.
+  Skrip hanya menyiapkan argumen, mencetak instruksi, dan menunggu Worker terdaftar; E5
+  dijalankan Master sendiri lewat pesan `KILL`.
+
+Pada kedua mode, `verify.log` disimpan dan payload chunk dihapus agar disk tidak penuh
+(metrics, events, manifest, dan log tetap disimpan).
 """
 
 from __future__ import annotations
@@ -251,10 +256,11 @@ def run_experiment(
     extra: list[str],
     root: Path,
     *,
-    lan: bool,
+    manage_containers: bool,
     kill_fraction: float,
     timeout: float,
     keep_payload: bool,
+    wait_extra: float = 0.0,
 ) -> int:
     """Jalankan satu eksperimen lengkap sambil mengelola container per run."""
     log_path = root / exp / "bench.log"
@@ -277,7 +283,7 @@ def run_experiment(
                         break
                     time.sleep(POLL_SEC)
                     continue
-                if lan:
+                if manage_containers:
                     spec = json.loads((run_dir / "spec.json").read_text(encoding="utf-8"))
                     specs = container_specs(
                         int(spec.get("workers", 0) or 0), float(spec.get("throttle", 0.0) or 0.0)
@@ -295,7 +301,9 @@ def run_experiment(
                         collect_logs(run_dir, specs)
                         remove_containers(specs)
                 else:
-                    wait_run_line(run_dir.name, log_path, timeout)
+                    # Worker sudah berjalan di laptop masing-masing; harness menunggu
+                    # registrasi sampai --lan-wait sebelum run dihitung.
+                    wait_run_line(run_dir.name, log_path, timeout + wait_extra)
                 finalize_run(run_dir, keep_payload)
                 print(f"  selesai: {run_dir.name}", flush=True)
                 handled.add(run_dir.name)
@@ -339,12 +347,39 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--out-root", default="results/raw")
     parser.add_argument("--timeout", type=float, default=1800.0)
     parser.add_argument("--keep-payload", action="store_true", help="jangan hapus chunk")
+    parser.add_argument(
+        "--worker-mode",
+        choices=["docker", "external"],
+        default="docker",
+        help="docker = container di satu laptop; external = 9 laptop fisik",
+    )
+    parser.add_argument(
+        "--port", type=int, default=5050, help="port Master pada mode external (harus tetap)"
+    )
+    parser.add_argument(
+        "--lan-wait",
+        type=float,
+        default=900.0,
+        help="detik menunggu Worker terdaftar pada mode external",
+    )
     return parser
 
 
 def uses_containers(extra: list[str]) -> bool:
     """True bila run memakai container (mode `--lan`)."""
     return "--lan" in extra
+
+
+def lan_args(args: argparse.Namespace, common: list[str]) -> list[str]:
+    """Argumen runner untuk run terdistribusi.
+
+    Mode `external` memakai port tetap dan `--lan-wait` besar agar Worker di laptop lain
+    punya waktu menyala dan mendaftar.
+    """
+    extra = [*common, "--lan", "--host", "0.0.0.0", "--barrier-timeout", "300"]
+    if getattr(args, "worker_mode", "docker") == "external":
+        extra += ["--port", str(args.port), "--lan-wait", str(args.lan_wait)]
+    return extra
 
 
 def experiment_args(
@@ -355,7 +390,7 @@ def experiment_args(
         return [*common, "--local"], False
     if exp == "E2":
         return [*common, "--local", "--procs", args.procs], False
-    lan = [*common, "--lan", "--host", "0.0.0.0", "--barrier-timeout", "300"]
+    lan = lan_args(args, common)
     if exp == "E3":
         return [*lan, "--workers", "9"], True
     if exp == "E4":
@@ -392,7 +427,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"=== {exp} ===", flush=True)
         attempts: list[list[str]] = []
         if exp == "E5":
-            lan_base = [*common, "--lan", "--host", "0.0.0.0", "--barrier-timeout", "300"]
+            lan_base = lan_args(args, common)
             for scenario in [item.strip() for item in args.kill_workers.split(",") if item.strip()]:
                 attempts.append(
                     [
@@ -414,10 +449,11 @@ def main(argv: list[str] | None = None) -> int:
                 exp,
                 extra,
                 root,
-                lan=uses_containers(extra),
+                manage_containers=args.worker_mode == "docker",
                 kill_fraction=args.kill_fraction,
                 timeout=args.timeout,
                 keep_payload=args.keep_payload,
+                wait_extra=args.lan_wait,
             )
             if code != 0:
                 print(

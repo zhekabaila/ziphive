@@ -29,7 +29,7 @@ class VersionMismatchError(ProtocolError):
 
 
 class MessageType(StrEnum):
-    """Tipe pesan yang diizinkan protokol versi 1."""
+    """Tipe pesan yang diizinkan protokol versi 2."""
 
     REGISTER = "REGISTER"
     REGISTER_ACK = "REGISTER_ACK"
@@ -41,6 +41,7 @@ class MessageType(StrEnum):
     SHUTDOWN = "SHUTDOWN"
     BYE = "BYE"
     ERROR = "ERROR"
+    KILL = "KILL"
 
 
 class ErrorCode(StrEnum):
@@ -48,6 +49,7 @@ class ErrorCode(StrEnum):
 
     VERSION_MISMATCH = "VERSION_MISMATCH"
     DUPLICATE_WORKER = "DUPLICATE_WORKER"
+    SERVER_FULL = "SERVER_FULL"
     BAD_FRAME = "BAD_FRAME"
     UNKNOWN_TYPE = "UNKNOWN_TYPE"
     INTERNAL = "INTERNAL"
@@ -132,6 +134,7 @@ REQUIRED_FIELDS: dict[MessageType, dict[str, Validator]] = {
     MessageType.SHUTDOWN: {"reason": _is_str},
     MessageType.BYE: {"worker_id": _is_str},
     MessageType.ERROR: {"code": _is_str, "message": _is_str},
+    MessageType.KILL: {"worker_id": _is_str, "reason": _is_str},
 }
 
 

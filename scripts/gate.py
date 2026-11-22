@@ -27,9 +27,9 @@ FORBIDDEN_PREFIXES = ("data/", "output/")
 FLAKY_GATE_MIN_PHASE = 4
 COMMAND_TIMEOUT_SEC = 1800
 # Fase terakhir memakai versi 1.0.0 sebagai versi paket akhir (instruksi user 2026-11-22),
-# bukan pola 0.<NN>.0 seperti fase sebelumnya.
-FINAL_PHASE = 10
-FINAL_VERSION = "1.0.0"
+# bukan pola 0.<NN>.0 seperti fase sebelumnya. Fase 11 menaikkan versi ke 1.1.0.
+FINAL_PHASE = 11
+FINAL_VERSION = "1.1.0"
 
 # Smoke test per fase, disalin dari bagian "Smoke" PLAN.md fase terkait.
 SMOKE_COMMANDS: dict[int, list[list[str]]] = {
@@ -145,6 +145,11 @@ SMOKE_COMMANDS: dict[int, list[list[str]]] = {
     9: [[sys.executable, "-m", "pcomp.tools.validate_results", "results/raw"]],
     # Fase 10: ZIP dibuat, isinya diperiksa, lalu dijalankan dari nol sesuai README.
     10: [[sys.executable, "scripts/smoke_package.py"]],
+    # Fase 11: launcher laptop fisik siap dipakai dan rencana run dapat dicetak.
+    11: [
+        [sys.executable, "scripts/bootstrap_node.py", "--check-only"],
+        [sys.executable, "scripts/start_master.py", "--print-plan", "--input", "data/bench"],
+    ],
 }
 
 # Keluaran yang wajib muncul pada smoke fase tertentu.
@@ -158,6 +163,7 @@ SMOKE_EXPECTED: dict[int, list[str]] = {
     8: ["1 passed"],
     9: ["RESULTS VALID"],
     10: ["PACKAGE OK"],
+    11: ["SETUP OK", "PLAN OK"],
 }
 
 PHASE_LOG_REQUIRED_HEADINGS = (

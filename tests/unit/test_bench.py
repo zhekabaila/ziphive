@@ -395,3 +395,50 @@ def test_report_menggabungkan_semua_eksperimen(
     assert {row["exp"] for row in agregat} == {"E1", "E6"}
     rows = bench.read_summary_rows(out_root / "summary.csv")
     assert len(bench.run_dirs_from_rows(out_root, rows)) == 2
+
+
+def test_lan_instructions_menyebut_konfigurasi_run() -> None:
+    """UT-BEN-08: instruksi `--lan` memuat jumlah Worker, procs, throttle, dan kill E5."""
+    spec = RunSpec(
+        exp="E5", mode="distributed", workers=9, procs=1, scheduler="dynamic", kill_workers=2
+    )
+    lines = bench.lan_instructions(spec, 5050, 0.5)
+    text = "\n".join(lines)
+    assert "port 5050" in text
+    assert "9 Worker" in text
+    assert "procs=1" in text
+    assert "KILL" in text and "2 Worker" in text and "50%" in text
+    assert "nyalakan ulang" in text
+
+    slow = bench.lan_instructions(
+        RunSpec(
+            exp="E4", mode="distributed", workers=9, procs=1, scheduler="static", throttle=0.25
+        ),
+        5050,
+        0.5,
+    )
+    assert any("--throttle 0.25" in line for line in slow)
+
+
+def test_registered_workers_dan_tunggu(tmp_path: Path) -> None:
+    """UT-BEN-09: registrasi dibaca dari events dan `procs` yang salah ditolak."""
+    events = tmp_path / "events.jsonl"
+    rows = [
+        {"ts": 1.0, "event": "worker_registered", "worker_id": "w1", "procs": 1},
+        {"ts": 1.1, "event": "worker_registered", "worker_id": "w2", "procs": 1},
+        {"ts": 1.2, "event": "worker_rejoined", "worker_id": "w3", "procs": 1},
+        {"ts": 1.3, "event": "task_done", "task_id": 0},
+    ]
+    events.write_text("".join(json.dumps(row) + "\n" for row in rows), encoding="utf-8")
+
+    assert bench.registered_workers(events) == {"w1": 1, "w2": 1, "w3": 1}
+    assert bench.registered_workers(tmp_path / "tidak-ada.jsonl") == {}
+    assert bench.wait_lan_workers(events, 2, 1.0) == {"w1": 1, "w2": 1, "w3": 1}
+
+    with pytest.raises(RuntimeError):
+        bench.wait_lan_workers(events, 4, 0.3)
+
+    rows.append({"ts": 1.4, "event": "worker_registered", "worker_id": "w4", "procs": 4})
+    events.write_text("".join(json.dumps(row) + "\n" for row in rows), encoding="utf-8")
+    with pytest.raises(RuntimeError):
+        bench.wait_lan_workers(events, 4, 1.0)

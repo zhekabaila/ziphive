@@ -86,6 +86,10 @@ REAL_FIGURES = Path("results") / "figures"
 
 EXPERIMENTS = ("E1", "E2", "E3", "E4", "E5", "E6")
 DEFAULT_E3_WORKERS = 9
+# Mode `--lan`: procs resmi 1 per laptop (EXPERIMENTS.md bagian 2), dan harness menunggu
+# Worker mendaftar sebelum run dihitung.
+LAN_EXPECTED_PROCS = 1
+LAN_POLL_SEC = 0.2
 
 
 # ---------------------------------------------------------------------------
@@ -571,11 +575,24 @@ def _run_distributed(args: argparse.Namespace, spec: RunSpec, run_dir: Path) -> 
 
 def _run_lan(args: argparse.Namespace, spec: RunSpec, run_dir: Path) -> dict[str, Any]:
     port = args.port or _free_port()
-    master, master_log = _spawn(
-        "pcomp.master", _master_args(args, spec, run_dir, port), run_dir / "master.log"
-    )
+    master_args = _master_args(args, spec, run_dir, port)
+    if spec.kill_workers > 0:
+        master_args += [
+            "--inject-kills",
+            str(spec.kill_workers),
+            "--inject-kill-fraction",
+            str(args.kill_fraction),
+        ]
+    master, master_log = _spawn("pcomp.master", master_args, run_dir / "master.log")
     try:
-        print(f"LAN: jalankan {spec.workers} Worker di node menuju {args.host}:{port}")
+        for line in lan_instructions(spec, port, args.kill_fraction):
+            print(line, flush=True)
+        print(
+            f"LAN: menunggu {spec.workers} Worker terdaftar (maks {args.lan_wait:.0f} detik)",
+            flush=True,
+        )
+        wait_lan_workers(run_dir / "events.jsonl", spec.workers, args.lan_wait, master)
+        print(f"LAN: {spec.workers} Worker terdaftar, run dimulai", flush=True)
         code = master.wait(timeout=args.timeout)
         if code != 0:
             raise RuntimeError(f"Master keluar dengan kode {code}; lihat {run_dir / 'master.log'}")
@@ -585,6 +602,74 @@ def _run_lan(args: argparse.Namespace, spec: RunSpec, run_dir: Path) -> dict[str
             master.wait(timeout=30)
         master_log.close()
     return _read_metrics(run_dir)
+
+
+def lan_instructions(spec: RunSpec, port: int, kill_fraction: float) -> list[str]:
+    """Baris instruksi operator untuk satu run mode `--lan` (dicetak sebelum menunggu)."""
+    lines = [
+        f"LAN: run {spec.exp} memakai {spec.workers} Worker ke port {port}",
+        f"LAN: setiap laptop menjalankan start-worker dengan procs={LAN_EXPECTED_PROCS}",
+    ]
+    if spec.throttle > 0:
+        lines.append(f"LAN: Worker lambat = w{spec.workers} dengan --throttle {spec.throttle} (E4)")
+    if spec.kill_workers > 0:
+        lines.append(
+            f"LAN: Master mengirim KILL ke {spec.kill_workers} Worker setelah "
+            f"{round(kill_fraction * 100)}% task selesai (E5)"
+        )
+        lines.append("LAN: nyalakan ulang Worker yang dimatikan sebelum run berikutnya")
+    return lines
+
+
+def registered_workers(events_path: Path) -> dict[str, int]:
+    """Peta `worker_id -> procs` dari registrasi pada `events.jsonl`."""
+    found: dict[str, int] = {}
+    if not events_path.is_file():
+        return found
+    try:
+        rows = read_events(events_path)
+    except (json.JSONDecodeError, OSError):
+        return found
+    for row in rows:
+        if row.get("event") not in ("worker_registered", "worker_rejoined"):
+            continue
+        worker_id = str(row.get("worker_id", ""))
+        if worker_id:
+            found[worker_id] = int(row.get("procs", 0) or 0)
+    return found
+
+
+def wait_lan_workers(
+    events_path: Path,
+    workers: int,
+    timeout: float,
+    process: subprocess.Popen[str] | None = None,
+) -> dict[str, int]:
+    """Tunggu sampai `workers` Worker terdaftar; tolak `procs` yang tidak sesuai.
+
+    Tanpa pemeriksaan ini, run E3/E4/E5/E6 dapat tercatat selesai dengan jumlah Worker
+    lebih kecil dari konfigurasi yang dilaporkan.
+    """
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        found = registered_workers(events_path)
+        if len(found) >= workers:
+            wrong = {wid: procs for wid, procs in found.items() if procs != LAN_EXPECTED_PROCS}
+            if wrong:
+                raise RuntimeError(
+                    f"procs Worker harus {LAN_EXPECTED_PROCS}, diterima {wrong}; "
+                    "perbaiki config/worker.local.toml di laptop tersebut"
+                )
+            return found
+        if process is not None and process.poll() is not None:
+            raise RuntimeError(
+                f"Master berhenti sebelum {workers} Worker terdaftar (kode {process.returncode})"
+            )
+        time.sleep(LAN_POLL_SEC)
+    raise RuntimeError(
+        f"hanya {len(registered_workers(events_path))} dari {workers} Worker terdaftar "
+        f"dalam {timeout:.0f} detik"
+    )
 
 
 def _verify(run_dir: Path) -> bool:
@@ -705,6 +790,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--out-root", default=None, help="timpa folder induk hasil")
     parser.add_argument("--host", default="127.0.0.1", help="alamat bind Master")
     parser.add_argument("--port", type=int, default=0, help="port Master (0 = pilih otomatis)")
+    parser.add_argument(
+        "--lan-wait",
+        type=float,
+        default=600.0,
+        help="detik menunggu Worker terdaftar pada mode --lan",
+    )
     parser.add_argument("--barrier-timeout", type=float, default=120.0)
     parser.add_argument(
         "--timeout", type=float, default=DEFAULT_TIMEOUT, help="batas waktu satu run"

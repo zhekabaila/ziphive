@@ -92,6 +92,7 @@ class MasterState:
         scheduler: Scheduler,
         *,
         max_attempts: int = constants.DEFAULT_MAX_ATTEMPTS,
+        expect_workers: int | None = None,
         clock: Callable[[], float] = time.time,
     ) -> None:
         self.table = TaskTable(tasks)
@@ -99,6 +100,8 @@ class MasterState:
         self.events = events
         self.scheduler = scheduler
         self.max_attempts = max_attempts
+        # None berarti tanpa batas (dipakai test lama dan mode satu mesin).
+        self.expect_workers = expect_workers
         self.started = False
         self.start_time: float | None = None
         self.started_at = datetime.now(UTC).isoformat(timespec="seconds")
@@ -107,14 +110,31 @@ class MasterState:
         self._sessions: dict[str, WorkerSession] = {}
         self._registered: list[WorkerSession] = []
         self._known_ids: set[str] = set()
+        # Worker yang dimatikan Master pada run ini (E5) tidak boleh mendaftar lagi
+        # sampai run berakhir, agar jumlah Worker pada run tetap sesuai konfigurasi.
+        self._killed_ids: set[str] = set()
 
     def register(self, session: WorkerSession) -> None:
-        """Daftarkan Worker; WorkerRejected bila worker_id masih aktif."""
+        """Daftarkan Worker; WorkerRejected bila id aktif, sudah dimatikan, atau kuota penuh."""
         with self._lock:
             if session.worker_id in self._sessions:
                 raise WorkerRejected(
                     ErrorCode.DUPLICATE_WORKER,
                     f"worker_id '{session.worker_id}' masih aktif",
+                )
+            if session.worker_id in self._killed_ids:
+                raise WorkerRejected(
+                    ErrorCode.SERVER_FULL,
+                    f"Worker '{session.worker_id}' sudah dimatikan pada run ini (E5); "
+                    "tunggu run berikutnya",
+                )
+            # Worker berlebih tidak boleh ikut: konfigurasi E6 dengan jumlah Worker lebih
+            # kecil akan rusak bila laptop yang belum dimatikan tetap mendaftar.
+            if self.expect_workers is not None and len(self._sessions) >= self.expect_workers:
+                raise WorkerRejected(
+                    ErrorCode.SERVER_FULL,
+                    f"Master sudah menerima {len(self._sessions)} Worker "
+                    f"(batas --expect-workers {self.expect_workers})",
                 )
             rejoined = session.worker_id in self._known_ids
             session.last_seen = self._clock()
@@ -128,6 +148,11 @@ class MasterState:
             hostname=session.hostname,
             procs=session.procs,
         )
+
+    def mark_killed(self, worker_id: str) -> None:
+        """Catat Worker yang sengaja dimatikan Master agar tidak mendaftar lagi pada run ini."""
+        with self._lock:
+            self._killed_ids.add(worker_id)
 
     def touch(self, worker_id: str) -> None:
         """Perbarui waktu pesan terakhir Worker."""
@@ -298,6 +323,18 @@ class MasterState:
         return self._clock() - self.start_time
 
 
+def should_inject_kills(done: int, total: int, fraction: float) -> bool:
+    """True bila fraksi task selesai sudah mencapai ambang injeksi E5.
+
+    Minimal satu task harus selesai lebih dulu agar kill terjadi saat run berjalan,
+    bukan sebelum Worker menerima pekerjaan.
+    """
+    if total <= 0:
+        return False
+    threshold = max(1, int(total * min(1.0, max(0.0, fraction))))
+    return done >= threshold
+
+
 class MasterServer:
     """Server TCP Master: satu thread handler per Worker."""
 
@@ -306,11 +343,19 @@ class MasterServer:
         config: MasterConfig,
         *,
         barrier_timeout: float = constants.DEFAULT_BARRIER_TIMEOUT,
+        inject_kills: int = 0,
+        inject_kill_fraction: float = 0.5,
         clock: Callable[[], float] = time.time,
     ) -> None:
         self.config = config
         self.barrier_timeout = barrier_timeout
         self.clock = clock
+        # E5 pada node fisik: Master sendiri yang mematikan Worker setelah sebagian task
+        # selesai, karena laptop Worker tidak dapat dikirimi sinyal OS.
+        self.inject_kills = max(0, int(inject_kills))
+        self.inject_kill_fraction = min(1.0, max(0.0, float(inject_kill_fraction)))
+        self._kills_left = self.inject_kills
+        self._kill_lock = threading.Lock()
         self.input_dir = Path(config.input)
         self.out_dir = Path(config.out)
         self.out_dir.mkdir(parents=True, exist_ok=True)
@@ -331,6 +376,7 @@ class MasterServer:
             self.events,
             self.scheduler,
             max_attempts=config.max_attempts,
+            expect_workers=config.expect_workers,
             clock=clock,
         )
         self.port = config.port
@@ -511,6 +557,7 @@ class MasterServer:
                     self._dispatch(session)
                 elif msg_type is MessageType.RESULT:
                     self.state.handle_result(session, frame.header, frame.payload)
+                    self._maybe_inject_kills()
                     self._maybe_finish()
                 elif msg_type is MessageType.HEARTBEAT:
                     self._record_usage(session, frame.header)
@@ -653,6 +700,52 @@ class MasterServer:
                 worker_id=session.worker_id,
                 size=len(data),
             )
+
+    def _maybe_inject_kills(self) -> None:
+        """Kirim `KILL` ke sejumlah Worker setelah ambang fraksi tercapai (E5 fisik).
+
+        Event `worker_exit_injected` memakai jam Master, sehingga lama deteksi dan lama
+        pemulihan pada `events.jsonl` terukur tanpa bergantung pada jam laptop Worker.
+        """
+        if self._kills_left <= 0:
+            return
+        with self._kill_lock:
+            if self._kills_left <= 0:
+                return
+            counts = self.state.table.counts()
+            total = len(self.tasks)
+            if not should_inject_kills(counts["DONE"], total, self.inject_kill_fraction):
+                return
+            if self.state.all_finished():
+                return
+            targets = sorted(self.state.sessions(), key=lambda item: item.worker_id)
+            targets = targets[: self._kills_left]
+            if not targets:
+                return
+            self._kills_left = 0
+            for session in targets:
+                self.state.mark_killed(session.worker_id)
+                self.events.emit(
+                    "worker_exit_injected",
+                    worker_id=session.worker_id,
+                    pid=0,
+                    reason="master-kill",
+                )
+                with session.send_lock, contextlib.suppress(OSError):
+                    send_msg(
+                        session.sock,
+                        make_header(
+                            MessageType.KILL,
+                            worker_id=session.worker_id,
+                            reason="master-kill",
+                        ),
+                    )
+                logger.warning(
+                    "KILL dikirim ke %s setelah %s/%s task selesai (E5)",
+                    session.worker_id,
+                    counts["DONE"],
+                    total,
+                )
 
     def _maybe_finish(self) -> None:
         if not self.state.all_finished():
