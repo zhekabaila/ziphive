@@ -153,7 +153,9 @@ Gate penuh dijalankan 2026-11-22 pukul 17:46, hasil `PASS (seluruh gate wajib lu
 2. `python -m pcomp.tools.validate_results results/raw` harus mencetak `RESULTS VALID`; ini juga
    smoke test gate fase 9.
 3. Fase 10 memakai `results/figures/*.png` untuk laporan. Tangkapan layar 10 node diambil manual
-   oleh user; perintahnya ada di `docs/evidence/README.md`.
+   oleh user; perintah, keluaran yang diharapkan, dan urutan terminalnya ada di
+   `docs/evidence/RUNBOOK.md`. Keempat gambar sudah diambil 2026-11-22 (`reports/img/`), status dan
+   isi yang terverifikasi dicatat di `docs/evidence/README.md` bagian 3a.
 4. Jangan menambah run ke `results/raw/` tanpa mengulang tiga ulangan dan memperbarui
    `results/summary.csv` lewat harness. Bila eksperimen baru ditambahkan, jalankan harness sekali
    lagi agar grafik dan `summary_agg.csv` dibuat ulang dari SELURUH baris `summary.csv`.

@@ -2,6 +2,17 @@
 
 Format mengikuti Keep a Changelog. Versi `0.<NN>.0` = akhir fase NN. Aturan pencatatan: SDLC.md bagian 6.
 
+## [Unreleased]
+### Added
+- `docs/evidence/RUNBOOK.md`: runbook pengambilan empat tangkapan layar bukti (10 node virtual, terminal Master, terminal Worker, bukti E5 satu Worker mati) dengan perintah yang sudah diuji pada skala 1 Master + 9 container, keluaran yang diharapkan, perkiraan durasi terukur, dan tabel penanganan masalah.
+- `docs/evidence/README.md` bagian 3a: status pengambilan gambar beserta isi yang terverifikasi, bukti teks pendukung run E5 (2565/2565 task selesai, event `worker_dead` lalu `task_requeued`), dan catatan bahwa angka pada gambar bukan angka laporan.
+
+### Docs
+- `docs/phase-logs/PHASE-09.md` bagian 11: perintah tangkapan layar kini merujuk `docs/evidence/RUNBOOK.md`.
+
+### Fixed
+- Prosedur `docker kill` pada bukti E5 tidak lagi memakai `sleep` buta; kill hanya dijalankan setelah `docker ps` menunjukkan sembilan container `Up`, karena percobaan pertama gagal dengan `container ... is not running` dan gambar bukti harus diulang.
+
 ## [0.09.0] - 2026-11-22
 ### Added
 - `scripts/run_experiments.py`: orkestrasi E1-E6 pada 10 node virtual. Menyalakan dan mematikan container Worker per run, membaca port Master dari `master.log` run tersebut, mematikan Worker E5 pada sekitar 50 % progres, menyimpan log tiap container, menjalankan `verify.py` lalu menulis `verify.log`, dan menghapus payload `chunks/` setelah `VERIFY OK`.

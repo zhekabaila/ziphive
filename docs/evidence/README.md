@@ -2,7 +2,8 @@
 
 Node pada pelaksanaan 2026-11-22 bersifat virtual (ADR-015): 1 Master berjalan di host dan
 9 Worker berjalan sebagai container `ziphive-node:min`. Tangkapan layar diambil manual oleh user
-agar gambar pada laporan benar-benar berasal dari mesin yang dipakai.
+agar gambar pada laporan benar-benar berasal dari mesin yang dipakai. Langkah perintah yang sudah
+diuji ada pada `docs/evidence/RUNBOOK.md`; bagian di bawah ini hanya mencatat berkas targetnya.
 
 ## 1. Tangkapan layar 10 node virtual
 
@@ -37,6 +38,31 @@ docker ps -a --filter name=ziphive-w --format 'table {{.Names}}\t{{.Status}}'
 Simpan sebagai `reports/img/e5-worker-mati.png`. Bukti pendukung non-gambar ada pada
 `results/raw/E5/<run_id>/events.jsonl` (event `worker_exit_injected`, `worker_dead`,
 `task_requeued`) dan `results/raw/E5/<run_id>/verify.log` (`VERIFY OK`).
+
+## 3a. Status pengambilan gambar (2026-11-22)
+
+Keempat gambar sudah diambil dan diperiksa ulang isinya pada 2026-11-22.
+
+| Berkas | Waktu | Isi yang terverifikasi |
+|---|---|---|
+| `reports/img/10-node-virtual.png` | 18.45 | `docker ps` sembilan container `Up`, `docker inspect` hostname w1-w9 dengan IP 172.17.0.2-172.17.0.10, `docker exec ziphive-w1 ps` menampilkan anak `multiprocessing.spawn`, `docker stats` sembilan container aktif |
+| `reports/img/master-terminal.png` | 18.49 | banner kelompok, `Master mendengarkan di 0.0.0.0:5050`, `Mulai memproses 1539 task dengan 9 Worker`, blok metrik, `MASTER OK` |
+| `reports/img/worker-terminal.png` | 18.52 | banner Worker, `SHUTDOWN diterima: semua task selesai`, `WORKER OK (w1)` |
+| `reports/img/e5-worker-mati.png` | 19.01 | `docker ps` sembilan `Up`, setelah `docker kill` menjadi `ziphive-w1  Exited (137)` dengan delapan Worker lain `Up` |
+
+Angka yang terlihat pada gambar berasal dari run bukti (`output/demo-*`, sudah dihapus), bukan
+eksperimen resmi. Angka laporan tetap hanya dari `results/summary.csv` dan `results/raw/`.
+Run bukti E5 juga memberi bukti teks pendukung: 2565/2565 task selesai setelah w1 dimatikan, dengan
+event `worker_dead` (w1, 1 task in-flight) dan `task_requeued` (task 138) pada `events.jsonl` run
+tersebut.
+
+Catatan teknis: percobaan pertama E5 gagal karena `docker kill` dijalankan setelah run selesai
+(`is not running`, semua container `Exited (0)`), sehingga gambar itu diganti. Runbook sekarang
+mewajibkan `docker ps` menunjukkan sembilan `Up` sebelum kill, tanpa `sleep` buta.
+
+Gambar disimpan di `reports/` yang masuk `.gitignore`, jadi tidak ikut commit. Jika gambar perlu
+masuk repo untuk lampiran, tambahkan pengecualian di `.gitignore`.
+
 
 ## 4. Bukti teks yang sudah tersedia di repo
 
