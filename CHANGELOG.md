@@ -4,8 +4,15 @@ Format mengikuti Keep a Changelog. Versi `0.<NN>.0` = akhir fase NN. Aturan penc
 
 ## [Unreleased]
 ### Added
+- `docs/CODE_GUIDE.md`: panduan kode dari 40 berkas `src/pcomp` (5.712 baris), 6 skrip `scripts/`, serta peta test; memuat struktur direktori, penjelasan modul/class/fungsi, alur pemanggilan sequential, local parallel, distributed, kegagalan Worker, dan benchmark, daftar berkas keluaran, serta cara menjalankan setiap perintah.
+- `README.md` final: status proyek sampai Fase 9, setup `pip install -e ".[dev,analysis]"`, daftar perintah CLI/tool/skrip, struktur repo, langkah menjalankan 10 node virtual beserta rujukan `docs/evidence/RUNBOOK.md`, serta perintah test dan gate.
+- `ASSETS.md` final: dataset sintetis `data/bench` (seed 20261122, 2048 MiB, SHA-256 delapan berkas), ukuran dan SHA-256 tujuh grafik serta empat tangkapan layar, versi pustaka yang tercatat, tabel formula beserta lokasi implementasi, dan status lisensi. Silesia/Canterbury tetap ditandai `PERLU DIVERIFIKASI USER` karena belum dipakai.
 - `docs/evidence/RUNBOOK.md`: runbook pengambilan empat tangkapan layar bukti (10 node virtual, terminal Master, terminal Worker, bukti E5 satu Worker mati) dengan perintah yang sudah diuji pada skala 1 Master + 9 container, keluaran yang diharapkan, perkiraan durasi terukur, dan tabel penanganan masalah.
 - `docs/evidence/README.md` bagian 3a: status pengambilan gambar beserta isi yang terverifikasi, bukti teks pendukung run E5 (2565/2565 task selesai, event `worker_dead` lalu `task_requeued`), dan catatan bahwa angka pada gambar bukan angka laporan.
+
+### Changed
+- `scripts/gate.py`: smoke Fase 10 Bagian A menjalankan `scripts/pack_source.py --list` dan mewajibkan `docs/CODE_GUIDE.md` muncul pada daftar paket. Smoke ZIP utuh sesuai PLAN.md fase 10 baru dapat dijalankan pada Bagian B (P10-T5 dan P10-T6).
+- `PLAN.md`: status Fase 10 menjadi `IN PROGRESS` (Bagian A selesai, Bagian B belum).
 
 ### Docs
 - `docs/phase-logs/PHASE-09.md` bagian 11: perintah tangkapan layar kini merujuk `docs/evidence/RUNBOOK.md`.

@@ -34,7 +34,7 @@ Deviasi ini wajib diungkap di laporan dan video.
 | 7 | Metrik dan harness benchmark | M | Agent | DONE |
 | 8 | Kesiapan multi-node | M | Agent + User | DONE |
 | 9 | Eksperimen resmi 10 node virtual | L | User + Agent | DONE |
-| 10 | Dokumentasi, laporan, paket pengumpulan | M | Agent + User | TODO |
+| 10 | Dokumentasi, laporan, paket pengumpulan | M | Agent + User | IN PROGRESS |
 
 Ukuran: S kecil, M sedang, L besar. Agent memperbarui kolom Status (TODO, IN PROGRESS, DONE, BLOCKED) dan `CURRENT PHASE` sebelum commit akhir fase.
 
