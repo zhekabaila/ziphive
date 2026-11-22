@@ -183,6 +183,11 @@ Tidak ada. Skrip fase ini tidak menyentuh `src/pcomp`, protokol, maupun perilaku
 Commit bagian agent: `feat(phase-08): add node checks, launch scripts, packaging, deployment guide`
 (hash `2789b9a`), digabung ke `main` dengan merge `00fcc68`.
 
+Commit bagian user 2026-11-22 pada branch `phase/08-virtual-nodes`: `5bef89f`
+`docs(phase-08): validate 10 virtual nodes and close phase` dan `b2b9322`
+`chore(config): fill group identity for banner and report`. Keduanya digabung ke `main` dengan
+`git merge --no-ff`, lalu diberi tag `phase-08-done`.
+
 Tag bagian agent `phase-08a-done` sudah ada dan menunjuk ke commit `00fcc68`, terverifikasi dengan
 `git rev-parse phase-08a-done^{commit}` serta `git tag --points-at 00fcc68`. Tag fase 00 sampai 07
 (`phase-00-done` sampai `phase-07-done`) juga tersedia. Tag `phase-08-done` baru dibuat pada
