@@ -163,4 +163,8 @@ Gate penuh dijalankan 2026-11-22 pukul 17:46, hasil `PASS (seluruh gate wajib lu
    anak (`multiprocessing.Pool`) sehingga `cpu_avg_workers` terisi benar.
 
 ## 12. Commit
-Hash: diisi setelah commit  Tag: phase-09-done
+Commit bagian agent: `docs(phase-09): add official experiment results and analysis`
+(hash `81343f3`), berisi 639 berkas termasuk 45 folder run pada `results/raw/`.
+Commit lanjutan `docs(phase-09): record commit hash` mencatat hash ini.
+Keduanya digabung ke `main` dengan `git merge --no-ff`, lalu diberi tag `phase-09-done`.
+Tag tidak dipush: `git push` hanya dilakukan bila user meminta.
