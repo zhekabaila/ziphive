@@ -1,8 +1,8 @@
 # PHASE-08 — Kesiapan multi-node (bagian agent)
 
-- Branch: phase/08-multinode-ready
-- Mulai / selesai: 2026-11-21 / bagian agent selesai 2026-11-21, bagian user menunggu
-- Status: IN PROGRESS (menunggu user)
+- Branch: phase/08-multinode-ready (bagian agent), phase/08-virtual-nodes (bagian user)
+- Mulai / selesai: 2026-11-21 / 2026-11-22
+- Status: DONE
 
 ## 1. Tujuan
 10 node siap menjalankan sistem (PLAN.md Fase 8). Bagian agent mencakup P8-T1 `scripts/check_node.py`
@@ -21,8 +21,10 @@ menolak inventaris yang masih berisi placeholder, lalu membangkitkan perintah ss
 mode `--print`, `--ssh`, dan `--ssh --dry-run`. `pack_source.py` membuat arsip sumber yang bersih
 dari `data/`, `output/`, `.venv`, `.git`, cache, dan `results/dev/`. `DEPLOYMENT.md` dilengkapi
 template inventaris 10 node, langkah `pip install -e .`, contoh keluaran nyata, dan checklist pra-
-eksperimen. Uji 9 Worker lokal (SL-9W-01) lulus. Seluruh pengujian pada node fisik belum dilakukan
-dan menunggu hasil checklist user.
+eksperimen. Uji 9 Worker lokal (SL-9W-01) lulus. Bagian user dijalankan 2026-11-22 pada 10 node
+virtual (1 Master di host + 9 Worker container Alpine 3.20): seluruh node `CHECK NODE OK`, dry-run
+64 MiB menghasilkan `VERIFY OK` dengan 17 task selesai pada 9 Worker. R1 tidak dapat dinilai karena
+seluruh node berada pada satu host dan memakai jaringan Docker bridge, bukan LAN lab.
 
 ## 3. Task
 | ID | Deskripsi | Status | Catatan |
@@ -31,7 +33,7 @@ dan menunggu hasil checklist user.
 | P8-T2 | `scripts/launch_workers.py` (baca `config/nodes.toml`; mode cetak perintah dan mode ssh) | DONE | Menolak placeholder; `procs` per node menang atas `--procs` |
 | P8-T3 | `scripts/pack_source.py` (ZIP tanpa `data/`, `output/`, `.venv`, `.git`) | DONE | Juga tanpa cache dan `results/dev/`; keluaran bawaan `dist/` |
 | P8-T4 | Finalisasi `DEPLOYMENT.md`, template inventaris node, checklist pra-eksperimen | DONE | Inventaris 10 baris, `pip install -e .`, contoh keluaran nyata |
-| P8-T5 | Opsional bila R1 terjadi: `--data-mode local` | DITUNDA | Menunggu bukti R1 dari dry-run node fisik (ADR-014) |
+| P8-T5 | Opsional bila R1 terjadi: `--data-mode local` | DITUNDA | Dry-run 10 node virtual tidak dapat menilai R1 karena satu host (ADR-014, ADR-015) |
 | P8-T6 | Uji lokal 9 Worker di satu mesin (marker `slow`) | DONE | SL-9W-01, `1 passed` |
 
 ## 4. File yang berubah
@@ -45,13 +47,18 @@ dan menunggu hasil checklist user.
 | `tests/unit/test_pack_source.py` | add | UT-PACK-01..03 |
 | `tests/integration/test_slow_9_workers.py` | add | SL-9W-01 (marker `slow`) |
 | `tests/conftest.py` | mod | Fixture `load_script` untuk memuat skrip sebagai modul |
-| `DEPLOYMENT.md` | mod | P8-T4: inventaris 10 node, instalasi, jaringan, launching, checklist, troubleshooting, paket sumber |
+| `DEPLOYMENT.md` | mod | P8-T4: inventaris 10 node, instalasi, jaringan, launching, checklist, troubleshooting, paket sumber; bagian 0 ditambah runbook 10 node virtual (ADR-015) |
 | `scripts/gate.py` | mod | Smoke Fase 8 = `pytest -m slow` dengan penanda `1 passed` |
 | `TESTING.md` | mod | Baris UT-NODE, UT-LAUNCH, UT-PACK |
-| `DECISIONS.md` | mod | ADR-013 dan ADR-014 |
-| `ARCHITECTURE.md` | mod | Bagian 11 mencatat `--data-mode local` belum tersedia |
-| `CHANGELOG.md` | mod | Entri `[Unreleased]` bagian agent Fase 8 |
-| `PLAN.md` | mod | Status Fase 8 `IN PROGRESS (menunggu user)`, `CURRENT PHASE` tetap 8 |
+| `DECISIONS.md` | mod | ADR-013, ADR-014, dan ADR-015 |
+| `ARCHITECTURE.md` | mod | Bagian 11 mencatat `--data-mode local` belum tersedia dan merujuk 10 node virtual |
+| `CHANGELOG.md` | mod | Entri Fase 8 dan versi 0.08.0 |
+| `PLAN.md` | mod | Status Fase 8 `DONE`, `CURRENT PHASE` menjadi 9, catatan deviasi node virtual |
+| `AGENTS.md` | mod | Target node disesuaikan dengan ADR-015 |
+| `PROMPTS.md` | mod | Prompt 9A/9B, langkah eksperimen, dan Prompt 10 memakai 10 node virtual |
+| `SUBMISSION.md` | mod | Bukti gambar dan video berupa tangkapan layar 10 container |
+| `src/pcomp/constants.py` | mod | Versi 0.08.0 |
+| `pyproject.toml` | mod | Versi 0.08.0 |
 | `docs/phase-logs/PHASE-08.md` | add | Catatan fase ini |
 
 ## 5. Test
@@ -62,30 +69,30 @@ dan menunggu hasil checklist user.
 | Slow | 1 | 1 | SL-9W-01: Master + 9 Worker lokal, `VERIFY OK`, `worker_stats` berisi 9 entri |
 
 Coverage: 83.13% sampai 83.20% (bervariasi sedikit antar run karena cabang bergantung waktu;
-nilai pada run terakhir tercatat di `reports/gate-latest.txt`).
+nilai pada run terakhir tercatat di `reports/gate-latest.txt`). Bagian user 2026-11-22 tidak
+menambah test; angka di bawah berasal dari gate penuh 2026-11-22.
 
 ## 6. Hasil Verification Gate
-Dijalankan dengan `python scripts/gate.py` (penuh) pada 2026-11-21. Tabel di bawah dikutip dari run
-`2026-11-21T10:22:43`; dua run penuh sebelumnya (`10:11:55` dan `10:17:45`) juga berakhir
-`HASIL: PASS`, dan gate penuh dijalankan sekali lagi setelah suntingan dokumen terakhir sebelum
-commit. Ringkasan run terakhir ada di `reports/gate-latest.txt`.
+Dijalankan dengan `venv/bin/python scripts/gate.py` (penuh) pada 2026-11-22 pukul 12:17 setelah
+bagian user selesai. Run penuh sebelumnya pada 2026-11-21 juga berakhir `HASIL: PASS`. Tabel di bawah
+dikutip dari run `2026-11-22T12:17:35`; ringkasan tersimpan di `reports/gate-latest.txt`.
 
 | Gate | Hasil | Bukti singkat |
 |---|---|---|
 | G1 Lint | PASS | `check=All checks passed!; format=111 files already formatted` |
 | G2 Type | PASS | `Success: no issues found in 39 source files` |
-| G3 Unit+cov | PASS | `Required test coverage of 80% reached. Total coverage: 83.20% \| 218 passed, 20 deselected` |
-| G4 Integration | PASS | `19 passed, 219 deselected in 52.50s` |
+| G3 Unit+cov | PASS | `Required test coverage of 80% reached. Total coverage: 83.20% \| 218 passed, 20 deselected in 35.02s` |
+| G4 Integration | PASS | `19 passed, 219 deselected in 31.35s` |
 | G5 Regresi | PASS | `seluruh test fase lama ikut dijalankan oleh G3 dan G4` |
-| G6 Smoke | PASS | `python.exe -m pytest -m slow -q -> rc=0: 1 passed, 237 deselected in 4.73s` |
+| G6 Smoke | PASS | `python -m pytest -m slow -q -> rc=0: 1 passed, 237 deselected in 1.35s` |
 | G7 Flaky x3 | PASS | `3 kali lulus` |
 | G8 Dokumen | PASS | `CHANGELOG, phase log, dan status PLAN sinkron` |
-| G9 Repo | PASS | `113 file terlacak, tidak ada pelanggaran` |
+| G9 Repo | PASS | `121 file terlacak, tidak ada pelanggaran` |
 
 Keluaran smoke apa adanya (`python -m pytest -m slow -q` dari root repo):
 
 ```
-1 passed, 237 deselected in 5.85s
+1 passed, 237 deselected in 1.35s
 ```
 
 Keluaran `check_node.py` dan `pack_source.py` pada mesin pengembangan (bukan node lab):
@@ -128,6 +135,9 @@ sesuai rancangan.
 5. `DEPLOYMENT.md` tidak menambah bagian baru di tengah agar rujukan "DEPLOYMENT.md bagian 6"
    pada `PROMPTS.md` tetap menunjuk checklist pra-eksperimen; bagian paket sumber ditaruh di
    bagian 8.
+6. Bagian user dijalankan pada 10 node virtual (1 Master di host + 9 Worker container) sesuai
+   keputusan user 2026-11-22 dan ADR-015, bukan 10 perangkat fisik. R1 tidak dapat dinilai dan angka
+   performa tidak mewakili LAN lab.
 
 ## 8. Masalah ditemukan dan solusi
 | Masalah | Akar masalah | Solusi |
@@ -136,13 +146,15 @@ sesuai rancangan.
 | `FileNotFoundError` lolos dari `pytest.raises(ValueError)` | `load_nodes` memakai `FileNotFoundError` untuk berkas yang tidak ada (konsisten dengan `pcomp.config.load_toml`) | Ekspektasi test diubah ke `FileNotFoundError`; isi TOML rusak tetap `ValueError` |
 | G1 E501 pada empat berkas baru | Baris `argparse`, kondisi, dan tanda tangan test terlalu panjang | Baris dipecah, `ruff format` dijalankan |
 | `DEPLOYMENT.md` menyuruh `pip install -r requirements*.txt` tanpa memasang paket | `requirements*.txt` tidak memasang `pcomp`, sehingga `python -m pcomp.worker` gagal | Langkah 3 menambahkan `python -m pip install -e .` dan troubleshooting menambahkan gejala `ModuleNotFoundError: pcomp` |
+| Docker daemon tidak terjangkau saat validasi virtual dimulai | Colima terpasang tetapi belum dijalankan | `colima start --cpu 6 --memory 4 --disk 10` (dijalankan user) |
+| `docker inspect` gagal membaca IP container | Docker 29 menyimpan IP di `NetworkSettings.Networks`, bukan `NetworkSettings.IPAddress` | Template inspect memakai `range .NetworkSettings.Networks` |
 
 ## 9. Back-fix (bug fase lama)
 Tidak ada. Skrip fase ini tidak menyentuh `src/pcomp`, protokol, maupun perilaku default.
 
 ## 10. Keterbatasan dan utang teknis
-1. Tidak ada satu pun klaim pengujian pada 10 node fisik; seluruh verifikasi bagian agent berjalan
-   di satu mesin pengembangan. Hasil node fisik wajib dicatat pada bagian 13 sebelum Fase 8 selesai.
+1. Tidak ada pengujian pada 10 node fisik. Validasi bagian user berjalan pada 10 node virtual di satu
+   laptop (ADR-015); hasilnya dicatat pada bagian 13.3 dan 13.4.
 2. `check_node.py` hanya membandingkan versi protokol secara lokal; kecocokan versi antar node masih
    bergantung pada penolakan REGISTER di Master.
 3. `launch_workers.py` menjalankan ssh secara berurutan dan tidak melacak proses yang sudah berjalan;
@@ -153,22 +165,28 @@ Tidak ada. Skrip fase ini tidak menyentuh `src/pcomp`, protokol, maupun perilaku
    membesar, arsip pengumpulan perlu disaring manual agar tidak melebihi batas ukuran pengumpulan.
 6. `scripts/` tidak termasuk cakupan `mypy` (konfigurasi `files = ["src"]`), sehingga skrip hanya
    diperiksa `ruff` dan unit test.
+7. R1 tidak dapat dinilai dari 10 node virtual: seluruh Worker berbagi CPU, RAM, dan jaringan Docker
+   bridge pada satu host, sehingga tidak ada bandwidth LAN yang diukur.
+8. Ruang disk laptop terbatas (sekitar 25 GiB bebas saat validasi). Image container 77,8 MB, tetapi
+   dataset dan keluaran eksperimen harus dibersihkan antar run agar tidak memenuhi disk.
 
 ## 11. Catatan serah-terima ke fase berikutnya
-1. Fase 8 baru selesai setelah user mengirim inventaris, keluaran `check_node.py` tiap node, dan log
-   dry-run 10 node (Prompt 9B). Setelah itu: isi DEPLOYMENT.md bagian 1 dan bagian 13 fase ini,
-   evaluasi R1, lalu putuskan status Fase 8 dan `CURRENT PHASE`.
-2. Bila dry-run menunjukkan bandwidth Master menjadi bottleneck (R1), P8-T5 `--data-mode local`
-   perlu ADR baru dan kenaikan `PROTOCOL_VERSION`; jangan ditambahkan diam-diam sebagai perilaku
-   default.
+1. Fase 8 selesai 2026-11-22 pada 10 node virtual (ADR-015): n1 host dan w1-w9 container. Fase 9
+   memakai konfigurasi yang sama; data resmi tetap harus ditulis ke `results/raw/`, bukan `output/`.
+2. Dry-run 10 node virtual tidak dapat menilai R1. P8-T5 `--data-mode local` tetap ditunda sampai
+   ada pengukuran jaringan nyata; bila diperlukan, tambahkan ADR baru dan naikkan `PROTOCOL_VERSION`.
 3. Eksperimen resmi (Fase 9) hanya boleh memakai algoritma nyata; `results/dev/` dari algoritma
    `sim` tidak boleh dipakai dan sudah dikecualikan dari arsip sumber.
-4. Versi paket masih `0.07.0` karena bagian agent bukan commit akhir fase; kenaikan ke `0.08.0`
-   dilakukan bersama `phase-08-done`.
+4. Versi paket menjadi `0.08.0` pada commit akhir fase ini.
 
 ## 12. Commit
 Commit bagian agent: `feat(phase-08): add node checks, launch scripts, packaging, deployment guide`
 (hash `2789b9a`), digabung ke `main` dengan merge `00fcc68`.
+
+Commit bagian user 2026-11-22 pada branch `phase/08-virtual-nodes`: `5bef89f`
+`docs(phase-08): validate 10 virtual nodes and close phase` dan `b2b9322`
+`chore(config): fill group identity for banner and report`. Keduanya digabung ke `main` dengan
+`git merge --no-ff`, lalu diberi tag `phase-08-done`.
 
 Tag bagian agent `phase-08a-done` sudah ada dan menunjuk ke commit `00fcc68`, terverifikasi dengan
 `git rev-parse phase-08a-done^{commit}` serta `git tag --points-at 00fcc68`. Tag fase 00 sampai 07
@@ -189,16 +207,16 @@ Mulai commit berikutnya, branch fase dipakai kembali.
 
 
 ## 13. Human checklist (diisi dari hasil user)
-Data yang tidak dikirim user ditulis "TIDAK ADA DATA". Pengisian pertama dilakukan 2026-11-21
-memakai keluaran nyata dari mesin Master saja; sembilan Worker belum ada datanya.
+Data yang tidak dikirim user ditulis "TIDAK ADA DATA". Pengisian 2026-11-21 memakai keluaran nyata
+mesin Master; pengisian 2026-11-22 menambahkan 9 Worker container pada 10 node virtual (ADR-015).
 
 | Item | Status | Catatan |
 |---|---|---|
-| Python dan dependensi terpasang di 9 Worker | TIDAK ADA DATA | belum ada laporan dari node Worker |
-| `check_node.py` dijalankan di 10 node | SEBAGIAN (1 dari 10) | n1 `CHECK NODE OK` (exit 0); n2 sampai n10 belum dijalankan |
-| Inventaris node (host, IP, CPU, core, RAM, OS) | SEBAGIAN (n1 saja) | lihat `DEPLOYMENT.md` bagian 1 dan bagian 13.1 |
-| Dry-run dataset kecil di 10 node | TIDAK ADA DATA | belum ada log Master maupun Worker di 10 node fisik |
-| Evaluasi risiko R1 | TIDAK DIKETAHUI | belum ada pengukuran pada jaringan lab; lihat batasan pada bagian 13.2 |
+| Python dan dependensi terpasang di 9 Worker | OK | 9 container `ziphive-node:min`, Python 3.12.13, psutil 5.9.8 |
+| `check_node.py` dijalankan di 10 node | OK (10 dari 10) | n1 host dan w1-w9 container semuanya `CHECK NODE OK`; lihat 13.4 |
+| Inventaris node (host, IP, CPU, core, RAM, OS) | LENGKAP | `DEPLOYMENT.md` bagian 1; IP container bersifat dinamis |
+| Dry-run dataset kecil di 10 node | OK | 17 task, 9 Worker, `VERIFY OK`; lihat 13.4 |
+| Evaluasi risiko R1 | TIDAK DAPAT DINILAI | seluruh node satu host dan memakai jaringan Docker bridge, bukan LAN |
 
 ### 13.1 Bukti pemeriksaan node n1 (Master)
 Keluaran apa adanya dari `python scripts/check_node.py` di mesin Master:
@@ -315,5 +333,74 @@ Catatan pengamatan dari run ini:
    menghasilkan sekitar 3.37 detik), bukan transfer. Karena jaringan UTM shared bersifat
    host-internal, angka ini tidak menggambarkan bandwidth LAN lab dan tidak dapat dipakai
    menyimpulkan R1.
+
+### 13.3 Keputusan 10 node virtual (2026-11-22)
+User memutuskan Fase 8 dan 9 dilaksanakan pada 10 node virtual di satu laptop, yaitu 1 Master di host
+dan 9 Worker container (Colima/Docker), bukan 10 perangkat fisik. Keputusan dicatat pada ADR-015.
+Persetujuan dosen: TIDAK DIKETAHUI. Bagian 13.1 dan 13.2 tetap berlaku sebagai bukti awal. Pengisian
+checklist 10 node virtual pada tabel bagian 13 dilakukan setelah rangkaian container berjalan dan
+dry-run menghasilkan `VERIFY OK`.
+
+### 13.4 Bukti 10 node virtual (2026-11-22)
+Colima dijalankan user dengan `colima start --cpu 6 --memory 4 --disk 10`. Status yang terbaca:
+
+```
+colima is running using macOS Virtualization.Framework
+arch: aarch64
+runtime: docker
+```
+
+Image minimal dibangun dari `alpine:3.20` dengan `python3` dan `py3-psutil`. Hasil
+`docker images` menunjukkan `ziphive-node:min 77.8MB`; di dalam container terbaca
+Python 3.12.13 dan psutil 5.9.8. Sembilan container Worker memperoleh IP `172.17.0.2` sampai
+`172.17.0.10` dengan hostname `w1` sampai `w9`. Keluaran `check_node.py` identik pada kesembilan
+container; contoh dari w1:
+
+```
+OK python: 3.12.13 (>= 3.11)
+OK psutil: 5.9.8
+OK paket: pcomp 0.07.0
+OK protokol: PROTOCOL_VERSION=1
+OK core: 6 core logis
+OK ram: 3.8 GiB
+CHECK NODE OK
+```
+
+Perintah dry-run (port 5090, dataset 64 MiB, `lzma` level 6, chunk 4 MiB, 9 Worker `procs = 1`):
+
+```bash
+PYTHONPATH=src venv/bin/python -m pcomp.master --input data/dryrun2node \
+  --out output/virtual-10 --expect-workers 9 --scheduler dynamic \
+  --host 0.0.0.0 --port 5090 --algo lzma --level 6 --chunk-mb 4
+
+for i in $(seq 1 9); do
+  docker run -d --name "ziphive-w$i" --hostname "w$i" \
+    -v "$PWD":/app:ro -e PYTHONPATH=/app/src -w /app ziphive-node:min \
+    python3 -m pcomp.worker --master host.docker.internal:5090 --id "w$i" --procs 1
+done
+```
+
+Keluaran Master dan verifikasi:
+
+```
+tasks        : 17
+tasks_ok     : 17
+tasks_failed : 0
+workers      : 9
+total_mb     : 64.000752
+ratio        : 2.631605
+time_s       : 2.616278
+throughput   : 24.46252 MB/s
+MASTER OK
+
+chunks       : 17
+VERIFY OK
+```
+
+`metrics.json` mencatat `simulated: false`, `scheduler: dynamic`, `tasks_retried: 0`,
+`imbalance: 1.185055`, dan `worker_stats` berisi 9 entri. `events.jsonl` berisi 54 baris dan seluruh
+Worker keluar dengan `WORKER OK (wN)` serta kode keluar 0. Keluaran disimpan di `output/virtual-10/`
+(gitignored) karena ini dry-run pengembangan, bukan data eksperimen resmi. Angka ini tidak boleh
+dipakai di laporan sebagai hasil E1-E6.
 
 

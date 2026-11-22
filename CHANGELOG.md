@@ -2,25 +2,28 @@
 
 Format mengikuti Keep a Changelog. Versi `0.<NN>.0` = akhir fase NN. Aturan pencatatan: SDLC.md bagian 6.
 
-## [Unreleased]
+## [0.08.0] - 2026-11-22
 ### Added
 - `scripts/check_node.py`: pemeriksaan kesiapan node (versi Python minimal 3.11, psutil, versi paket dan `PROTOCOL_VERSION`, jumlah core, RAM) serta opsi `--master host:port` dan `--ping-master` untuk menguji keterjangkauan port Master tanpa mengirim pesan protokol.
 - `scripts/launch_workers.py`: membaca `config/nodes.toml`, memisahkan peran Master dan Worker, menolak placeholder yang belum diisi, lalu membangkitkan perintah Worker `python -m pcomp.worker --master <host:port> --id w<N> --procs <P>`; mode `--print`, `--ssh`, dan `--ssh --dry-run`.
 - `scripts/pack_source.py`: arsip ZIP sumber berisi `src/`, `tests/`, `scripts/`, `config/`, `docs/`, dokumen `.md`, `pyproject.toml`, `requirements*.txt`, `Makefile`, dan `results/`, tanpa `data/`, `output/`, `.venv`, `.git`, cache, dan `results/dev/`.
 - Unit test UT-NODE-01..04, UT-LAUNCH-01..04, UT-PACK-01..03 dan integration test SL-9W-01 (9 Worker lokal, marker `slow`).
 - Fixture `load_script` pada `tests/conftest.py` untuk memuat berkas `scripts/` sebagai modul di unit test.
+- Validasi 10 node virtual pada satu laptop (ADR-015): image `ziphive-node:min` (Alpine 3.20, Python 3.12.13, psutil 5.9.8, 77,8 MB), 1 Master di host dan 9 Worker container, seluruh node `CHECK NODE OK`, serta dry-run 64 MiB `VERIFY OK` (17 task, 9 Worker, 2,62 detik, 24,46 MB/s).
 
 ### Changed
 - `DEPLOYMENT.md`: template inventaris 10 node, langkah `pip install -e .`, contoh keluaran `check_node.py`, pemakaian `launch_workers.py` dan `pack_source.py`, checklist pra-eksperimen, serta catatan bahwa `--data-mode local` belum tersedia.
+- Rencana pelaksanaan Fase 8 dan 9 diubah dari 10 node fisik menjadi 10 node virtual (1 Master di host + 9 Worker container pada satu laptop) berdasarkan keputusan user 2026-11-22 (ADR-015); `AGENTS.md`, `PLAN.md`, `PROMPTS.md`, `SUBMISSION.md`, `DEPLOYMENT.md`, dan `ARCHITECTURE.md` disesuaikan. Persetujuan dosen: TIDAK DIKETAHUI.
 
 ### Docs
 - `DEPLOYMENT.md` bagian 1 diisi dari data nyata n1 (Master, macOS 26.6.2, Apple M1, 8 core, 8.0 GiB, Python 3.14.4); baris n2 sampai n10 ditandai `TIDAK ADA DATA`.
 - `DEPLOYMENT.md` bagian 2 menambahkan catatan Debian 11 (Python 3.9.2, tanpa `bullseye-backports`) beserta cara menyiapkan Python 3.11 dari sumber, dan tabel troubleshooting memuat gejala tersebut serta peringatan `koneksi Worker berakhir` akibat `check_node.py --master`.
-- `docs/phase-logs/PHASE-08.md` bagian 13 diisi checklist sebagian dan bagian 13.1 sampai 13.2 memuat bukti `check_node.py` n1 serta validasi 2 mesin (Master macOS + VM Debian arm64) dengan `VERIFY OK`, ditandai bukan node fisik.
+- `docs/phase-logs/PHASE-08.md` bagian 13 diisi checklist 10 node virtual, bagian 13.1 sampai 13.2 memuat bukti `check_node.py` n1 serta validasi 2 mesin (Master macOS + VM Debian arm64), dan bagian 13.3 sampai 13.4 memuat keputusan serta bukti dry-run 10 node virtual dengan `VERIFY OK`.
+- `DEPLOYMENT.md` bagian 0 memuat runbook 10 node virtual (image Alpine minimal, perintah Master dan Worker container, `host.docker.internal`).
 
 - `scripts/gate.py`: smoke Fase 8 menjalankan `pytest -m slow` dengan penanda `1 passed`.
 - `ARCHITECTURE.md` bagian 11 mencatat bahwa `--data-mode local` belum tersedia (ADR-014).
-- `PLAN.md`: status Fase 8 menjadi `IN PROGRESS (menunggu user)`.
+- `PLAN.md`: status Fase 8 menjadi `DONE` dan `CURRENT PHASE` menjadi 9; catatan deviasi 10 node virtual ditambahkan.
 
 ## [0.07.0] - 2026-11-21
 ### Added

@@ -15,7 +15,7 @@ Nama proyek: **ZipHive** (zip = kompresi, hive = kawanan Worker dengan satu Mast
 | 1 | Prompt 0 Orientasi | Agent (baca saja) |
 | 2 | Prompt 1 sampai 8 (Fase 0 sampai 7) | Agent |
 | 3 | Prompt 9A (Fase 8 bagian agent) | Agent |
-| 4 | Checklist node fisik | Anda |
+| 4 | Checklist 10 node virtual | Anda |
 | 5 | Prompt 9B (catat hasil) | Agent |
 | 6 | Langkah manual eksperimen resmi | Anda |
 | 7 | Prompt 10 (Fase 9) | Agent |
@@ -386,7 +386,7 @@ Lingkup: HANYA task P8-T1 sampai P8-T6 pada bagian "FASE 8" di PLAN.md. Salin tu
 DILARANG di fase ini: mengubah protokol atau algoritma inti; mengubah perilaku default. P8-T5 (`--data-mode local`) opsional, kerjakan hanya sebagai opsi tambahan.
 
 INSTRUKSI KHUSUS FASE INI
-Jangan mengklaim node fisik sudah teruji. Fase ini BELUM selesai sebelum saya mengirim hasil checklist (Prompt 9B).
+Jangan mengklaim 10 node fisik sudah teruji. Node virtual bukan perangkat fisik dan wajib disebut demikian di laporan (ADR-015). Fase ini BELUM selesai sebelum saya mengirim hasil checklist (Prompt 9B).
 
 LANGKAH (ikuti SDLC.md bagian 1)
 1. Definition of Ready: fase sebelumnya DONE dan bertag phase-07-done, branch main bersih, `python scripts/gate.py --quick` hijau. Jika tidak, berhenti dan lapor.
@@ -404,7 +404,7 @@ LANGKAH (ikuti SDLC.md bagian 1)
 ---
 
 ## PROMPT 9B - Fase 8: Hasil checklist user
-Kapan: Setelah Anda menjalankan checklist di node fisik. Isi tiga bagian [TEMPEL].
+Kapan: Setelah Anda menjalankan checklist di 10 node virtual (ADR-015). Isi tiga bagian [TEMPEL].
 
 ```text
 KONTEKS WAJIB (baca sebelum melakukan apa pun)
@@ -421,15 +421,15 @@ ATURAN ANTI-HALUSINASI
 TUGAS: FASE 8 BAGIAN 2, MENCATAT HASIL KESIAPAN NODE
 Dokumen WAJIB dibaca: PLAN.md Fase 8, DEPLOYMENT.md, docs/phase-logs/PHASE-08.md.
 Data dari saya (sumber kebenaran, jangan diubah atau ditambah):
-[TEMPEL: inventaris node: host, IP, OS, CPU/core, RAM, versi Python]
-[TEMPEL: keluaran check_node.py tiap node]
-[TEMPEL: log dry-run 10 node dengan dataset kecil, termasuk hasil VERIFY]
+[TEMPEL: inventaris 10 node virtual: host, container/IP, OS, CPU/core, RAM, versi Python]
+[TEMPEL: keluaran check_node.py tiap node virtual]
+[TEMPEL: log dry-run 10 node virtual dengan dataset kecil, termasuk hasil VERIFY]
 LANGKAH
 1. Pastikan tag phase-08a-done ada dan main bersih.
 2. Isi inventaris di DEPLOYMENT.md dan bagian "Human checklist" di PHASE-08.md hanya dari data di atas. Data yang tidak saya berikan ditulis "TIDAK ADA DATA".
 3. Analisis log: node yang gagal, penyebab, dan perbaikan. Jika perlu perbaikan kode, ikuti SDLC.md (test-first, gate penuh, commit `fix(phase-08)`), catat di CHANGELOG dan bagian Back-fix.
 4. Evaluasi risiko R1: apakah ada tanda bandwidth Master jadi bottleneck pada dry-run? Jawab berdasar log, jangan menebak.
-5. Jika semua node OK dan dry-run VERIFY OK: set Fase 8 DONE dan CURRENT PHASE = 9, jalankan `python scripts/gate.py`, commit, merge, tag phase-08-done, tanpa push. Jika belum OK: lapor apa yang kurang dan BERHENTI.
+5. Jika semua 10 node virtual OK dan dry-run VERIFY OK: set Fase 8 DONE dan CURRENT PHASE = 9, jalankan `python scripts/gate.py`, commit, merge, tag phase-08-done, tanpa push. Jika belum OK: lapor apa yang kurang dan BERHENTI.
 6. Laporan akhir sesuai AGENTS.md bagian 8.
 ```
 
@@ -437,14 +437,14 @@ LANGKAH
 ---
 
 ## LANGKAH MANUAL USER - Eksperimen resmi (sebelum Prompt 10)
-Kapan: Dikerjakan oleh Anda di 10 node. Agent tidak boleh melakukan ini.
+Kapan: Dikerjakan oleh Anda di 10 node virtual pada satu laptop. Agent tidak boleh melakukan ini.
 
 ```text
 Ikuti EXPERIMENTS.md bagian 1, 2, dan 5 dan DEPLOYMENT.md bagian 6.
 1. Kunci parameter (dataset, algoritma, chunk size, --repeat) sehingga T sequential 2 sampai 10 menit. Catat di docs/phase-logs/PHASE-09.md.
 2. Jalankan E1 sampai E6 (E7 opsional), masing-masing 3 ulangan, jeda 30 detik, hanya algoritma asli (bukan sim).
 3. Setiap run: jalankan tools/verify.py, pastikan metrics.json dan events.jsonl ada.
-4. Salin seluruh hasil ke results/raw/<exp>/<run_id>/ di repo. Catat foto atau tangkapan layar bukti 10 node untuk laporan dan video.
+4. Salin seluruh hasil ke results/raw/<exp>/<run_id>/ di repo. Catat tangkapan layar bukti 10 node virtual (daftar container, IP, hostname) untuk laporan dan video.
 5. Jangan menyunting file hasil secara manual.
 ```
 
@@ -512,7 +512,7 @@ Dokumen WAJIB dibaca: PLAN.md Fase 10, SUBMISSION.md, ASSETS.md, seluruh kode di
 LANGKAH
 1. Definition of Ready: tag phase-09-done ada, main bersih, gate hijau. Buat branch phase/10-final dan docs/phase-logs/PHASE-10.md.
 2. docs/CODE_GUIDE.md: struktur direktori dan penjelasan setiap modul, class, dan fungsi penting berdasarkan kode NYATA (buka tiap file, jangan menebak). Sertakan alur pemanggilan antar modul dan cara menjalankan tiap perintah.
-3. README.md final (setup, perintah, struktur, cara menjalankan di 10 node, cara menjalankan test).
+3. README.md final (setup, perintah, struktur, cara menjalankan di 10 node virtual, cara menjalankan test).
 4. ASSETS.md final: isi tanggal akses, ukuran, dan SHA-256 hanya dari data nyata. Tautan yang belum diverifikasi dibiarkan bertanda "PERLU DIVERIFIKASI USER". Rujukan buku atau paper hanya yang dapat diverifikasi, sisanya "PERLU DIISI USER".
 5. Gate penuh, commit atomik `docs(phase-10): add code guide, readme, final assets`, merge ke main. JANGAN beri tag phase-10-done atau v1.0.0 dulu.
 6. Laporan akhir (AGENTS.md bagian 8) dan berhenti.
@@ -541,7 +541,7 @@ Dokumen WAJIB dibaca: SUBMISSION.md (seluruh), docs/ANALYSIS.md, results/summary
 LANGKAH
 1. Laporan DOCX memakai skill laporan-akademik-id: BAB I Pendahuluan, BAB II Studi Pustaka, BAB III Metodologi, BAB IV Hasil dan Pembahasan, Kesimpulan, sesuai tabel SUBMISSION.md bagian 2. Bahasa formal mahasiswa, tanpa simbol khas AI.
 2. Aturan data: angka, tabel, dan grafik hanya dari results/summary.csv dan docs/ANALYSIS.md. Dilarang menambah angka baru. Bagian yang datanya tidak ada ditulis "PERLU DIISI USER". Identitas kelompok dari config/group.toml.
-3. Setiap gambar diberi nomor, keterangan, dan placeholder beserta instruksi pengambilan gambar (foto 10 node, terminal Master dan 9 Worker, grafik hasil, bukti Worker dimatikan lalu pulih).
+3. Setiap gambar diberi nomor, keterangan, dan placeholder beserta instruksi pengambilan gambar (tangkapan layar 10 node virtual, terminal Master dan 9 Worker, grafik hasil, bukti Worker dimatikan lalu pulih).
 4. Naskah video demo (maks 5 menit) dan checklist rekaman di docs/DEMO_SCRIPT.md sesuai SUBMISSION.md bagian 3.
 5. Uji reproduksi: clone repo ke folder sementara, setup dari README, jalankan `python scripts/gate.py`. Kutip hasilnya.
 6. `python scripts/pack_source.py`, tampilkan daftar isi ZIP dan konfirmasi tidak ada data/, output/, .venv, .git.

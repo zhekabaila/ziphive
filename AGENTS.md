@@ -2,7 +2,7 @@
 
 Proyek : Distributed Data Compression (Tema 16), UAS Komputasi Paralel dan Sistem Terdistribusi, Informatika Unsil
 Arsitektur : Master–Worker, TCP socket, Python 3.11+, multiprocessing di setiap Worker
-Target : 1 Master + 9 Worker (10 node fisik). Seluruh pengembangan dan test berjalan di localhost.
+Target : 1 Master + 9 Worker (10 node). Soal meminta 10 node fisik; pelaksanaan 2026-11-22 memakai 10 node virtual di satu laptop (ADR-015). Seluruh pengembangan dan test berjalan di localhost.
 Bahasa dokumen : Indonesia. Bahasa kode, nama variabel, commit message : Inggris.
 
 ## 1. Urutan baca (setiap sesi baru, wajib)
