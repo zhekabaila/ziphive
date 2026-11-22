@@ -151,4 +151,5 @@ versi 2 dan tanda tangan `MasterServer` yang baru.
    `dist/ziphive-source-1.0.0.zip` dan paket 1.1.0 yang dibangun ulang setelah fase ini.
 
 ## 12. Commit
-Hash: diisi setelah commit  Tag: `phase-11-done`
+`5b5e26e` `feat(phase-11): support physical 10-node runs with launchers and kill injection`,
+lalu commit catatan ini. Tag `phase-11-done` pada `main`. Versi paket `1.1.0`.
