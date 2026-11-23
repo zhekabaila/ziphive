@@ -10,6 +10,8 @@ Aturan utama:
    sebelum merekam.
 2. Kalimat di dalam `[...]` adalah arahan teknis, **bukan** untuk dibacakan.
 3. Bicara santai, tidak perlu hafal. Yang penting urutan dan angka benar.
+4. Seluruh perintah yang dijalankan saat take video ada di **bagian 5**, urut dari nol. Bagian itu
+   satu-satunya acuan; jangan mengarang perintah di luar daftar tersebut.
 
 ## 1. Pembagian peran
 
@@ -72,7 +74,8 @@ Isi nama: P1 = ____________, P2 = ____________, P3 = ____________.
 
 ### 1:45–2:15 — Sembilan Worker mendaftar (P2)
 
-[Layar: sembilan jendela Worker, lalu log Master yang menampilkan Worker terdaftar.]
+[Layar: sembilan jendela Worker, lalu panel `events.jsonl` yang menampilkan sembilan baris
+`worker_registered`.]
 
 > Sembilan laptop Worker menyambung lewat TCP ke port lima ribu lima puluh. Setiap Worker memakai
 > satu proses kompresi. Master menunggu sampai kesembilan Worker terdaftar sebelum mulai, supaya
@@ -143,44 +146,129 @@ PY
 Bila hasil run fisik belum ada di `summary_agg.csv`, sebut angka yang tersedia dan **sebutkan
 sumbernya** ("dari 45 run sebelumnya"). Jangan mencampur dua sumber tanpa keterangan.
 
-## 5. Perintah yang disiapkan (jalankan sebelum merekam)
+## 5. Urutan perintah dari nol (acuan tunggal saat take video)
 
-### 5.1 Laptop Master (macOS)
+Jalankan **berurutan dari atas ke bawah**, jangan lompat. Setiap tahap menyebut di laptop mana
+perintah diketik. Kalau satu tahap gagal, berhenti dan perbaiki dulu sebelum lanjut.
+
+| # | Di mana | Perintah inti | Tanda berhasil |
+|---|---|---|---|
+| 1 | semua | `git clone` + `setup-node` | `SETUP OK`, `ZipHive 1.1.0` |
+| 2 | Master | `make_dataset --out data/demo` | 4 berkas, 256 MiB |
+| 3 | Master | `rm -rf output/demo` lalu `--print-plan` | `PLAN OK` + IP Master |
+| 4 | 9 Worker | `start-worker` (sebelum Master) | `Worker wN -> IP:5050` |
+| 5 | Master | `start_master.py ... --inject-kills 1` | `Master mendengarkan di 0.0.0.0:5050` |
+| 6 | Master (terminal 2) | `tail -f output/demo/events.jsonl` | `worker_registered` sembilan baris |
+| 7 | Master | tunggu run | `MASTER OK` |
+| 8 | Master | `verify` + skrip tabel | `VERIFY OK` |
+| 9 | semua | Ctrl+C | jendela Worker tertutup |
+
+### Tahap 1 — Clone dan setup (semua laptop, sekali saja)
+
+macOS (Master) dan Linux (Worker):
+
+```bash
+cd ~
+git clone https://github.com/zhekabaila/ziphive.git
+cd ziphive
+./setup-node.sh
+.venv/bin/python -m pcomp --version
+```
+
+Windows (Command Prompt, bukan PowerShell):
+
+```bat
+cd /d C:\
+git clone https://github.com/zhekabaila/ziphive.git
+cd C:\ziphive
+setup-node.bat
+.venv\Scripts\python.exe -m pcomp --version
+```
+
+Wajib: baris terakhir `SETUP OK` dan versi `ZipHive 1.1.0` **sama di sepuluh laptop**. Versi berbeda
+ditolak Master (`WORKER DITOLAK VERSION_MISMATCH`). Repo sudah ada → `git pull` lalu ulangi setup.
+
+### Tahap 2 — Master: dataset demo dan output bersih
 
 ```bash
 cd ~/ziphive
-
-# dataset demo 256 MiB (sekali saja, deterministik: 65 task)
+git pull
 .venv/bin/python -m pcomp.tools.make_dataset --out data/demo --size-mb 256 --files 4 --seed 20261122
-
-# IP Master untuk sembilan laptop Worker
-.venv/bin/python scripts/start_master.py --print-plan --workers 9
+rm -rf output/demo
 ```
 
-### 5.2 Sembilan laptop Worker
+Cek isi dataset (harus 4 berkas, 256 MiB):
+
+```bash
+.venv/bin/python - <<'PY'
+import json
+d = json.load(open("data/demo/dataset.json"))
+total = sum(f["size"] for f in d["files"])
+print("berkas:", len(d["files"]), "| MiB:", round(total / 2**20, 2))
+PY
+```
+
+Jumlah task pasti terlihat di log Master saat run dimulai: `Mulai memproses 65 task dengan 9 Worker`
+(256 MiB dengan chunk 4 MiB).
+
+### Tahap 3 — Master: catat IP dan pastikan port bebas
+
+```bash
+.venv/bin/python scripts/start_master.py --print-plan --workers 9 --input data/demo   # tidak menjalankan Master
+lsof -nP -iTCP:5050 -sTCP:LISTEN                                                     # harus kosong
+```
+
+Baris pertama keluaran berisi `Master  : 10.x.x.x:5050`. Tulis IP itu di papan dan bacakan ke
+sembilan pemilik laptop. Izinkan Python di firewall Master (sekali saja):
+
+```bash
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --add ~/ziphive/.venv/bin/python
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --unblockapp ~/ziphive/.venv/bin/python
+```
+
+### Tahap 4 — Sembilan Worker: nyalakan launcher lebih dulu
 
 | OS | Perintah |
 |---|---|
 | macOS | `./start-worker.command` |
 | Linux | `./start-worker.sh` |
-| Windows | `start-worker.bat` |
+| Windows | `start-worker.bat` (klik dua kali) |
 
-Isi `IP Master` (tanpa port) dan `id` `w1` sampai `w9` (satu ID per laptop, tidak boleh sama).
+Saat ditanya, isi `IP Master` (tanpa port, dari Tahap 3) dan `ID Worker` `w1` sampai `w9`
+(satu laptop satu ID, tidak boleh sama). Bentuk non-interaktif:
 
-### 5.3 Master saat merekam
+```bash
+.venv/bin/python scripts/start_worker.py --master 10.x.x.x:5050 --id w3 --procs 1
+```
+
+Tanda berhasil: `Worker w3 -> 10.x.x.x:5050` dan `Log: .../logs/worker-w3.log`. Selama Master belum
+menyala, launcher mencetak baris gagal menyambung setiap 5 detik — **itu normal**, biarkan.
+
+Worker harus dinyalakan **sebelum** Master karena Master hanya menunggu 120 detik sejak mulai
+mendengarkan. Kalau ada laptop telat, Master mulai dengan Worker yang tersedia dan data demo
+menjadi tidak sah.
+
+### Tahap 5 — Master: mulai run yang direkam (adegan 1:30–1:45)
 
 ```bash
 .venv/bin/python scripts/start_master.py --workers 9 --input data/demo --out output/demo \
   --inject-kills 1 --inject-kill-fraction 0.5
 ```
 
-Panel kedua untuk memperlihatkan progres dan kegagalan:
+Yang muncul berurutan: `Master  : IP:5050`, `Dataset siap: data/demo`,
+`Master mendengarkan di 0.0.0.0:5050`, lalu dalam ±10 detik `Mulai memproses 65 task dengan 9
+Worker`. Master mematikan `w1` saat 50% task selesai.
+
+### Tahap 6 — Master, terminal kedua: pantau event (adegan 1:45–3:15)
 
 ```bash
 tail -f output/demo/events.jsonl
 ```
 
-### 5.4 Setelah run selesai (adegan 3:15–3:45)
+Yang disorot saat merekam, berurutan: sembilan baris `worker_registered`, lalu `task_assigned`,
+`worker_exit_injected`, `worker_dead`, dan `task_requeued`.
+
+### Tahap 7 — Setelah `MASTER OK` (adegan 3:15–3:45)
 
 ```bash
 # 1. verifikasi hasil
@@ -211,18 +299,48 @@ print("task dikembalikan ke antrean =",
 PY
 ```
 
+### Tahap 8 — Beres-beres
+
+Tekan Ctrl+C di sembilan jendela Worker. Master sudah keluar sendiri setelah `MASTER OK`.
+Yang disimpan sebagai bukti: `logs/worker-w1.log` dari laptop w1 (berisi pesan Worker dimatikan
+Master), tangkapan layar sembilan jendela Worker, dan `output/demo/metrics.json`.
+
+### Kalau ada yang gagal di tengah urutan
+
+| Tahap | Gejala | Tindakan |
+|---|---|---|
+| 1 | `SETUP GAGAL: butuh Python 3.11` | pasang Python 3.11+ dari python.org, ulangi `setup-node` |
+| 1 | `WORKER DITOLAK VERSION_MISMATCH` | `git pull` lalu `setup-node` ulang di laptop itu |
+| 3 | `lsof` masih menampilkan Master lama | hentikan Master lama (Ctrl+C atau `kill <pid>`), ulangi Tahap 5 |
+| 4 | Worker gagal menyambung terus | cek IP Master, satu jaringan, dan firewall Master |
+| 5 | `Mulai memproses ... dengan 8 Worker` | ada laptop telat; hentikan semuanya, ulangi Tahap 4 lalu Tahap 5 |
+| 7 | `VERIFY FAILED` | jangan lanjut; simpan `output/demo` apa adanya dan lapor |
+
 ## 6. Checklist
 
 ### H-15 menit sebelum merekam
 
 - [ ] Semua laptop memakai versi sama: `.venv/bin/python -m pcomp --version` → `ZipHive 1.1.0`
       (Windows: `.venv\Scripts\python.exe -m pcomp --version`).
-- [ ] Sembilan laptop pada jaringan yang sama, `check_node.py --ping-master <IP>:5050` → OK.
+- [ ] Sembilan laptop pada jaringan yang sama; jaringan diuji dengan
+      `check_node.py --ping-master <IP>:5050` saat Master sedang berjalan (waktu gladi resik).
 - [ ] Firewall Master mengizinkan Python menerima koneksi masuk.
-- [ ] Dataset `data/demo` sudah ada dan berisi 65 task.
+- [ ] Dataset `data/demo` sudah ada: 4 berkas, 256 MiB, 65 task 4 MiB (Tahap 2).
+- [ ] `output/demo` sudah dihapus supaya `events.jsonl` bersih.
 - [ ] Semua laptop tersambung listrik, mode hemat daya mati, notifikasi sistem dimatikan.
 - [ ] Angka ⟨a⟩–⟨f⟩ sudah ditulis di kertas atau catatan, tidak dibaca dari layar.
+- [ ] Sembilan Worker sudah menyala dan menunggu **sebelum** Master dijalankan (Tahap 4 → Tahap 5).
 - [ ] Satu kali gladi resik penuh sambil mengukur durasi; potong bagian yang terlalu panjang.
+
+### Setelah gladi resik, sebelum take
+
+```bash
+# di Master saja
+rm -rf output/demo
+```
+
+Sembilan Worker tidak perlu disentuh: setelah run selesai atau setelah di-KILL, launcher otomatis
+menunggu run berikutnya. Lanjutkan langsung ke Tahap 5.
 
 ### Saat merekam
 
@@ -238,8 +356,8 @@ PY
 
 | Kejadian | Tindakan |
 |---|---|
-| Satu Worker tidak mendaftar | Nyalakan ulang launcher di laptop itu; Master tetap menunggu sampai `--lan-wait` |
-| Run terlalu lama (> 2 menit) | Hentikan, pakai `--size-mb 128 --files 4`, dan sebutkan ukuran dataset di narasi |
+| Satu Worker tidak mendaftar | Nyalakan ulang launcher di laptop itu; Master menunggu maksimal 120 detik. Bila lewat, hentikan Master dan ulangi Tahap 4–5 |
+| Run terlalu lama (> 2 menit) | Hentikan, buat dataset lebih kecil `.venv/bin/python -m pcomp.tools.make_dataset --out data/demo --size-mb 128 --files 4 --seed 20261122`, sebutkan ukuran dataset di narasi |
 | Master gagal start | Pastikan port 5050 bebas: `lsof -nP -iTCP:5050 -sTCP:LISTEN` |
 | Waktu rekaman mepet | Lewati adegan 3:45–4:35 (grafik), langsung ke penutup |
 | Ada laptop mati saat run | Justru bagus untuk adegan 2:15–3:15; tetap sorot `worker_dead` dan `task_requeued` |
